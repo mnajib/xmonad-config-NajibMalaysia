@@ -26,7 +26,9 @@ myKeys =
     , ((mod4Mask .|. shiftMask, xK_r), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Recompile and restart xmonad
     , ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/screenshots/'" )
     , ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-full.png' -b -e 'mv $f ~/Pictures/screenshots/'" )
-    , ((mod4Mask,               xK_l), spawn "xlock -mode random" )
+    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode random" )
+    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
+    , ((mod4Mask .|. shiftMask, xK_l), spawn "xscreensaver-command --lock" )
     ]
 
 -- use xmobar as status bar, overriding the default config file path
