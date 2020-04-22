@@ -16,7 +16,6 @@ Config {
     --, template = " %StdinReader% }{ %eno1% | %memory% | %multicpu% | %kbd% | %date% "
     --, template = " %StdinReader% }{ %RJTT% %battery% %dynnetwork% %memory% %multicpu% %coretemp% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
-    --, template = "rororo"
     , template = " Waktu Solat Putrajaya  %WaktuSolatPutrajaya%      <fc=#ff9933>%mpipe%</fc> "
 
     -- general behavior
