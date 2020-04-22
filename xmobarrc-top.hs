@@ -47,7 +47,7 @@ Config {
 
         -- network activity monitor for ethernet
         --, Run Network "eno1" [
-	, Run DynNetwork [
+    , Run DynNetwork [
             --"--template" , "E:<tx>kB/s,<rx>kB/s"
             "--template" , "Tx:<tx>kB/s,Rx:<rx>kB/s"
             , "--Low"  , "1000"  -- units: kB/s
@@ -91,11 +91,11 @@ Config {
 
                              , "--" -- battery specific options
                                        -- discharging status
-                                       , "-o"	, "<left>% (<timeleft>)"
+                                       , "-o"   , "<left>% (<timeleft>)"
                                        -- AC "on" status
-                                       , "-O"	, "<fc=#dAA520>Charging</fc>"
+                                       , "-O"   , "<fc=#dAA520>Charging</fc>"
                                        -- charged status
-                                       , "-i"	, "<fc=#006000>Charged</fc>"
+                                       , "-i"   , "<fc=#006000>Charged</fc>"
                              ] 50
 
     --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
@@ -105,7 +105,7 @@ Config {
 
     -- Is this only read pipe file in /tmp/ ?
     --, Run MarqueePipeReader "~/.xmonad/zikir" (10, 7, "+") "mpipe"
-    , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (32, 3, "+") "mpipe"
+    , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (32, 3, "  +  ") "mpipe"
     --, Run MarqueePipeReader "~/.xmonad/zikirpipe" (10, 7, "+") "mpipe"
     --, Run PipeReader "~/.xmonad/zikirpipe" "mpipe"
     --, Run PipeReader "/tmp/zikirpipe" "mpipe"

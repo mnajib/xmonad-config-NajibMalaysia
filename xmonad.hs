@@ -15,8 +15,24 @@ myConfig = def {
     , borderWidth = 1
     --, normalBorderColor = "#181715"
     --, focusedBorderColor = "#58C5F1"
-    , focusFollowsMouse = False
+    , focusFollowsMouse = False -- Whether focus follows the mouse pointer
+    , clickJustFocuses = True  -- Whether clicking on a window to focus; will also passes the click to the window
+    , layoutHook = myLayout
     } `additionalKeys` myKeys `removeKeys` [(mod4Mask, xK_q)]
+
+myLayout = tiled ||| Mirror tiled ||| Full
+    where
+        -- default tiling algorithm partitions the screen into two panes
+        tiled   = Tall nmaster delta ratio
+
+        -- The default number of windows in the master pane
+        nmaster = 1
+
+        -- Default proportion of screen occupied by master pane
+        ratio   = 1/2
+
+        -- Percent of screen to increment by when resizing panes
+        delta   = 3/100
 
 -- override some of the default keybindings and add my own
 myKeys =
@@ -24,8 +40,8 @@ myKeys =
     --, ((mod4Mask .|. shiftMask, xK_q), kill) -- close window with mod-shift-Q (default is mod-shift-C)
     --, ((mod4Mask .|. shiftMask, xK_e), io (exitWith ExitSuccess)) -- close xmonad with mod-shift-E (default is mod-shift-Q)
     , ((mod4Mask .|. shiftMask, xK_r), spawn "if type xmonad; then xmonad --recompile && xmonad --restart; else xmessage xmonad not in \\$PATH: \"$PATH\"; fi") -- %! Recompile and restart xmonad
-    , ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/screenshots/'" )
-    , ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-full.png' -b -e 'mv $f ~/Pictures/screenshots/'" )
+    , ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/Screenshots/'" )
+    , ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-full.png' -b -e 'mv $f ~/Pictures/Screenshots/'" )
     --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode random" )
     --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
     , ((mod4Mask .|. shiftMask, xK_l), spawn "xscreensaver-command --lock" )

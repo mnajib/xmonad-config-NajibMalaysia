@@ -1,0 +1,28 @@
+#!/run/current-system/sw/bin/env bash
+
+#i=`echo "60 * 60 * 6" | bc`
+#i=`echo "60 * 1" | bc`
+#i=2
+i=30
+#i=21600
+#c=1
+
+declare -a a=(
+    "SUBHANALLAH" "ALHAMDULILLAH" "LAILAHAILLALLAH" "ALLAHUAKBAR"
+    "BISMILLAHILLAZI, LA YADHURRUMASMIHI SYAI'UN FIL ARDHI WALA FISSAMA', WAHUAS SAMI'UL 'ALIM"
+    )
+
+while true; do
+    for j in "${a[@]}"; do
+        #waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
+        #echo -en "$waktu\n"
+
+        #echo -en "${c}\n"
+        #c=$((c + 1))
+
+        #echo -en "${j}\n"
+        echo -en "${j}\n" > /tmp/$USER-zikirpipe
+
+        sleep ${i}
+    done
+done

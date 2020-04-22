@@ -6,11 +6,11 @@ i=`echo "60 * 60 * 6" | bc`
 #c=1
 
 while true; do
-	waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
-	echo -en "$waktu\n"
+    waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
+    echo -en "$waktu\n"
 
-	#echo -en "${c}\n"
-	#c=$((c + 1))
+    #echo -en "${c}\n"
+    #c=$((c + 1))
 
-	sleep ${i}
+    sleep ${i}
 done
