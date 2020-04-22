@@ -17,7 +17,7 @@ Config {
     --, template = " %StdinReader% }{ %RJTT% %battery% %dynnetwork% %memory% %multicpu% %coretemp% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
     --, template = "rororo"
-    , template = " Waktu Solat Putrajaya  %WaktuSolatPutrajaya% "
+    , template = " Waktu Solat Putrajaya  %WaktuSolatPutrajaya%      %mpipe% "
 
     -- general behavior
     , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -100,7 +100,15 @@ Config {
                              ] 50
 
     --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
+
     --, Run CommandReader "~/bin/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
     , Run CommandReader "~/.xmonad/wsp" "WaktuSolatPutrajaya"
+
+    -- Is this only read pipe file in /tmp/ ?
+    --, Run MarqueePipeReader "~/.xmonad/zikir" (10, 7, "+") "mpipe"
+    , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "+") "mpipe"
+    --, Run MarqueePipeReader "~/.xmonad/zikirpipe" (10, 7, "+") "mpipe"
+    --, Run PipeReader "~/.xmonad/zikirpipe" "mpipe"
+    --, Run PipeReader "/tmp/zikirpipe" "mpipe"
     ]
 }
