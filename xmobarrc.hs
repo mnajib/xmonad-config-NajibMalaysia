@@ -69,7 +69,8 @@ Config {
                              ] 50
 
         -- time and date indicator
-        , Run Date "<fc=#ABABAB>%A %F %T</fc>" "date" 10
+        --, Run Date "<fc=#ABABAB>%A %F %T</fc>" "date" 10
+        , Run Date "<fc=#ffff00>%A</fc> <fc=#00ff00>%F</fc> <fc=#00ffff>%T</fc>" "date" 10
 
         -- keyboard layout indicator
         , Run Kbd [
