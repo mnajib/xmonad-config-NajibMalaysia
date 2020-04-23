@@ -3,13 +3,16 @@
 #i=`echo "60 * 60 * 6" | bc`
 #i=`echo "60 * 1" | bc`
 #i=2
-i=30
+i=60
 #i=21600
 #c=1
 
 declare -a a=(
     "SUBHANALLAH" "ALHAMDULILLAH" "LAILAHAILLALLAH" "ALLAHUAKBAR"
     "BISMILLAHILLAZI, LA YADHURRUMASMIHI SYAI'UN FIL ARDHI WALA FISSAMA', WAHUAS SAMI'UL 'ALIM"
+    "Selamat menyambut Ramadhan. Minta maaf salah dan silap Selamat berpuasa."
+    "Jangan lupa bayar zakat."
+    "ALLAHUMMA SOLLI 'ALA SAIYIDINA MUHAMMAD, WA 'ALA ALI SAIYIDINA MUHAMMAD"
     )
 
 while true; do

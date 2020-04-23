@@ -1,36 +1,215 @@
 #!/run/current-system/sw/bin/env bash
+
+FILE1=/tmp/${USER}-wsp1.xml    # source data file
+FILE2=/tmp/${USER}-wsp2.txt    # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp3.xml    # backup good source data file
+LOG=/tmp/${USER}-wsp.log       # for logging
+
+ONELINE=""
+NAMASOLAT=()
+MASASOLAT=()
+KAWASAN=""
+TITLE=""
+ERROR=false
+
+echo "-------------------------------" >> $LOG
+echo "Start waktusolat-putrajaya-hbar" >> $LOG
+
 read_dom () {
     local IFS=\>
     read -d \< ENTITY CONTENT
-}
+    }
 
-curl -k --silent "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01" > /tmp/wsp-$USER.xml
+fetchData (){
+    curl -k --silent "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01" > $FILE1
+    }
 
-NAMASOLAT=()
-MASASOLAT=()
-while read_dom; do
-    if [[ $ENTITY = "title" && $CONTENT = "eSolat JAKIM : Waktu Solat Hari Ini" ]]; then
-        echo -ne ""
-    elif [[ $ENTITY = "description" && $CONTENT = "Kuala Lumpur,Putrajaya" ]]; then
-        echo -ne ""
-    elif [[ $ENTITY = "dc:date" ]]; then
-        echo -ne " <${CONTENT}>         "
-    elif [[ $ENTITY = "title" || $ENTITY = "description" ]]; then
-        if [[ $ENTITY = "title" ]]; then
-            NAMASOLAT+=("$CONTENT")
-        elif [[ $ENTITY = "description" ]]; then
-            MASASOLAT+=(`printf '%.5s' "$CONTENT"`)
+getOldGoodFetchData(){
+    cat $FILE3 > $FILE1
+    }
+
+simulateFailFetchData() {
+    echo "" > $FILE1
+    }
+
+simulateFetchData(){
+    cat > $FILE1 << EOL
+<rss version="2.0"
+            xmlns:dc="http://purl.org/dc/elements/1.1/"
+            xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+            xmlns:admin="http://webns.net/mvcb/"
+            xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+            xmlns:content="http://purl.org/rss/1.0/modules/content/">
+
+
+        <channel>
+            <title>eSolat JAKIM : Waktu Solat Hari Ini</title>
+            <link>Kuala Lumpur,Putrajaya</link>
+            <description>Kuala Lumpur,Putrajaya</description>
+            <dc:language>ms</dc:language>
+            <dc:creator>www.e-solat.gov.my</dc:creator>
+            <dc:rights>Copyright JAKIM</dc:rights>
+            <dc:date>23-04-2020 23:25:07</dc:date>
+            <admin:generatorAgent rdf:resource="expressionengine" />
+            
+        <item>
+            <title>Imsak</title>
+            <description>05:46:00</description></item>
+        
+            <item>  
+            <title>Subuh</title>
+            <description>05:56:00</description>
+            </item>
+            <item>  
+            <title>Syuruk</title>
+            <description>07:04:00</description>
+            </item>
+            <item>  
+            <title>Zohor</title>
+            <description>13:14:00</description>
+            </item>
+            <item>  
+            <title>Asar</title>
+            <description>16:29:00</description>
+            </item>
+            <item>  
+            <title>Maghrib</title>
+            <description>19:20:00</description>
+            </item>
+            <item>
+            <title>Isyak</title>
+            <description>20:31:00</description>
+            </item>
+            
+            </channel>
+        </rss>
+EOL
+    }
+
+resetData() {
+    ONELINE=""
+    NAMASOLAT=()
+    MASASOLAT=()
+    KAWASAN=""
+    TITLE=""
+    }
+
+extractData() {
+    while read_dom; do
+        if [[ $ENTITY = "title" && $CONTENT = "eSolat JAKIM : Waktu Solat Hari Ini" ]]; then
+            ONELINE+="Waktu Solat Putrajaya Hari Ini"
+            TITLE="${CONTENT}"
+        elif [[ $ENTITY = "description" && $CONTENT = "Kuala Lumpur,Putrajaya" ]]; then
+            KAWASAN="${CONTENT}"
+        elif [[ $ENTITY = "dc:date" ]]; then
+            if $ERROR; then
+                ONELINE+="  (${CONTENT})   <fc=#ffffff,#ff4d4d> OLD </fc>   "
+            else
+                ONELINE+="  (${CONTENT})         "
+            fi
+        elif [[ $ENTITY = "title" || $ENTITY = "description" ]]; then
+            if [[ $ENTITY = "title" ]]; then
+                NAMASOLAT+=("$CONTENT")
+            elif [[ $ENTITY = "description" ]]; then
+                MASASOLAT+=(`printf '%.5s' "$CONTENT"`)
+            fi
         fi
+    done < $FILE1
+    }
+
+# XXX: may need revice
+setBlankDataToArray() {
+    resetData
+    
+    ONELINE="Waktu Solat Putrajaya Hari Ini"
+    ONELINE+="  (00-00-0000 00:00:00)   <fc=#ffffff,#ff4d4d>OLD</fc>   "
+    KAWASAN="Kuala Lumpur,Putrajaya"
+    NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
+    MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
+    }
+
+checkData() {
+    echo "Start checkData()" >> $LOG
+    
+    arrayLength=0
+    arrayLength=${#NAMASOLAT[@]}
+    if (( $arrayLength == 7 )) ; then
+        echo "Array length as we needed : $arrayLength" >> $LOG
+        if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
+            echo "ERROR #001: Nama waktu solat tak sama" >> $LOG
+            ERROR=true
+        else
+            echo "No error detected." >> $LOG
+        fi
+    else
+        echo "ERROR #002: Array length NOT as we expacted : $arrayLength" >> $LOG
+        ERROR=true
     fi
-done < /tmp/wsp-$USER.xml
+    
+    echo "End chechData()" >> $LOG
+    }
 
-# For xmobar color
-#echo -ne "<fc=#ffffff>"
+doBackup() {
+    echo "Do backup this good data for later use if needed" >> $LOG
+    cat $FILE1 > $FILE3
+    }
 
-for i in "${!NAMASOLAT[@]}"; do 
-    #echo -ne "<${NAMASOLAT[$i]} ${MASASOLAT[$i]}> "
-    echo -ne "<<fc=#00ff00>${NAMASOLAT[$i]}</fc> <fc=#ffffff>${MASASOLAT[$i]}</fc>> "
-done
+formatWaktuSolatForXmobar() {
+    for i in "${!NAMASOLAT[@]}"; do 
+        ONELINE+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
+    done
+    }
 
-# For xmobar color
-#echo -ne "</fc>"
+printNewWaktuSolat() {
+    echo "${ONELINE}"
+    #echo -ne "${ONELINE}" > $FILE2
+    }
+
+printOldWaktuSolat() {
+    #echo -ne "TODO: Print old waktu solat.\n"
+    
+    # Get old waktu solat from file
+    #...
+    
+    # Change coloring or add warning mark for 'OLD' data
+    #...sed ...
+    
+    # XXX: Test with fake old waktu solat
+    #echo "<23-04-2020 16:08:50>         <fc=#00ff00>Imsak</fc> <fc=#ffffff>05:46</fc> <fc=#00ff00>Subuh</fc> <fc=#ffffff>05:56</fc> <fc=#00ff00>Syuruk</fc> <fc=#ffffff>07:04</fc> <fc=#00ff00>Zohor</fc> <fc=#ffffff>13:14</fc> <fc=#00ff00>Asar</fc> <fc=#ffffff>16:29</fc> <fc=#00ff00>Maghrib</fc> <fc=#ffffff>19:20</fc> <fc=#00ff00>Isyak</fc> <fc=#ffffff>20:31</fc>"
+    echo "Waktu Solat Putrajaya Hari Ini <23-04-2020 16:08:50>         <fc=#999999>Imsak</fc><fc=#cc6600,#663300>05:46</fc> <fc=#999999>Subuh</fc><fc=#cc6600,#663300>05:56</fc> <fc=#999999>Syuruk</fc><fc=#cc6600,#663300>07:04</fc> <fc=#999999>Zohor</fc><fc=#cc6600,#663300>13:14</fc> <fc=#999999>Asar</fc><fc=#cc6600,#663300>16:29</fc> <fc=#999999>Maghrib</fc><fc=#cc6600,#663300>19:20</fc> <fc=#999999>Isyak</fc><fc=#cc6600,#663300>20:31</fc>"
+    }
+
+printEmptyWaktuSolat() {
+    echo "Waktu Solat Putrajaya Hari Ini <00-00-0000 00:00:00>         <fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>"
+    #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
+    }
+
+fetchData
+#simulateFetchData
+#simulateFailFetchData
+#setBlankDataToArray # may need revice
+
+extractData
+checkData
+echo "ERROR: ${ERROR}" >> $LOG
+
+if $ERROR; then
+    resetData
+    
+    echo "Start getting old backup data" >> $LOG
+    getOldGoodFetchData
+    extractData
+    
+    #echo "Start setup blank data" >> $LOG
+    #setBlankDataToArray
+    
+    formatWaktuSolatForXmobar
+    printNewWaktuSolat
+
+    #printEmptyWaktuSolat  # <-- duplicate
+    #printOldWaktuSolat    # <-- duplicate
+else
+    dobackup
+    formatWaktuSolatForXmobar
+    printNewWaktuSolat
+fi

@@ -16,7 +16,8 @@ Config {
     --, template = " %StdinReader% }{ %eno1% | %memory% | %multicpu% | %kbd% | %date% "
     --, template = " %StdinReader% }{ %RJTT% %battery% %dynnetwork% %memory% %multicpu% %coretemp% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
-    , template = " Waktu Solat Putrajaya  %WaktuSolatPutrajaya%      <fc=#ff9933>%mpipe%</fc> "
+    --, template = " Waktu Solat Putrajaya  %WaktuSolatPutrajaya%      <fc=#ff9933,#333333>%mpipe%</fc> "
+    , template = " %WaktuSolatPutrajaya%      <fc=#ff9933,#663300>%mpipe%</fc> "
 
     -- general behavior
     , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -105,7 +106,8 @@ Config {
 
     -- Is this only read pipe file in /tmp/ ?
     --, Run MarqueePipeReader "~/.xmonad/zikir" (10, 7, "+") "mpipe"
-    , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (32, 3, "  +  ") "mpipe"
+    --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (32, 3, "     +     ") "mpipe"
+    , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (32, 3, "   +   ") "mpipe"
     --, Run MarqueePipeReader "~/.xmonad/zikirpipe" (10, 7, "+") "mpipe"
     --, Run PipeReader "~/.xmonad/zikirpipe" "mpipe"
     --, Run PipeReader "/tmp/zikirpipe" "mpipe"
