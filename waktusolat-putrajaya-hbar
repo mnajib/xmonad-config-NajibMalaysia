@@ -1,5 +1,14 @@
 #!/run/current-system/sw/bin/env bash
 
+#
+#  Get waktu solat formated to be use by xmobar
+#
+#  by Muhammad Najib Bin Ibrahim <mnajib@gmail.com>
+#
+#  Usage:
+#      waktusolat-putrajaya-hbar
+#
+
 FILE1=/tmp/${USER}-wsp1.xml    # source data file
 FILE2=/tmp/${USER}-wsp2.txt    # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp3.xml    # backup good source data file
@@ -21,11 +30,16 @@ read_dom () {
     }
 
 fetchData (){
+    echo "Start fetchData()" >> $LOG
     curl -k --silent "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01" > $FILE1
+    #curl -k --silent --output $FILE1 "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01"
+    echo "End fetchData()" >> $LOG
     }
 
 getOldGoodFetchData(){
+    echo "Start getOldGoodFetchData()" >> $LOG
     cat $FILE3 > $FILE1
+    echo "End getOldGoodFetchData()" >> $LOG
     }
 
 simulateFailFetchData() {
@@ -134,12 +148,14 @@ checkData() {
     arrayLength=0
     arrayLength=${#NAMASOLAT[@]}
     if (( $arrayLength == 7 )) ; then
-        echo "Array length as we needed : $arrayLength" >> $LOG
+        #echo "Array length as we needed : $arrayLength" >> $LOG
         if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
             echo "ERROR #001: Nama waktu solat tak sama" >> $LOG
             ERROR=true
         else
             echo "No error detected." >> $LOG
+            # XXX:
+            ERROR=false
         fi
     else
         echo "ERROR #002: Array length NOT as we expacted : $arrayLength" >> $LOG
@@ -150,8 +166,9 @@ checkData() {
     }
 
 doBackup() {
-    echo "Do backup this good data for later use if needed" >> $LOG
+    echo "Start doBackup()" >> $LOG
     cat $FILE1 > $FILE3
+    echo "End doBackup()" >> $LOG
     }
 
 formatWaktuSolatForXmobar() {
@@ -184,32 +201,63 @@ printEmptyWaktuSolat() {
     #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
     }
 
-fetchData
-#simulateFetchData
-#simulateFailFetchData
-#setBlankDataToArray # may need revice
+#----------------------------------------------------------------------
 
-extractData
-checkData
-echo "ERROR: ${ERROR}" >> $LOG
+timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
+timeInterval2=`echo "60 * 10" | bc` # every 10 minutes; used this if last fetch was failed
+timeInterval=${timeInterval1}
 
-if $ERROR; then
+while true; do
+    ## Note:
+    ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
+    ##echo -en "$waktu\n" # <-- may need '\n"
+
+    echo `date` "Start main loop" >> $LOG
     resetData
-    
-    echo "Start getting old backup data" >> $LOG
-    getOldGoodFetchData
+    fetchData
+    #simulateFetchData
+    #simulateFailFetchData
+    #setBlankDataToArray # may need revice
+
     extractData
+    checkData
+    echo "ERROR: ${ERROR}" >> $LOG
+
+    if $ERROR; then
+        resetData
+        timeInterval=${timeInterval2}
+        
+        echo "Start getting old backup data" >> $LOG
+        getOldGoodFetchData
+        extractData
+        
+        #echo "Start setup blank data" >> $LOG
+        #setBlankDataToArray
+        
+        #printEmptyWaktuSolat  # just for testing
+        #printOldWaktuSolat    # just for testing
+    else
+        timeInterval=${timeInterval1}
+        dobackup
+    fi
     
-    #echo "Start setup blank data" >> $LOG
-    #setBlankDataToArray
-    
+    # TODO: Maybe will get option to print for plain text only, for CLI
+    #
+    # Usage: 
+    #     waktusolat-putrajaya-hbar 
+    #     waktusolat-putrajaya-hbar cli
+    #     waktusolat-putrajaya-hbar xmobar
+    #
     formatWaktuSolatForXmobar
     printNewWaktuSolat
 
-    #printEmptyWaktuSolat  # <-- duplicate
-    #printOldWaktuSolat    # <-- duplicate
-else
-    dobackup
-    formatWaktuSolatForXmobar
-    printNewWaktuSolat
-fi
+    # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
+    # if ERROR ; then
+    # ...
+    echo "Do sleep for ${timeInterval}" >> $LOG
+    sleep ${timeInterval}
+    
+    echo "End main loop" >> $LOG
+done
+
+echo "End waktusolat-putrajaya-hbar" >> $LOG

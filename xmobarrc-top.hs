@@ -102,7 +102,8 @@ Config {
     --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
 
     --, Run CommandReader "~/bin/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
-    , Run CommandReader "~/.xmonad/wsp" "WaktuSolatPutrajaya"
+    --, Run CommandReader "~/.xmonad/wsp" "WaktuSolatPutrajaya"
+    , Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
 
     -- Is this only read pipe file in /tmp/ ?
     --, Run MarqueePipeReader "~/.xmonad/zikir" (10, 7, "+") "mpipe"
