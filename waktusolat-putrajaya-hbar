@@ -21,8 +21,28 @@ KAWASAN=""
 TITLE=""
 ERROR=false
 
-echo "-------------------------------" >> $LOG
-echo "Start waktusolat-putrajaya-hbar" >> $LOG
+#LOGMODE="NORMAL"
+LOGMODE="DEBUG"
+
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+log () {
+    local logmode=$1
+    local logstring=$2
+    #local logfile=$3
+
+    # Will use global var: LOG, LOGMODE
+    if (( "$LOGMODE" == "DEBUG" )); then
+        # For debugging purpose, log all information
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif (( "$LOGMODE" == "NORMAL" || "$logmode" == "INFO" )); then
+        # Normally, just log general information
+        echo "${logmode}: ${logstring}" >> $LOG
+    fi
+}
 
 read_dom () {
     local IFS=\>
@@ -30,20 +50,23 @@ read_dom () {
     }
 
 fetchData (){
-    echo "Start fetchData()" >> $LOG
+    log DEBUG "Start fetchData()"
     curl -k --silent "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01" > $FILE1
     #curl -k --silent --output $FILE1 "https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=WLY01"
-    echo "End fetchData()" >> $LOG
+    log DEBUG "End fetchData()"
     }
 
 getOldGoodFetchData(){
-    echo "Start getOldGoodFetchData()" >> $LOG
+    log DEBUG "Start getOldGoodFetchData()"
+    log DEBUG "Get previous backup fetched source from file ${FILE3}"
     cat $FILE3 > $FILE1
-    echo "End getOldGoodFetchData()" >> $LOG
+    log DEBUG "End getOldGoodFetchData()"
     }
 
 simulateFailFetchData() {
+    log DEBUG "Start simulateFailFetchData()"
     echo "" > $FILE1
+    log DEBUG "End simulateFailFetchData()"
     }
 
 simulateFetchData(){
@@ -65,28 +88,28 @@ simulateFetchData(){
             <dc:rights>Copyright JAKIM</dc:rights>
             <dc:date>23-04-2020 23:25:07</dc:date>
             <admin:generatorAgent rdf:resource="expressionengine" />
-            
+
         <item>
             <title>Imsak</title>
             <description>05:46:00</description></item>
-        
-            <item>  
+
+            <item>
             <title>Subuh</title>
             <description>05:56:00</description>
             </item>
-            <item>  
+            <item>
             <title>Syuruk</title>
             <description>07:04:00</description>
             </item>
-            <item>  
+            <item>
             <title>Zohor</title>
             <description>13:14:00</description>
             </item>
-            <item>  
+            <item>
             <title>Asar</title>
             <description>16:29:00</description>
             </item>
-            <item>  
+            <item>
             <title>Maghrib</title>
             <description>19:20:00</description>
             </item>
@@ -94,21 +117,24 @@ simulateFetchData(){
             <title>Isyak</title>
             <description>20:31:00</description>
             </item>
-            
+
             </channel>
         </rss>
 EOL
     }
 
 resetData() {
+    log DEBUG "Start resetData()"
     ONELINE=""
     NAMASOLAT=()
     MASASOLAT=()
     KAWASAN=""
     TITLE=""
+    log DEBUG "End resetData()"
     }
 
 extractData() {
+    log DEBUG "Start extractData()"
     while read_dom; do
         if [[ $ENTITY = "title" && $CONTENT = "eSolat JAKIM : Waktu Solat Hari Ini" ]]; then
             ONELINE+="Waktu Solat Putrajaya Hari Ini"
@@ -129,52 +155,60 @@ extractData() {
             fi
         fi
     done < $FILE1
+    log DEBUG "End extractData()"
     }
 
 # XXX: may need revice
 setBlankDataToArray() {
+    log DEBUG "Start setBlankDataToArray"
     resetData
-    
+
     ONELINE="Waktu Solat Putrajaya Hari Ini"
     ONELINE+="  (00-00-0000 00:00:00)   <fc=#ffffff,#ff4d4d>OLD</fc>   "
     KAWASAN="Kuala Lumpur,Putrajaya"
     NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
     MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
+    log DEBUG "End setBlankDataToArray"
     }
 
 checkData() {
-    echo "Start checkData()" >> $LOG
-    
+    log DEBUG "Start checkData()"
+
     arrayLength=0
     arrayLength=${#NAMASOLAT[@]}
     if (( $arrayLength == 7 )) ; then
-        #echo "Array length as we needed : $arrayLength" >> $LOG
+        log DEBUG "Array length as we needed : $arrayLength"
         if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
-            echo "ERROR #001: Nama waktu solat tak sama" >> $LOG
+            log DEBUG "ERROR #001: Nama waktu solat tak sama"
             ERROR=true
         else
-            echo "No error detected." >> $LOG
+            log DEBUG "No error detected."
             # XXX:
             ERROR=false
         fi
     else
-        echo "ERROR #002: Array length NOT as we expacted : $arrayLength" >> $LOG
+        log DEBUG "ERROR #002: Array length NOT as we expacted : $arrayLength"
         ERROR=true
     fi
-    
-    echo "End chechData()" >> $LOG
+
+    log DEBUG "End chechData()"
     }
 
 doBackup() {
-    echo "Start doBackup()" >> $LOG
+    log DEBUG "Start doBackup()"
+    log DEBUG "Do backup fetch source file to ${FILE3}"
     cat $FILE1 > $FILE3
-    echo "End doBackup()" >> $LOG
+    log DEBUG "End doBackup()"
     }
 
 formatWaktuSolatForXmobar() {
-    for i in "${!NAMASOLAT[@]}"; do 
+    log DEBUG "Start formatWaktuSolatForXmobar()"
+
+    for i in "${!NAMASOLAT[@]}"; do
         ONELINE+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
     done
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
     }
 
 printNewWaktuSolat() {
@@ -184,13 +218,13 @@ printNewWaktuSolat() {
 
 printOldWaktuSolat() {
     #echo -ne "TODO: Print old waktu solat.\n"
-    
+
     # Get old waktu solat from file
     #...
-    
+
     # Change coloring or add warning mark for 'OLD' data
     #...sed ...
-    
+
     # XXX: Test with fake old waktu solat
     #echo "<23-04-2020 16:08:50>         <fc=#00ff00>Imsak</fc> <fc=#ffffff>05:46</fc> <fc=#00ff00>Subuh</fc> <fc=#ffffff>05:56</fc> <fc=#00ff00>Syuruk</fc> <fc=#ffffff>07:04</fc> <fc=#00ff00>Zohor</fc> <fc=#ffffff>13:14</fc> <fc=#00ff00>Asar</fc> <fc=#ffffff>16:29</fc> <fc=#00ff00>Maghrib</fc> <fc=#ffffff>19:20</fc> <fc=#00ff00>Isyak</fc> <fc=#ffffff>20:31</fc>"
     echo "Waktu Solat Putrajaya Hari Ini <23-04-2020 16:08:50>         <fc=#999999>Imsak</fc><fc=#cc6600,#663300>05:46</fc> <fc=#999999>Subuh</fc><fc=#cc6600,#663300>05:56</fc> <fc=#999999>Syuruk</fc><fc=#cc6600,#663300>07:04</fc> <fc=#999999>Zohor</fc><fc=#cc6600,#663300>13:14</fc> <fc=#999999>Asar</fc><fc=#cc6600,#663300>16:29</fc> <fc=#999999>Maghrib</fc><fc=#cc6600,#663300>19:20</fc> <fc=#999999>Isyak</fc><fc=#cc6600,#663300>20:31</fc>"
@@ -203,17 +237,24 @@ printEmptyWaktuSolat() {
 
 #----------------------------------------------------------------------
 
+log INFO "==============================="
+log INFO "Start waktusolat-putrajaya-hbar"
+
 timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
-timeInterval2=`echo "60 * 10" | bc` # every 10 minutes; used this if last fetch was failed
+#timeInterval2=`echo "60 * 10" | bc` # every 10 minutes; used this if last fetch was failed
+timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
 timeInterval=${timeInterval1}
 
 while true; do
+    log DEBUG "-------------------------------"
+    log DEBUG "`date` : Start main loop"
+
     ## Note:
     ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
     ##echo -en "$waktu\n" # <-- may need '\n"
 
-    echo `date` "Start main loop" >> $LOG
     resetData
+
     fetchData
     #simulateFetchData
     #simulateFailFetchData
@@ -221,30 +262,32 @@ while true; do
 
     extractData
     checkData
-    echo "ERROR: ${ERROR}" >> $LOG
+    log DEBUG "ERROR --> ${ERROR}"
 
     if $ERROR; then
         resetData
+        log DEBUG "Decrease fetch time interval"
         timeInterval=${timeInterval2}
-        
-        echo "Start getting old backup data" >> $LOG
+
+        log INFO "Getting old backup data"
         getOldGoodFetchData
         extractData
-        
+
         #echo "Start setup blank data" >> $LOG
         #setBlankDataToArray
-        
+
         #printEmptyWaktuSolat  # just for testing
         #printOldWaktuSolat    # just for testing
     else
+        log DEBUG "Do backup and reset fetch time interval"
+        doBackup
         timeInterval=${timeInterval1}
-        dobackup
     fi
-    
+
     # TODO: Maybe will get option to print for plain text only, for CLI
     #
-    # Usage: 
-    #     waktusolat-putrajaya-hbar 
+    # Usage:
+    #     waktusolat-putrajaya-hbar
     #     waktusolat-putrajaya-hbar cli
     #     waktusolat-putrajaya-hbar xmobar
     #
@@ -254,10 +297,10 @@ while true; do
     # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then
     # ...
-    echo "Do sleep for ${timeInterval}" >> $LOG
+    log DEBUG "Do sleep for ${timeInterval}"
     sleep ${timeInterval}
-    
-    echo "End main loop" >> $LOG
+
+    log DEBUG "End main loop"
 done
 
-echo "End waktusolat-putrajaya-hbar" >> $LOG
+log DEBUG "End waktusolat-putrajaya-hbar"
