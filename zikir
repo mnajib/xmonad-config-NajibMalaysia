@@ -1,5 +1,14 @@
 #!/run/current-system/sw/bin/env bash
 
+PIPE="/tmp/${USER}-zikirpipe"
+MSG="~/.xmonad/message.txt"
+LOGFILE="/tmp/${USER}-zikirlog"
+
+#LOGMODE="NORMAL"
+LOGMODE="DEBUG"
+
+totalLine=0
+
 #i=`echo "60 * 60 * 6" | bc`
 #i=`echo "60 * 1" | bc`
 #i=2
@@ -7,13 +16,82 @@ i=60
 #i=21600
 #c=1
 
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+log () {
+    local logmode=$1
+    local logstring=$2
+    #local logfile=$3
+
+    # Will use global var: LOG, LOGMODE
+    if (( "$LOGMODE" == "DEBUG" )); then
+        # For debugging purpose, log all information
+        echo "${logmode}: ${logstring}" >> $LOGFILE
+    elif (( "$LOGMODE" == "NORMAL" || "$logmode" == "INFO" )); then
+        # Normally, just log general information
+        echo "${logmode}: ${logstring}" >> $LOGFILE
+    fi
+}
+
+createFifo(){
+    mkfifo $PIPE
+    mkfifo $LOGFILE
+}
+
+# TODO: Read for other text file
 declare -a a=(
     "SUBHANALLAH" "ALHAMDULILLAH" "LAILAHAILLALLAH" "ALLAHUAKBAR"
     "BISMILLAHILLAZI, LA YADHURRUMASMIHI SYAI'UN FIL ARDHI WALA FISSAMA', WAHUAS SAMI'UL 'ALIM"
-    "Selamat menyambut Ramadhan. Minta maaf salah dan silap Selamat berpuasa."
-    "Jangan lupa bayar zakat."
     "ALLAHUMMA SOLLI 'ALA SAIYIDINA MUHAMMAD, WA 'ALA ALI SAIYIDINA MUHAMMAD"
     )
+
+getTotalLine() {
+    totalLine=`wc -l $MSG`
+}
+
+# Usage: getRandomLineNumber <max>
+getRandomNumWithMax(){
+    local max=$1
+
+    # XXX: test
+    echo $1
+}
+
+# Usage: getTextInLineNumber <filename> <linenum>
+getTextInLineNumber(){
+    local filename=$1
+    local linenum=$2
+
+    #head -4 filename | tail -1
+    #sed 4!d filename
+    #string=`head -${x} ${MSG} | tail -1`
+    local string=`sed ${linenum}!d ${MSG}`
+
+    echo $string
+}
+
+# Usage: pushStringToPipe <string> <pipefile>
+# Example: pushStringToPipe "string" "/tmp/thepipefile"
+pushStringToPipe() {
+    local string=$1
+    local pipe=$2
+
+    echo $1 > $2
+}
+
+#------------------
+#function fun1(){
+#  echo 34
+#}
+#
+#function fun2(){
+#  local res=$(fun1)
+#  echo $res
+#}
+#------------------
 
 while true; do
     for j in "${a[@]}"; do
@@ -23,8 +101,8 @@ while true; do
         #echo -en "${c}\n"
         #c=$((c + 1))
 
-        #echo -en "${j}\n"
-        echo -en "${j}\n" > /tmp/$USER-zikirpipe
+        log DEBUG "${j}\n"
+        echo -en "${j}\n" > $PIPE
 
         sleep ${i}
     done
