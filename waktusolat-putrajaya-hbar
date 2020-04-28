@@ -143,9 +143,9 @@ extractData() {
             KAWASAN="${CONTENT}"
         elif [[ $ENTITY = "dc:date" ]]; then
             if $ERROR; then
-                ONELINE+="  (${CONTENT})   <fc=#ffffff,#ff4d4d> OLD </fc>   "
+                ONELINE+="  (${CONTENT})  <fc=#ffffff,#ff4d4d> OLD </fc>  "
             else
-                ONELINE+="  (${CONTENT})         "
+                ONELINE+="  (${CONTENT})       "
             fi
         elif [[ $ENTITY = "title" || $ENTITY = "description" ]]; then
             if [[ $ENTITY = "title" ]]; then
