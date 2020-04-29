@@ -4,8 +4,8 @@ PIPE="/tmp/${USER}-zikirpipe"
 MSG="~/.xmonad/message.txt"
 LOGFILE="/tmp/${USER}-zikirlog"
 
-#LOGMODE="NORMAL"
-LOGMODE="DEBUG"
+LOGMODE="NORMAL"
+#LOGMODE="DEBUG"
 
 totalLine=0
 
@@ -27,10 +27,10 @@ log () {
     #local logfile=$3
 
     # Will use global var: LOG, LOGMODE
-    if (( "$LOGMODE" == "DEBUG" )); then
+    if [ "$LOGMODE" = "DEBUG" ]; then
         # For debugging purpose, log all information
         echo "${logmode}: ${logstring}" >> $LOGFILE
-    elif (( "$LOGMODE" == "NORMAL" || "$logmode" == "INFO" )); then
+    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
         # Normally, just log general information
         echo "${logmode}: ${logstring}" >> $LOGFILE
     fi

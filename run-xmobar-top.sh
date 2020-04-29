@@ -6,6 +6,7 @@ cat /dev/null > /tmp/najib-wsp.log
 
 mkfifo /tmp/najib-zikirpipe
 
+ps auxwww | egrep -i "zikir|xmobar|solat|trayer"
 killall -9 trayer
 killall -9 zikir
 killall -9 pasystray
