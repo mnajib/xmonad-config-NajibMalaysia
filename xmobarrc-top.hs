@@ -103,7 +103,8 @@ Config {
 
     --, Run CommandReader "~/bin/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
     --, Run CommandReader "~/.xmonad/wsp" "WaktuSolatPutrajaya"
-    , Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
+    --, Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar" "WaktuSolatPutrajaya"
+    , Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v2" "WaktuSolatPutrajaya"
 
     -- Is this only read pipe file in /tmp/ ?
     --, Run MarqueePipeReader "~/.xmonad/zikir" (10, 7, "+") "mpipe"
