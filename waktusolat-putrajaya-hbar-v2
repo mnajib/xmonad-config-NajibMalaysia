@@ -1,0 +1,343 @@
+#!/run/current-system/sw/bin/env bash
+
+#
+#  Get waktu solat formated to be use by xmobar
+#
+#  by Muhammad Najib Bin Ibrahim <mnajib@gmail.com>
+#
+#  Usage:
+#      waktusolat-putrajaya-hbar
+#
+
+FILE1=/tmp/${USER}-wsp1    # source data file
+FILE2=/tmp/${USER}-wsp2    # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp1.bak    # backup good source data file
+LOG=/tmp/${USER}-wsp.log       # for logging
+
+ONELINE=""
+NAMASOLAT=()
+MASASOLAT=()
+KAWASAN=""
+ZON=""
+BEARING=""
+TITLE=""
+ERROR=false
+HDATE=""
+MDATE=""
+MDATETIME=""
+DAY=""
+STATUS=""
+
+#LOGMODE="NORMAL"
+LOGMODE="DEBUG"
+
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+log () {
+    local logmode=$1
+    local logstring=$2
+    #local logfile=$3
+
+    # Will use global var: LOG, LOGMODE
+    if (( "$LOGMODE" == "DEBUG" )); then
+        # For debugging purpose, log all information
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif (( "$LOGMODE" == "NORMAL" || "$logmode" == "INFO" )); then
+        # Normally, just log general information
+        echo "${logmode}: ${logstring}" >> $LOG
+    fi
+}
+
+read_dom () {
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+    }
+
+fetchData (){
+    log DEBUG "Start fetchData()"
+    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}].*//g" | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    log DEBUG "End fetchData()"
+    }
+
+getOldGoodFetchData(){
+    log DEBUG "Start getOldGoodFetchData()"
+    log DEBUG "Get previous backup fetched source from file ${FILE3}"
+    cat $FILE3 > $FILE1
+    log DEBUG "End getOldGoodFetchData()"
+    }
+
+simulateFailFetchData() {
+    log DEBUG "Start simulateFailFetchData()"
+    echo "" > $FILE1
+    log DEBUG "End simulateFailFetchData()"
+    }
+
+simulateFetchData(){
+	cat > $FILE1 << EOL
+hijri,1441-09-07
+date,30-Apr-2020
+day,Thursday
+imsak,05:44:00
+fajr,05:54:00
+syuruk,07:03:00
+dhuhr,13:13:00
+asr,16:31:00
+maghrib,19:20:00
+isha,20:31:00
+EOL
+	}
+
+resetData() {
+    log DEBUG "Start resetData()"
+    
+    ONELINE=""
+    NAMASOLAT=()
+    MASASOLAT=()
+    KAWASAN=""
+    TITLE=""
+    
+    HDATE=""
+	MDATE=""
+	DAY=""
+    
+    log DEBUG "End resetData()"
+    }
+
+extractData() {
+	log DEBUG "Start extractData()"
+		
+	BAKIFS="$IFS"
+	IFS=","
+	while read NAME VALUE; do
+		case "${NAME}" in
+			'status')
+				STATUS="$VALUE"
+				;;
+			'serverTime')
+				MDATETIME="$VALUE"
+				;;
+			'zone')
+				ZON="$VALUE"
+				;;
+			'bearing')
+				BEARING="$VALUE"
+				;;
+			'hijri')
+				HDATE="$VALUE"
+				;;
+			"date")
+				MDATE="$VALUE"
+				;;
+			"day")
+				DAY="$VALUE"
+				;;
+			"imsak")
+				NAMASOLAT+=("Imsak")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"fajr")
+				NAMASOLAT+=("Subuh")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"syuruk")
+				NAMASOLAT+=("Syuruk")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"dhuhr")
+				NAMASOLAT+=("Zohor")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"asr")
+				NAMASOLAT+=("Asar")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"maghrib")
+				NAMASOLAT+=("Maghrib")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			"isha")
+				NAMASOLAT+=("Isyak")
+				MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
+				;;
+			*)
+				echo "" > /dev/null
+				#echo "eh"
+				;;
+		esac
+
+	done < "$FILE1"
+	IFS="$BAKIFS"
+	
+	log DEBUG "End extractData()"
+	}
+
+# XXX: may need revice
+setBlankDataToArray() {
+    log DEBUG "Start setBlankDataToArray"
+    resetData
+
+    ONELINE="Waktu Solat Putrajaya Hari Ini"
+    ONELINE+="  (00-00-0000 00:00:00)   <fc=#ffffff,#ff4d4d>OLD</fc>   "
+    KAWASAN="Kuala Lumpur,Putrajaya"
+    NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
+    MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
+    log DEBUG "End setBlankDataToArray"
+    
+    HDATE="0000-00-00"
+	MDATE="0000-xxx-00"
+	DAY="xxxxxxxxx"
+    }
+
+# NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
+# NAMASOLAT[0]="Imsak"
+# NAMASOLAT[1]="Subuh"
+# MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
+checkData() {
+    log DEBUG "Start checkData()"
+
+    arrayLength=0
+    arrayLength=${#NAMASOLAT[@]}
+    if (( $arrayLength == 7 )) ; then
+        log DEBUG "Array length as we needed : $arrayLength"
+        if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
+            log DEBUG "ERROR #001: Nama waktu solat tak sama"
+            ERROR=true
+        else
+            log DEBUG "No error detected."
+            # XXX:
+            ERROR=false
+        fi
+    else
+        log DEBUG "ERROR #002: Array length NOT as we expacted : $arrayLength"
+        ERROR=true
+    fi
+
+    log DEBUG "End chechData()"
+    }
+
+doBackup() {
+    log DEBUG "Start doBackup()"
+    log DEBUG "Do backup fetch source file to ${FILE3}"
+    cat $FILE1 > $FILE3
+    log DEBUG "End doBackup()"
+    }
+
+formatWaktuSolatForXmobar() {
+    log DEBUG "Start formatWaktuSolatForXmobar()"
+    
+	local out=""
+	
+	out+="Putrajaya"
+	out+=" <fc=#ffffff>(H)${HDATE}</fc>"
+	#out+=" (M)<fc=#ffffff>${MDATE}</fc>"
+	out+=" <fc=#ffffff>(M)${MDATETIME}</fc>"
+	#out+=" Hari: $DAY"
+	out+=" "
+	
+	for i in "${!NAMASOLAT[@]}"; do
+        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
+    done
+	
+	#echo -en "${out}\n"
+	ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
+printNewWaktuSolat() {
+    echo "${ONELINE}"
+    #echo -ne "${ONELINE}" > $FILE2
+    }
+
+printOldWaktuSolat() {
+    #echo -ne "TODO: Print old waktu solat.\n"
+
+    # Get old waktu solat from file
+    #...
+
+    # Change coloring or add warning mark for 'OLD' data
+    #...sed ...
+
+    # XXX: Test with fake old waktu solat
+    #echo "<23-04-2020 16:08:50>         <fc=#00ff00>Imsak</fc> <fc=#ffffff>05:46</fc> <fc=#00ff00>Subuh</fc> <fc=#ffffff>05:56</fc> <fc=#00ff00>Syuruk</fc> <fc=#ffffff>07:04</fc> <fc=#00ff00>Zohor</fc> <fc=#ffffff>13:14</fc> <fc=#00ff00>Asar</fc> <fc=#ffffff>16:29</fc> <fc=#00ff00>Maghrib</fc> <fc=#ffffff>19:20</fc> <fc=#00ff00>Isyak</fc> <fc=#ffffff>20:31</fc>"
+    echo "Waktu Solat Putrajaya Hari Ini <23-04-2020 16:08:50>         <fc=#999999>Imsak</fc><fc=#cc6600,#663300>05:46</fc> <fc=#999999>Subuh</fc><fc=#cc6600,#663300>05:56</fc> <fc=#999999>Syuruk</fc><fc=#cc6600,#663300>07:04</fc> <fc=#999999>Zohor</fc><fc=#cc6600,#663300>13:14</fc> <fc=#999999>Asar</fc><fc=#cc6600,#663300>16:29</fc> <fc=#999999>Maghrib</fc><fc=#cc6600,#663300>19:20</fc> <fc=#999999>Isyak</fc><fc=#cc6600,#663300>20:31</fc>"
+    }
+
+printEmptyWaktuSolat() {
+    echo "Waktu Solat Putrajaya Hari Ini <00-00-0000 00:00:00>         <fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>"
+    #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
+    }
+
+#----------------------------------------------------------------------
+
+log INFO "==============================="
+log INFO "Start waktusolat-putrajaya-hbar"
+
+timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
+#timeInterval2=`echo "60 * 10" | bc` # every 10 minutes; used this if last fetch was failed
+timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
+timeInterval=${timeInterval1}
+
+while true; do
+    log DEBUG "-------------------------------"
+    log DEBUG "`date` : Start main loop"
+
+    ## Note:
+    ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
+    ##echo -en "$waktu\n" # <-- may need '\n"
+
+    resetData
+
+    fetchData
+    #simulateFetchData
+    #simulateFailFetchData
+    #setBlankDataToArray # may need revice
+
+    extractData
+    checkData
+    log DEBUG "ERROR --> ${ERROR}"
+
+    if $ERROR; then
+        resetData
+        log DEBUG "Decrease fetch time interval"
+        timeInterval=${timeInterval2}
+
+        log INFO "Getting old backup data"
+        getOldGoodFetchData
+        extractData
+
+        #echo "Start setup blank data" >> $LOG
+        #setBlankDataToArray
+
+        #printEmptyWaktuSolat  # just for testing
+        #printOldWaktuSolat    # just for testing
+    else
+        log DEBUG "Do backup and reset fetch time interval"
+        doBackup
+        timeInterval=${timeInterval1}
+    fi
+
+    # TODO: Maybe will get option to print for plain text only, for CLI
+    #
+    # Usage:
+    #     waktusolat-putrajaya-hbar
+    #     waktusolat-putrajaya-hbar cli
+    #     waktusolat-putrajaya-hbar xmobar
+    #
+    formatWaktuSolatForXmobar
+    printNewWaktuSolat
+
+    # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
+    # if ERROR ; then
+    # ...
+    log DEBUG "Do sleep for ${timeInterval}"
+    sleep ${timeInterval}
+
+    log DEBUG "End main loop"
+done
+
+log DEBUG "End waktusolat-putrajaya-hbar"
