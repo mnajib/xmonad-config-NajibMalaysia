@@ -230,11 +230,24 @@ formatWaktuSolatForXmobar() {
     log DEBUG "Start formatWaktuSolatForXmobar()"
 
     local out=""
+    local mDate=""
+    local mTime=""
+    local cGreen="00ff00"
+    local cBlue="00ffff"
+    local cYellow="ffff00"
+    local cPink="ff66ff"
 
-    out+="Putrajaya"
-    out+=" <fc=#ffffff>(H)${HDATE}</fc>"
+    out+="<fc=#${cPink}>Putrajaya</fc>"
+    out+=" (H)<fc=#${cGreen}>${HDATE}</fc>"
     #out+=" (M)<fc=#ffffff>${MDATE}</fc>"
-    out+=" <fc=#ffffff>(M)${MDATETIME}</fc>"
+    
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+    
+    #out+=" <fc=#00ff00>(M)${MDATETIME}</fc>"
+    out+=" (M)<fc=#${cBlue}>${mDate}</fc>"
+    out+=" <fc=#${cYellow}>${mTime}</fc>"
+    
     #out+=" Hari: $DAY"
     out+=" "
 

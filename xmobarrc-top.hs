@@ -3,7 +3,8 @@ Config {
     -- appearance
     -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
     bgColor =      "#181715"
-    , fgColor =    "#646464"
+    --, fgColor =    "#646464"
+    , fgColor =    "#f3f3f1"
     , position =     Top
     --, textOffset =   13
     , border =       TopB
