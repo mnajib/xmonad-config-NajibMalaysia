@@ -43,8 +43,8 @@ myKeys =
     , ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/Screenshots/'" )
     , ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-full.png' -b -e 'mv $f ~/Pictures/Screenshots/'" )
     --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode random" )
-    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
-    , ((mod4Mask .|. shiftMask, xK_l), spawn "xscreensaver-command --lock" )
+    , ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
+    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xscreensaver-command --lock" )
     ]
 
 -- use xmobar as status bar, overriding the default config file path
