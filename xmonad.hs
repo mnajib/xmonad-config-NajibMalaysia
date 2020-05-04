@@ -24,7 +24,8 @@ import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
-import XMonad.Layout.Spiral
+-- import XMonad.Layout.Spiral
+import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
 import XMonad.Layout.ThreeColumns
 import Graphics.X11.ExtraTypes.XF86
@@ -232,6 +233,7 @@ myLayout = avoidStruts $
     Tall 1 (3/100) (1/2) |||
     Mirror (Tall 1 (3/100) (1/2)) |||
     ThreeColMid 1 (3/100) (1/2) |||
+    Grid |||
     tabbed shrinkText tabConfig |||
     Full |||
     -- spiral (6/7)) |||
@@ -339,9 +341,9 @@ main = do
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
 
-        --layoutHook         = myLayout,
+        layoutHook         = myLayout,
         --layoutHook = avoidStruts $ layoutHook defaultConfig,
-        layoutHook         = smartBorders $ myLayout,
+        --layoutHook         = smartBorders $ myLayout,
 
         -- handleEventHook    = myEventHook,
         handleEventHook    = docksEventHook,
