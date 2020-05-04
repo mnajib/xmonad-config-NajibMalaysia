@@ -236,6 +236,7 @@ formatWaktuSolatForXmobar() {
     local cBlue="00ffff"
     local cYellow="ffff00"
     local cPink="ff66ff"
+    local cWhite="ffffff"
 
     out+="<fc=#${cPink}>Putrajaya</fc>"
     out+=" (H)<fc=#${cGreen}>${HDATE}</fc>"
@@ -258,7 +259,8 @@ formatWaktuSolatForXmobar() {
     fi
 
     for i in "${!NAMASOLAT[@]}"; do
-        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
+        # out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
+        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
     done
 
     #echo -en "${out}\n"
