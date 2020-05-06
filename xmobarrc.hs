@@ -15,7 +15,8 @@ Config {
     --, template = " %StdinReader% }{ %eno1% * %wlp3s0b1% | %kbd% || %date% "
     --, template = " %StdinReader% }{ %eno1% | %memory% | %multicpu% | %kbd% | %date% "
     --, template = " %StdinReader% }{ %RJTT% %battery% %dynnetwork% %memory% %multicpu% %coretemp% %kbd% %date% "
-    , template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
+    --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
+    , template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
 
     -- general behavior
     , lowerOnStart =     True    -- send to bottom of window stack on start
@@ -94,6 +95,8 @@ Config {
                                        -- charged status
                                        , "-i"   , "<fc=#006000>Charged</fc>"
                              ] 50
+
+        , Run CommandReader "~/.xmonad/bin/keyboard-LED-status.sh" "keylock"
 
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
     ]
