@@ -9,10 +9,10 @@
 #      waktusolat-putrajaya-hbar
 #
 
-FILE1=/tmp/${USER}-wsp1    # source data file
-FILE2=/tmp/${USER}-wsp2    # one-line result waktu solat formated for xmobar
-FILE3=/tmp/${USER}-wsp1.bak    # backup good source data file
-LOG=/tmp/${USER}-wsp.log       # for logging
+FILE1=/tmp/${USER}-wsp1         # source data file
+FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+LOG=/tmp/${USER}-wsp.log        # for logging
 
 ONELINE=""
 NAMASOLAT=()
@@ -58,7 +58,6 @@ read_dom () {
 
 fetchData (){
     log DEBUG "Start fetchData()"
-    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}].*//g" | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
     curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
     log DEBUG "End fetchData()"
     }
@@ -238,28 +237,22 @@ formatWaktuSolatForXmobar() {
     local cPink="ff66ff"
     local cWhite="ffffff"
 
-    out+="<fc=#${cPink}>Putrajaya</fc>"
-    out+=" (H)<fc=#${cGreen}>${HDATE}</fc>"
-    #out+=" (M)<fc=#ffffff>${MDATE}</fc>"
-    
+    out+="<fc=#${cPink}>Putrajaya</fc>"                 # Area/Zone
+    out+=" (H)<fc=#${cGreen}>${HDATE}</fc>"             # Hijrah date
     mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
     mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
-    
-    #out+=" <fc=#00ff00>(M)${MDATETIME}</fc>"
-    out+=" (M)<fc=#${cBlue}>${mDate}</fc>"
-    out+=" <fc=#${cYellow}>${mTime}</fc>"
-    
-    #out+=" Hari: $DAY"
+    out+=" (M)<fc=#${cBlue}>${mDate}</fc>"              # Masihi date
+    out+=" <fc=#${cYellow}>${mTime}</fc>"               # Time
+    #out+=" Hari: $DAY"                                 # Day
     out+=" "
 
     if $ERROR; then
-        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
     else
         out+="      "
     fi
 
     for i in "${!NAMASOLAT[@]}"; do
-        # out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ff9933,#663300> ${MASASOLAT[$i]} </fc> "
         out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
     done
 
@@ -299,7 +292,6 @@ log INFO "==============================="
 log INFO "Start waktusolat-putrajaya-hbar"
 
 timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
-#timeInterval2=`echo "60 * 10" | bc` # every 10 minutes; used this if last fetch was failed
 timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
 timeInterval=${timeInterval1}
 
@@ -316,7 +308,7 @@ while true; do
     fetchData
     #simulateFetchData
     #simulateFailFetchData
-    #setBlankDataToArray # may need revice
+    #setBlankDataToArray # may need revise
 
     extractData
     checkData

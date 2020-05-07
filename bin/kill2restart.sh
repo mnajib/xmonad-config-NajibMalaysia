@@ -1,20 +1,24 @@
 #!/run/current-system/sw/bin/env bash
 
-ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED"
+#ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
+~/.xmonad/bin/list-running-process.sh
 echo "--------------------"
 
-# xmobar
-killall xmobar
+killall -9 xmobar
+killall -9 trayer
+killall -9 zikir
+killall -9 pasystray
+killall -9 volumeicon
 
-# waktusolat-putrayaja-hbar-v2
-#pids=`pgrep -a bash | grep 'bash /home/najib/.xmonad/waktusolat-putrajaya-hbar-v2' | awk '{print $1}'`
-#pids=`pgrep -a bash | grep 'bash /home/najib/.xmonad/waktusolat-putrajaya-hbar-v2' | awk '{print $1}'| tr '\n' ' ' | sed 's/$/\n/'`
-#while $pids; do
-#kill $pids
-#done
-pgrep -a bash | grep 'bash /home/najib/.xmonad/waktusolat-putrajaya-hbar-v2' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-pgrep -a bash | grep 'bash /home/najib/.xmonad/bin/keyboard-LED-status.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a xmobar | grep 'xmobar /home' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep 'waktusolat-putrajaya-hbar-v2' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep '.xmonad/bin/keyboard-LED-status.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep '/zikir' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a pasystray | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a volumeicon | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
-sleep 3
+sleep 2
 echo "--------------------"
-ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED"
+#ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
+~/.xmonad/bin/list-running-process.sh
