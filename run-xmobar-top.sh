@@ -10,6 +10,7 @@ ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED"
 killall -9 trayer
 killall -9 zikir
 killall -9 pasystray
+killall -9 volumeicon
 
 #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x191970 --height 12 &
 #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x181715 --height 12 --alpha 0 &
@@ -17,6 +18,7 @@ killall -9 pasystray
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0x555555 --height 14 --alpha 0 &
 
 ~/.xmonad/zikir &
+volumeicon &
 pasystray &
 ~/.fehbg &
 xmobar ~/.xmonad/xmobarrc-top.hs &
