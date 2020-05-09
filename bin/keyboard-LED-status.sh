@@ -17,3 +17,6 @@ while true; do
     echo "$s"
     sleep 1
 done
+
+# XXX: TODO?
+#xxkb
