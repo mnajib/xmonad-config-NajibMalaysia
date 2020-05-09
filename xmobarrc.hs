@@ -1,10 +1,10 @@
 Config {
     -- appearance
-    -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
-    -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     bgColor =      "#181715"
     , fgColor =      "#646464"
     , position =     Bottom
+    -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
+    -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     --, textOffset =   13
     , border =       TopB
     , borderColor =  "#181715"
@@ -12,10 +12,6 @@ Config {
     -- layout
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
-    --, template = " %StdinReader% }{ %eno1% * %wlp3s0b1% | %kbd% || %date% "
-    --, template = " %StdinReader% }{ %eno1% | %memory% | %multicpu% | %kbd% | %date% "
-    --, template = " %StdinReader% }{ %RJTT% %battery% %dynnetwork% %memory% %multicpu% %coretemp% %kbd% %date% "
-    --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
     , template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
 
     -- general behavior
@@ -70,14 +66,15 @@ Config {
                              ] 50
 
         -- time and date indicator
-        --, Run Date "<fc=#ABABAB>%A %F %T</fc>" "date" 10
         , Run Date "<fc=#ffff00>%A</fc> <fc=#00ff00>%F</fc> <fc=#00ffff>%T</fc>" "date" 10
 
         -- keyboard layout indicator
         , Run Kbd [
-            ("us(dvorak)" , "<fc=#181715,#58C5F1>DV</fc>")
-            , ("us"                , "<fc=#181715,#58C5F1>US</fc>")
-            ]
+                    ("us(dvorak)", "<fc=#181715,#58C5F1> DV</fc>"),
+                    ("us", "<fc=#181715,#58C5F1> US</fc>"),
+                    ("ara", "<fc=#181715,#58C5F1>ARA</fc>"),
+                    ("my", "<fc=#181715,#58C5F1> MY</fc>")
+                  ]
 
         -- battery monitor
         , Run Battery        [ "--template" , "Batt:<acstatus>"
