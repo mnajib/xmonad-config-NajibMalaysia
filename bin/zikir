@@ -16,6 +16,11 @@ i=60
 #i=21600
 #c=1
 
+# XXX:
+dateTime(){
+    echo `date "+%F %T"`
+}
+
 #
 # Usage:
 #     log INFO "Length error."
@@ -29,10 +34,10 @@ log () {
     # Will use global var: LOG, LOGMODE
     if [ "$LOGMODE" = "DEBUG" ]; then
         # For debugging purpose, log all information
-        echo "${logmode}: ${logstring}" >> $LOGFILE
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
     elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
         # Normally, just log general information
-        echo "${logmode}: ${logstring}" >> $LOGFILE
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
     fi
 }
 
@@ -43,14 +48,14 @@ createFifo(){
 
 # TODO: Read for other text file
 declare -a a=(
-    "SUBHANALLAH --- MAHA SUCI ALLAH"
-    "ALHAMDULILLAH --- SEGALA PUJI BAGI ALLAH"
-    "LAILAHAILLALLAH --- TIADA TUHAN SELAIN ALLAH"
-    "ALLAHUAKBAR --- ALLAH MAHA BESAR"
-    "BISMILLAHILLAZI, LA YADHURRUMASMIHI SYAI'UN FIL ARDHI WALA FISSAMA', WAHUAS SAMI'UL 'ALIM. --- IN THE NAME OF ALLAH, THROUGH WHOSE NAME, NOTHING IN THE EARTH AND HEAVEN CAN HARM (ME). AND HE IS THE ALL-HEARING, ALL-KNOWING."
+    "SUBHANALLAH  ==  MAHA SUCI ALLAH"
+    "ALHAMDULILLAH  ==  SEGALA PUJI BAGI ALLAH"
+    "LAILAHAILLALLAH  ==  TIADA TUHAN SELAIN ALLAH"
+    "ALLAHUAKBAR  ==  ALLAH MAHA BESAR"
+    "BISMILLAHILLAZI, LA YADHURRUMASMIHI SYAI'UN FIL ARDHI WALA FISSAMA', WAHUAS SAMI'UL 'ALIM.  ==  IN THE NAME OF ALLAH, THROUGH WHOSE NAME, NOTHING IN THE EARTH AND HEAVEN CAN HARM (ME). AND HE IS THE ALL-HEARING, ALL-KNOWING."
     "ALLAHUMMA SOLLI 'ALA SAIYIDINA MUHAMMAD, WA 'ALA ALI SAIYIDINA MUHAMMAD"
-    "SUBHANALLAHIWABIHAMDIH, SUBHANALLAHIL'AZIM. --- MAHA SUCI ALLAH DENGAN SEGALA PUJI BAGI-NYA, MAHA SUCI ALLAH YANG MAHA AGUNG."
-    "ALLAHUMMA A'INNI 'ALA ziKRIKA, WA SHUKRIKA, WA HUSNI 'IBAADATIK. ---  YA ALLAH, BANTULAH AKU DALAM BERZIKIR KEPADA-MU (MENGINGATI-MU), MENSYUKURI NIKMAT-MU, DAN MELAKUKAN IBADAH YANG BAIK KEPADA-MU."
+    "SUBHANALLAHIWABIHAMDIH, SUBHANALLAHIL'AZIM.  ==  MAHA SUCI ALLAH DENGAN SEGALA PUJI BAGI-NYA, MAHA SUCI ALLAH YANG MAHA AGUNG."
+    "ALLAHUMMA A'INNI 'ALA ziKRIKA, WA SHUKRIKA, WA HUSNI 'IBAADATIK.  ==  YA ALLAH, BANTULAH AKU DALAM BERZIKIR KEPADA-MU (MENGINGATI-MU), MENSYUKURI NIKMAT-MU, DAN MELAKUKAN IBADAH YANG BAIK KEPADA-MU."
     )
 
 getTotalLine() {
@@ -98,6 +103,17 @@ pushStringToPipe() {
 #}
 #------------------
 
+sleepLengthInSeconds() {
+    local s="$1" # string
+    log DEBUG "String: ${s}"
+    local size=${#s}
+    log DEBUG "String size: ${size}"
+
+    #i=$(( ($size / 5) * 60 ))
+    i=$(( ($size / 10) * 60 ))
+    #echo "$(( ($size / 5) * 60 ))"
+}
+
 while true; do
     for j in "${a[@]}"; do
         #waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
@@ -106,9 +122,13 @@ while true; do
         #echo -en "${c}\n"
         #c=$((c + 1))
 
-        log DEBUG "${j}\n"
+        log DEBUG "${j}"
         echo -en "${j}\n" > $PIPE
 
+        sleepLengthInSeconds "$j"
+        sleepLengthInMinutes=$(( ${i} /60 ))
+        #sleepLengthInMinutes=$(( sleepLengthInSeconds "$j" /60 ))
+        log DEBUG "Sleep time: ${sleepLengthInMinutes} minutes."
         sleep ${i}
     done
 done
