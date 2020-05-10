@@ -22,8 +22,9 @@ mkfifo /tmp/najib-zikirpipe
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
 ~/.xmonad/zikir &
 volumeicon &
-pasystray &
+#pasystray &
 ~/.fehbg &
+nm-applet &
 #xmobar ~/.xmonad/xmobarrc-top.hs &
 
 # Restart xmonad

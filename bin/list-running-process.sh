@@ -29,3 +29,6 @@ pgrep -a pasystray
 
 printT "volumeicon"
 pgrep -a volumeicon
+
+printT "nm-applet"
+pgrep -a nm-applet
