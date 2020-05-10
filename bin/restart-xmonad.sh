@@ -20,7 +20,7 @@ mkfifo /tmp/najib-zikirpipe
 
 # Starting
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
-~/.xmonad/zikir &
+~/.xmonad/bin/zikir &
 volumeicon &
 #pasystray &
 ~/.fehbg &
