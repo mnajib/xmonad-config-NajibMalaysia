@@ -1,13 +1,12 @@
 #!/run/current-system/sw/bin/env bash
 
 # Recompile xmonad
-#xmonad --recompile
+xmonad --recompile
 
 # Reset the log file
 cat /dev/null > /tmp/najib-wsp.log
 
 # If not already created
-rm -f /tmp/najib-zikirpipe
 mkfifo /tmp/najib-zikirpipe
 
 # Killing
