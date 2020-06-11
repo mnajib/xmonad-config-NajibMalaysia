@@ -4,11 +4,11 @@
 #xmonad --recompile
 
 # Reset the log file
-cat /dev/null > /tmp/najib-wsp.log
+cat /dev/null > /tmp/${USER}-wsp.log
 
 # If not already created
-rm -f /tmp/najib-zikirpipe
-mkfifo /tmp/najib-zikirpipe
+rm -f /tmp/${USER}-zikirpipe
+mkfifo /tmp/${USER}-zikirpipe
 
 # Killing
 #ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
@@ -24,7 +24,8 @@ trayer --edge top --align right --SetDockType true --SetPartialStrut true --expa
 ~/.xmonad/bin/zikir &
 volumeicon &
 #pasystray &
-~/.fehbg &
+#~/.fehbg &
+fbsetroot -solid black &
 nm-applet &
 #xmobar ~/.xmonad/xmobarrc-top.hs &
 
