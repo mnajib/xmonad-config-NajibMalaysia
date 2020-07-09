@@ -14,11 +14,15 @@ import System.IO
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.Fullscreen
-import XMonad.Layout.NoBorders
+-- import XMonad.Layout.NoBorders
 -- import XMonad.Layout.Spiral
 import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
-import XMonad.Layout.ThreeColumns
+-- import XMonad.Layout.ThreeColumns
+import XMonad.Layout.TwoPane
+import XMonad.Layout.Combo
+import XMonad.Layout.WindowNavigation
+
 import Graphics.X11.ExtraTypes.XF86
 
 myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
@@ -78,8 +82,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch dmenu
     --, ((modm, xK_p), spawn "dmenu_run")
     --, ((modm, xK_p), spawn "rofi -show run")
-    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font "hack 10" -show combi")
-    , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi")
+    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
     -- launch gmrun
@@ -145,6 +149,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
+    , ((modm .|. controlMask .|. shiftMask, xK_Right), sendMessage $ Move R)
+    , ((modm .|. controlMask .|. shiftMask, xK_Left ), sendMessage $ Move L)
+    , ((modm .|. controlMask .|. shiftMask, xK_Up   ), sendMessage $ Move U)
+    , ((modm .|. controlMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
+
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
     ]
@@ -208,17 +217,18 @@ tabConfig = defaultTheme {
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 myLayout =
+    avoidStruts (tabbed shrinkText tabConfig) |||
     avoidStruts ( Tall 1 (3/100) (1/2) ) |||
     -- Tall 1 (3/100) (1/2) |||
     avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) ) |||
     -- Mirror (Tall 1 (3/100) (1/2)) |||
-    avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
-    avoidStruts Grid |||
-    avoidStruts ( tabbed shrinkText tabConfig ) |||
-    avoidStruts Full |||
+    -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
+    -- avoidStruts Grid |||
+    avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) ))--- |||
+    -- avoidStruts Full |||
     -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
-    noBorders (fullscreenFull Full)
+    -- noBorders (fullscreenFull Full)
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -249,7 +259,7 @@ myLayout =
 --
 myManageHook = composeAll [
     className =? "MPlayer"        --> doFloat
-    --, className =? "Gimp"           --> doFloat
+    , className =? "Gimp"           --> doFloat
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop"       --> doIgnore
     ]
