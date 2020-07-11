@@ -221,11 +221,11 @@ myLayout =
     renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
     renamed [Replace "Tall"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
-    renamed [Replace "TallMirror"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
+    renamed [Replace "Wide"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
     -- Mirror (Tall 1 (3/100) (1/2)) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     -- avoidStruts Grid |||
-    renamed [Replace "Combine"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) )--- |||
+    renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) )--- |||
     -- avoidStruts Full |||
     -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
