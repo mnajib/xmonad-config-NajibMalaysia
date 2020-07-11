@@ -22,11 +22,12 @@ import XMonad.Layout.Tabbed
 import XMonad.Layout.TwoPane
 import XMonad.Layout.Combo
 import XMonad.Layout.WindowNavigation
+import XMonad.Layout.Renamed
 
 import Graphics.X11.ExtraTypes.XF86
 
 myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
--- myTerminal	= "termonad"
+-- myTerminal   = "termonad"
 -- myTerminal = "alacritty"
 
 myXmobarrc = "~/.xmonad/xmobarrc.hs"
@@ -217,14 +218,14 @@ tabConfig = defaultTheme {
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 myLayout =
-    avoidStruts (tabbed shrinkText tabConfig) |||
-    avoidStruts ( Tall 1 (3/100) (1/2) ) |||
+    renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
+    renamed [Replace "Tall"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
-    avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) ) |||
+    renamed [Replace "TallMirror"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
     -- Mirror (Tall 1 (3/100) (1/2)) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     -- avoidStruts Grid |||
-    avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) ))--- |||
+    renamed [Replace "Combine"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) )--- |||
     -- avoidStruts Full |||
     -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
