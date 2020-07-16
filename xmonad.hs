@@ -14,7 +14,7 @@ import System.IO
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 import XMonad.Layout.Fullscreen
--- import XMonad.Layout.NoBorders
+import XMonad.Layout.NoBorders
 -- import XMonad.Layout.Spiral
 import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
@@ -219,17 +219,17 @@ tabConfig = defaultTheme {
 -- which denotes layout choice.
 myLayout =
     renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
-    renamed [Replace "Tall"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
+    renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
-    renamed [Replace "Wide"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
+    renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
     -- Mirror (Tall 1 (3/100) (1/2)) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
-    -- avoidStruts Grid |||
-    renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) )--- |||
+    renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
+    renamed [Replace "Grid"] (avoidStruts Grid) |||
     -- avoidStruts Full |||
     -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
-    -- noBorders (fullscreenFull Full)
+    renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
