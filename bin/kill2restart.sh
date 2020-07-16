@@ -18,6 +18,7 @@ pgrep -a bash | grep '/zikir' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' |
 pgrep -a pasystray | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a volumeicon | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a nm-applet | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a qtox | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
 sleep 2
 echo "--------------------"
