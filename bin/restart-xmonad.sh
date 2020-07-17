@@ -28,6 +28,7 @@ volumeicon &
 fbsetroot -solid black &
 nm-applet &
 #xmobar ~/.xmonad/xmobarrc-top.hs &
+qtox &
 
 # Restart xmonad
 xmonad --restart
