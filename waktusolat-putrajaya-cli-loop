@@ -1,0 +1,106 @@
+#!/run/current-system/sw/bin/env bash
+
+#
+#  Get waktu solat formated to be use by xmobar
+#
+#  by Muhammad Najib Bin Ibrahim <mnajib@gmail.com>
+#
+#  Usage:
+#      waktusolat-putrajaya-hbar
+#
+
+# source FILE
+#. waktusolatlib.sh
+
+FILE1=/tmp/${USER}-wsp1         # source data file
+FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+LOG=/tmp/${USER}-wsp.log        # for logging
+
+ONELINE=""
+NAMASOLAT=()
+MASASOLAT=()
+KAWASAN=""
+ZON=""
+BEARING=""
+TITLE=""
+ERROR=false
+HDATE=""
+MDATE=""
+MDATETIME=""
+DAY=""
+STATUS=""
+HMONTHFULLNAME=""
+MMONTHFULLNAME=""
+
+LOGMODE="NORMAL"
+#LOGMODE="DEBUG"
+
+#----------------------------------------------------------------------
+
+log INFO "==============================="
+log INFO "Start waktusolat-putrajaya-hbar"
+
+timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
+timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
+timeInterval=${timeInterval1}
+
+while true; do
+    log DEBUG "-------------------------------"
+    log DEBUG "`date` : Start main loop"
+
+    ## Note:
+    ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
+    ##echo -en "$waktu\n" # <-- may need '\n"
+
+    resetData
+
+    fetchData
+    #simulateFetchData
+    #simulateFailFetchData
+    #setBlankDataToArray # may need revise
+
+    extractData
+    checkData
+    log DEBUG "ERROR --> ${ERROR}"
+
+    if $ERROR; then
+        resetData
+        log DEBUG "Decrease fetch time interval"
+        timeInterval=${timeInterval2}
+
+        log INFO "Getting old backup data"
+        getOldGoodFetchData
+        extractData
+
+        #echo "Start setup blank data" >> $LOG
+        #setBlankDataToArray
+
+        #printEmptyWaktuSolat  # just for testing
+        #printOldWaktuSolat    # just for testing
+    else
+        log DEBUG "Do backup and reset fetch time interval"
+        doBackup
+        timeInterval=${timeInterval1}
+    fi
+
+    # TODO: Maybe will get option to print for plain text only, for CLI
+    #
+    # Usage:
+    #     waktusolat-putrajaya-hbar
+    #     waktusolat-putrajaya-hbar cli
+    #     waktusolat-putrajaya-hbar xmobar
+    #
+    printWaktuSolatForCliType1
+    #printWaktuSolatForCliType2
+
+    # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
+    # if ERROR ; then
+    # ...
+    log DEBUG "Do sleep for ${timeInterval}"
+    sleep ${timeInterval}
+
+    log DEBUG "End main loop"
+done
+
+log DEBUG "End waktusolat-putrajaya-hbar"

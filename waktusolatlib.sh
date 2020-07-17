@@ -30,6 +30,8 @@ MDATE=""
 MDATETIME=""
 DAY=""
 STATUS=""
+HMONTHNUMBER=""
+MMONTHNUMBER=""
 HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
@@ -112,6 +114,7 @@ resetData() {
     }
 
 # Usage:
+#    namaBulanH $nomborBulan
 #    namaBulanH "02"
 namaBulanH(){
     noBulanH="$1"
@@ -152,6 +155,52 @@ namaBulanH(){
             ;;
         "12")
             echo "Zulhijjah"
+            ;;
+        *)
+            echo "eh"
+            ;;
+    esac
+}
+
+namaBulanM(){
+    noBulanM="$1"
+
+    case "$noBulanM" in
+        "01")
+            echo "January"
+            ;;
+        "02")
+            echo "February"
+            ;;
+        "03")
+            echo "March"
+            ;;
+        "04")
+            echo "April"
+            ;;
+        "05")
+            echo "May"
+            ;;
+        "06")
+            echo "June"
+            ;;
+        "07")
+            echo "July"
+            ;;
+        "08")
+            echo "August"
+            ;;
+        "09")
+            echo "September"
+            ;;
+        "10")
+            echo "October"
+            ;;
+        "11")
+            echo "November"
+            ;;
+        "12")
+            echo "December"
             ;;
         *)
             echo "eh"
@@ -278,7 +327,118 @@ doBackup() {
     log DEBUG "End doBackup()"
     }
 
+printWaktuSolatForCliType1() {
+    #log DEBUG "Start qqfy665..."
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    local cPre="\e["
+    local cPost="\e[0m"
+
+    local cGreen="32m"
+    local cLightGreen="1;32m"
+    local cBlue="34m"
+    local cLightBlue="1;34m"
+    local cPurple="35m"
+    local cLightPurple="1;35m"
+    local cCyan="36m"
+    local cLightCyan="1;36m"
+    local cYellow="33m"
+    local cLightYellow="1;33m"
+    #local cPink="ff66ff"
+    local cWhite="1;37m"
+    local cLightGray="37m"
+    local cBlack="30m"
+
+    out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+
+    out+=" $DAY"                                 # Day
+    
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+    out+=" ${cPre}${cGreen}(${HMONTHFULLNAME})${HDATE}${cPost}"             # Hijrah date
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+    
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    #MMONTHFULLNAME="January" # XXX
+    out+=" ${cPre}${cCyan}(${MMONTHFULLNAME})${mDate}${cPost}"              # Masihi date
+
+    out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
+    
+    out+=" "
+
+    if $ERROR; then
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
+    else
+        out+="      "
+    fi
+
+    out+="\n"
+    for i in "${!NAMASOLAT[@]}"; do
+        out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    done
+
+    echo -en "${out}\n"
+    #ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
 formatWaktuSolatForXmobar() {
+    log DEBUG "Start formatWaktuSolatForXmobar()"
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    #local cPre="<fc=#"
+    #local cPost="\e[0m"
+
+    local cGreen="00ff00"
+    local cBlue="00ffff"
+    local cYellow="ffff00"
+    local cPink="ff66ff"
+    local cWhite="ffffff"
+
+    out+="<fc=#${cPink}>Putrajaya</fc>"                 # Area/Zone
+    out+=" $DAY"                                 # Day
+
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+    out+=" <fc=#${cGreen}>(${HMONTHFULLNAME})${HDATE}</fc>"             # Hijrah date
+    
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+    
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    out+=" <fc=#${cBlue}>(${MMONTHFULLNAME})${mDate}</fc>"              # Masihi date
+
+    out+=" <fc=#${cYellow}>${mTime}</fc>"               # Time
+    out+=" "
+
+    if $ERROR; then
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
+    else
+        out+="      "
+    fi
+
+    for i in "${!NAMASOLAT[@]}"; do
+        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+    done
+
+    #echo -en "${out}\n"
+    ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
+formatWaktuSolatForXmobarOld() {
     log DEBUG "Start formatWaktuSolatForXmobar()"
 
     local out=""
@@ -338,72 +498,3 @@ printEmptyWaktuSolat() {
     echo "Waktu Solat Putrajaya Hari Ini <00-00-0000 00:00:00>         <fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>"
     #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
     }
-
-#----------------------------------------------------------------------
-
-log INFO "==============================="
-log INFO "Start waktusolat-putrajaya-hbar"
-
-timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
-timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
-timeInterval=${timeInterval1}
-
-while true; do
-    log DEBUG "-------------------------------"
-    log DEBUG "`date` : Start main loop"
-
-    ## Note:
-    ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
-    ##echo -en "$waktu\n" # <-- may need '\n"
-
-    resetData
-
-    fetchData
-    #simulateFetchData
-    #simulateFailFetchData
-    #setBlankDataToArray # may need revise
-
-    extractData
-    checkData
-    log DEBUG "ERROR --> ${ERROR}"
-
-    if $ERROR; then
-        resetData
-        log DEBUG "Decrease fetch time interval"
-        timeInterval=${timeInterval2}
-
-        log INFO "Getting old backup data"
-        getOldGoodFetchData
-        extractData
-
-        #echo "Start setup blank data" >> $LOG
-        #setBlankDataToArray
-
-        #printEmptyWaktuSolat  # just for testing
-        #printOldWaktuSolat    # just for testing
-    else
-        log DEBUG "Do backup and reset fetch time interval"
-        doBackup
-        timeInterval=${timeInterval1}
-    fi
-
-    # TODO: Maybe will get option to print for plain text only, for CLI
-    #
-    # Usage:
-    #     waktusolat-putrajaya-hbar
-    #     waktusolat-putrajaya-hbar cli
-    #     waktusolat-putrajaya-hbar xmobar
-    #
-    formatWaktuSolatForXmobar
-    printNewWaktuSolat
-
-    # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
-    # if ERROR ; then
-    # ...
-    log DEBUG "Do sleep for ${timeInterval}"
-    sleep ${timeInterval}
-
-    log DEBUG "End main loop"
-done
-
-log DEBUG "End waktusolat-putrajaya-hbar"
