@@ -20,9 +20,10 @@ import XMonad.Layout.Grid
 import XMonad.Layout.Tabbed
 -- import XMonad.Layout.ThreeColumns
 import XMonad.Layout.TwoPane
-import XMonad.Layout.Combo
+import XMonad.Layout.Combo -- combineTwo
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.Renamed
+import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -219,12 +220,14 @@ tabConfig = defaultTheme {
 -- which denotes layout choice.
 myLayout =
     renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
+    --renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
+    renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) *|* (tabbed shrinkText tabConfig)    ))) |||
+    renamed [Replace "TabTab-HorSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ))) |||
     renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
     renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
     -- Mirror (Tall 1 (3/100) (1/2)) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
-    renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "Grid"] (avoidStruts Grid) |||
     -- avoidStruts Full |||
     -- avoidStruts ( spiral (6/7)) ) |||
