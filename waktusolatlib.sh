@@ -327,6 +327,68 @@ doBackup() {
     log DEBUG "End doBackup()"
     }
 
+printWaktuSolatForHtml() {
+    #log DEBUG "Start qqfy665..."
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    local cPre="\e["
+    local cPost="\e[0m"
+
+    local cGreen="32m"
+    local cLightGreen="1;32m"
+    local cBlue="34m"
+    local cLightBlue="1;34m"
+    local cPurple="35m"
+    local cLightPurple="1;35m"
+    local cCyan="36m"
+    local cLightCyan="1;36m"
+    local cYellow="33m"
+    local cLightYellow="1;33m"
+    #local cPink="ff66ff"
+    local cWhite="1;37m"
+    local cLightGray="37m"
+    local cBlack="30m"
+
+    out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+
+    out+=" $DAY"                                 # Day
+
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+    out+=" ${cPre}${cGreen}(${HMONTHFULLNAME})${HDATE}${cPost}"             # Hijrah date
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    #MMONTHFULLNAME="January" # XXX
+    out+=" ${cPre}${cCyan}(${MMONTHFULLNAME})${mDate}${cPost}"              # Masihi date
+
+    out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
+
+    out+=" "
+
+    if $ERROR; then
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
+    else
+        out+="      "
+    fi
+
+    out+="\n"
+    for i in "${!NAMASOLAT[@]}"; do
+        out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    done
+
+    echo -en "${out}\n"
+    #ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
 printWaktuSolatForCliType1() {
     #log DEBUG "Start qqfy665..."
 
@@ -355,21 +417,21 @@ printWaktuSolatForCliType1() {
     out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
 
     out+=" $DAY"                                 # Day
-    
+
     HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
     HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
     out+=" ${cPre}${cGreen}(${HMONTHFULLNAME})${HDATE}${cPost}"             # Hijrah date
 
     mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
     mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
-    
+
     MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
     MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
     #MMONTHFULLNAME="January" # XXX
     out+=" ${cPre}${cCyan}(${MMONTHFULLNAME})${mDate}${cPost}"              # Masihi date
 
     out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
-    
+
     out+=" "
 
     if $ERROR; then
@@ -411,10 +473,10 @@ formatWaktuSolatForXmobar() {
     HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
     HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
     out+=" <fc=#${cGreen}>(${HMONTHFULLNAME})${HDATE}</fc>"             # Hijrah date
-    
+
     mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
     mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
-    
+
     MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
     MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
     out+=" <fc=#${cBlue}>(${MMONTHFULLNAME})${mDate}</fc>"              # Masihi date
