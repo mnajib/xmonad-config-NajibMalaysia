@@ -28,9 +28,10 @@ import XMonad.Layout.Column
 
 import Graphics.X11.ExtraTypes.XF86
 
-myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
+--myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
 -- myTerminal   = "termonad"
 -- myTerminal = "alacritty"
+myTerminal = "termite"
 
 myXmobarrc = "~/.xmonad/xmobarrc.hs"
 
