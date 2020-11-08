@@ -222,11 +222,11 @@ tabConfig = defaultTheme {
 -- which denotes layout choice.
 myLayout =
     renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
-    --renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
+    -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) *|* (tabbed shrinkText tabConfig)    ))) |||
     renamed [Replace "TabTab-HorSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ))) |||
-    renamed [Replace "Row"] ( avoidStruts( Mirror(Column 1) ) ) |||
-    renamed [Replace "Column"] (avoidStruts(Column 1)) |||
+    renamed [Replace "Multi-Columns"] ( avoidStruts( Mirror(Column 1) ) ) |||
+    renamed [Replace "Multi-Rows"] (avoidStruts(Column 1)) |||
     renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
     renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
@@ -235,8 +235,8 @@ myLayout =
     renamed [Replace "Grid"] (avoidStruts Grid) |||
     -- avoidStruts Full |||
     renamed [Replace "Max"] (avoidStruts Full) |||
-    -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
+    -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
   where
      -- default tiling algorithm partitions the screen into two panes
