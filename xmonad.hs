@@ -234,6 +234,7 @@ myLayout =
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts Grid) |||
     -- avoidStruts Full |||
+    renamed [Replace "Max"] (avoidStruts Full) |||
     -- avoidStruts ( spiral (6/7)) ) |||
     -- avoidStruts noBorders (fullscreenFull Full) |||
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
