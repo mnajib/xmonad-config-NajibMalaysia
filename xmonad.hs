@@ -225,8 +225,8 @@ myLayout =
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) *|* (tabbed shrinkText tabConfig)    ))) |||
     renamed [Replace "TabTab-HorSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ))) |||
-    renamed [Replace "Multi-Columns"] ( avoidStruts( Mirror(Column 1) ) ) |||
-    renamed [Replace "Multi-Rows"] (avoidStruts(Column 1)) |||
+    renamed [Replace "Columns"] ( avoidStruts( Mirror(Column 1) ) ) |||
+    renamed [Replace "Rows"] (avoidStruts(Column 1)) |||
     renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
     -- Tall 1 (3/100) (1/2) |||
     renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
