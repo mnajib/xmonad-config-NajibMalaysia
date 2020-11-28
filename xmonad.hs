@@ -204,9 +204,10 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- Layouts:
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
-tabConfig = defaultTheme {
-    activeBorderColor = "#7C7C7C",
-    activeTextColor = "#CEFFAC",
+-- tabConfig = defaultTheme {
+tabConfig = def {
+    activeBorderColor = "#FF0000",-- "#7C7C7C",
+    activeTextColor = "#00FF00",--"#CEFFAC",
     activeColor = "#000000",
     inactiveBorderColor = "#7C7C7C",
     inactiveTextColor = "#EEEEEE",
@@ -223,19 +224,15 @@ tabConfig = defaultTheme {
 myLayout =
     renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
-    renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) *|* (tabbed shrinkText tabConfig)    ))) |||
+    renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)    ))) |||
     renamed [Replace "TabTab-HorSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ))) |||
     renamed [Replace "Columns"] ( avoidStruts( Mirror(Column 1) ) ) |||
     renamed [Replace "Rows"] (avoidStruts(Column 1)) |||
     renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
-    -- Tall 1 (3/100) (1/2) |||
     renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
-    -- Mirror (Tall 1 (3/100) (1/2)) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts Grid) |||
-    -- avoidStruts Full |||
     renamed [Replace "Max"] (avoidStruts Full) |||
-    -- avoidStruts noBorders (fullscreenFull Full) |||
     -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
   where
