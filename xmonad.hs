@@ -85,14 +85,19 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch dmenu
     --, ((modm, xK_p), spawn "dmenu_run")
-    --, ((modm, xK_p), spawn "rofi -show run")
-    , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi")
-    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
-    --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
     -- launch gmrun
-    , ((modm .|. shiftMask, xK_p ), spawn "gmrun")
+    --, ((modm .|. shiftMask, xK_p ), spawn "gmrun")
     -- , ((modm .|. shiftMask, xK_p ), spawn "")
+
+    -- launch rofi
+    -- rofi -dump-config > ~/.config/rofi/config.rasi
+    --, ((modm, xK_p), spawn "rofi -show run")
+    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi")
+    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
+    , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -147,6 +152,21 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- See also the statusBar function from Hooks.DynamicLog.
     --, ((modm              , xK_b     ), sendMessage ToggleStruts)
 
+    -- Lock screen
+    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
+    , ((modm .|. shiftMask, xK_l), spawn "xlock -mode forest")
+
+    -- Screenshot
+    --, ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/Screenshots/'" ) -- Focused window
+    --, ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-full.png' -b -e 'mv $f ~/Pictures/Screenshots/'" ) -- Entire screen
+    --, ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-window.png' -b -u" ) -- Focused window
+    --, ((mod4Mask .|. shiftMask, xK_x), spawn "scrot '%Y-%m-%d-%H%M%S-fullscreen.png' -b" ) -- Entire screen
+    , ((0, xK_Print), spawn "scrot")
+    , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -u -b")
+    , ((shiftMask, xK_Print), spawn "sleep 0.2; scrot -u -b")
+    , ((modm, xK_Print), spawn "sleep 0.2; scrot -u -b")
+    , ((modm .|. shiftMask, xK_Print), spawn "sleep 0.2; scrot -u -b")
+
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
@@ -159,7 +179,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. controlMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
-    , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -"))
+    --, ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -")) -- haskellPackages.hzenity
+    , ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | gxmessage -font monospace -file -"))
+    --, ((modm .|. shiftMask, xK_slash ), spawn ("gxmessage" ++ help ))
     ]
     ++
 
@@ -394,11 +416,11 @@ main = do
             }
 
         -- } `additionalKeys` myKeys `removeKeys` [(mod4Mask, xK_q)]
-        } `additionalKeys` [
-            ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest"),
-            ((controlMask, xK_Print), spawn "sleep 0.2; scrot"),
-            ((0, xK_Print), spawn "scrot")
-            ]
+        }-- `additionalKeys` [
+        --    ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest"),
+        --    ((controlMask, xK_Print), spawn "sleep 0.2; scrot"),
+        --    ((0, xK_Print), spawn "scrot")
+        --    ]
 -- -}
 
 -- A structure containing your configuration settings, overriding
@@ -436,52 +458,72 @@ defaults = defaultConfig {
 -}
 
 -- | Finally, a copy of the default bindings in simple textual tabular format.
+mmm :: String
+mmm = "Super"
 help :: String
-help = unlines ["The default modifier key is 'alt'. Default keybindings:",
+help = unlines [
     "",
-    "-- launching and killing programs",
-    "mod-Shift-Enter  Launch xterminal",
-    "mod-p            Launch dmenu",
-    "mod-Shift-p      Launch gmrun",
-    "mod-Shift-c      Close/kill the focused window",
-    "mod-Space        Rotate through the available layout algorithms",
-    "mod-Shift-Space  Reset the layouts on the current workSpace to default",
-    "mod-n            Resize/refresh viewed windows to the correct size",
+    "Launching and killing programs",
+    "------------------------------",
     "",
-    "-- move focus up or down the window stack",
-    "mod-Tab        Move focus to the next window",
-    "mod-Shift-Tab  Move focus to the previous window",
-    "mod-j          Move focus to the next window",
-    "mod-k          Move focus to the previous window",
-    "mod-m          Move focus to the master window",
+    mmm ++ "-Shift-Enter        Launch xterminal",
+    mmm ++ "-p                  Launch dmenu",
+    mmm ++ "-Shift-p            Launch gmrun",
+    mmm ++ "-Shift-c            Close/kill the focused window",
+    mmm ++ "-Space              Rotate through the available layout algorithms",
+    mmm ++ "-Shift-Space        Reset the layouts on the current workSpace to default",
+    mmm ++ "-n                  Resize/refresh viewed windows to the correct size",
     "",
-    "-- modifying the window order",
-    "mod-Return   Swap the focused window and the master window",
-    "mod-Shift-j  Swap the focused window with the next window",
-    "mod-Shift-k  Swap the focused window with the previous window",
+    "Move focus up or down the window stack",
+    "--------------------------------------",
     "",
-    "-- resizing the master/slave ratio",
-    "mod-h  Shrink the master area",
-    "mod-l  Expand the master area",
+    mmm ++ "-Tab                Move focus to the next window",
+    mmm ++ "-Shift-Tab          Move focus to the previous window",
+    mmm ++ "-j                  Move focus to the next window",
+    mmm ++ "-k                  Move focus to the previous window",
+    mmm ++ "-m                  Move focus to the master window",
     "",
-    "-- floating layer support",
-    "mod-t  Push window back into tiling; unfloat and re-tile it",
+    "Modifying the window order",
+    "--------------------------",
     "",
-    "-- increase or decrease number of windows in the master area",
-    "mod-comma  (mod-,)   Increment the number of windows in the master area",
-    "mod-period (mod-.)   Deincrement the number of windows in the master area",
+    mmm ++ "-Return             Swap the focused window and the master window",
+    mmm ++ "-Shift-j            Swap the focused window with the next window",
+    mmm ++ "-Shift-k            Swap the focused window with the previous window",
     "",
-    "-- quit, or restart",
-    "mod-Shift-q  Quit xmonad",
-    "mod-q        Restart xmonad",
-    "mod-[1..9]   Switch to workSpace N",
+    "Resizing the master/slave ratio",
+    "-------------------------------",
     "",
-    "-- Workspaces & screens",
-    "mod-Shift-[1..9]   Move client to workspace N",
-    "mod-{w,e,r}        Switch to physical/Xinerama screens 1, 2, or 3",
-    "mod-Shift-{w,e,r}  Move client to screen 1, 2, or 3",
+    mmm ++ "-h                  Shrink the master area",
+    mmm ++ "-l                  Expand the master area",
     "",
-    "-- Mouse bindings: default actions bound to mouse events",
-    "mod-button1  Set the window to floating mode and move by dragging",
-    "mod-button2  Raise the window to the top of the stack",
-    "mod-button3  Set the window to floating mode and resize by dragging"]
+    "Floating layer support",
+    "----------------------",
+    "",
+    mmm ++ "-t                  Push window back into tiling; unfloat and re-tile it",
+    "",
+    "Increase or decrease number of windows in the master area",
+    "---------------------------------------------------------",
+    "",
+    mmm ++ "-comma  (" ++ mmm ++ "-,)     Increment the number of windows in the master area",
+    mmm ++ "-period (" ++ mmm ++ "-.)     Deincrement the number of windows in the master area",
+    "",
+    "Quit, or restart",
+    "----------------",
+    "",
+    mmm ++ "-Shift-q            Quit xmonad",
+    mmm ++ "-q                  Restart xmonad",
+    mmm ++ "-[1..9]             Switch to workSpace N",
+    "",
+    "Workspaces & screens",
+    "--------------------",
+    "",
+    mmm ++ "-Shift-[1..9]       Move client to workspace N",
+    mmm ++ "-{w,e,r}            Switch to physical/Xinerama screens 1, 2, or 3",
+    mmm ++ "-Shift-{w,e,r}      Move client to screen 1, 2, or 3",
+    "",
+    "Mouse bindings: default actions bound to mouse events",
+    "-----------------------------------------------------",
+    "",
+    mmm ++ "-button1            Set the window to floating mode and move by dragging",
+    mmm ++ "-button2            Raise the window to the top of the stack",
+    mmm ++ "-button3            Set the window to floating mode and resize by dragging"]
