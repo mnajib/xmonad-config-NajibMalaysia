@@ -13,6 +13,7 @@ Config {
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
     , template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
     -- general behavior
@@ -74,7 +75,8 @@ Config {
                     ("us(dvorak)", "<fc=#181715,#58C5F1> DV</fc>"),
                     ("us", "<fc=#181715,#58C5F1> US</fc>"),
                     ("ara", "<fc=#181715,#58C5F1>ARA</fc>"),
-                    ("my", "<fc=#181715,#58C5F1> MY</fc>")
+                    ("my", "<fc=#181715,#58C5F1> MY</fc>"),
+                    ("msa", "<fc=#181715,#58C5F1>MSA</fc>")
                   ]
 
         -- battery monitor
@@ -94,6 +96,7 @@ Config {
                                        , "-i"   , "<fc=#006000>Charged</fc>"
                              ] 50
 
+        -- keyboard LED status
         , Run CommandReader "~/.xmonad/bin/keyboard-LED-status.sh" "keylock"
 
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
