@@ -19,6 +19,8 @@ pgrep -a pasystray | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a volumeicon | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a nm-applet | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 #pgrep -a qtox | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep 'netconnstatus.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep 'NetConnStatus' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
 sleep 2
 echo "--------------------"

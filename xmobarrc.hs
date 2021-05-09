@@ -12,7 +12,8 @@ Config {
     -- layout
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
-    , template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
@@ -98,6 +99,9 @@ Config {
 
         -- keyboard LED status
         , Run CommandReader "~/.xmonad/bin/keyboard-LED-status.sh" "keylock"
+
+        -- Network connection status
+        , Run CommandReader "~/.xmonad/netconnstatus.sh" "NetConnStatus"
 
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
     ]
