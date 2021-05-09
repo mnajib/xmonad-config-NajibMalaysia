@@ -8,8 +8,11 @@ ping_interface() {
     # Max value of losted packages in %
     MAX_PACKETS_LOST=80
     PACKETS_COUNT=10
+
     #PACKETS_LOST=$(ping -c $PACKETS_COUNT -I $1 $2 |grep % | awk '{print $7}')
-    PACKETS_LOST=$(ping -c $PACKETS_COUNT -I $1 $2 | grep '% packet loss' | awk '{print $6}')
+    #PACKETS_LOST=$(ping -c $PACKETS_COUNT -I $1 $2 | grep '% packet loss' | awk '{print $6}')
+    PACKETS_LOST=$(ping -c $PACKETS_COUNT $2 | grep '% packet loss' | awk '{print $6}')
+
     if ! [ -n "$PACKETS_LOST" ] || [ "$PACKETS_LOST" == "100%" ];
     then
         # 100% failed
