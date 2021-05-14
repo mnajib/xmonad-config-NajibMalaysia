@@ -13,7 +13,8 @@ ping_interface() {
     #PACKETS_LOST=$(ping -c $PACKETS_COUNT -I $1 $2 | grep '% packet loss' | awk '{print $6}')
     PACKETS_LOST=$(ping -c $PACKETS_COUNT $2 | grep '% packet loss' | awk '{print $6}')
 
-    if ! [ -n "$PACKETS_LOST" ] || [ "$PACKETS_LOST" == "100%" ];
+    #if ! [ -n "$PACKETS_LOST" ] || [ "$PACKETS_LOST" == "100%" ];
+    if [ "$PACKETS_LOST" == "100%" ];
     then
         # 100% failed
         #echo "XXX1: 100% FAILED. Return 1."
@@ -26,16 +27,16 @@ ping_interface() {
             #echo "XXX2: Ping is OK. Return 0."
             echo "0"
             return 0
-        else
+        else # If not 100% and not 0%, ...
             # Real value of losted packets between 0 and 100%
             REAL_PACKETS_LOST=$(echo $PACKETS_LOST | sed 's/.$//')
-            if [[ ${REAL_PACKETS_LOST} -gt ${MAX_PACKETS_LOST} ]];
+            if [[ ${REAL_PACKETS_LOST} -gt ${MAX_PACKETS_LOST} ]]; # ...but too much packets loss
             then
                 #echo "Network connection status: Failed. Lost more then limit."
                 #echo "XXX3: Network Connection is FAILED with ${PACKETS_LOST} packets lost. Return 1."
                 echo "1"
                 return 1
-            else
+            else # ...but with just a little packets loss
                 #echo "Network connection status: OK."
                 #echo "XXX4: Network connection is still OK with ${PACKETS_LOST} packets lost. Return 0."
                 echo "0"

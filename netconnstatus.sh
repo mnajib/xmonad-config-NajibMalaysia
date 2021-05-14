@@ -14,8 +14,10 @@ while true; do
 	#date
 	s=""
 	pingLAN=$(ping_interface enp7s0 192.168.123.1)
+	sleep 1
 	#pingLAN2=$(ping_interface enp7s0 192.168.123.77)
 	pingWAN=$(ping_interface enp7s0 1.1.1.1)
+	sleep 1
 
 	# Check LAN
 	if [ $pingLAN -eq 0 ]; then
