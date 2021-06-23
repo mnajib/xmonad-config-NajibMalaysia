@@ -26,7 +26,7 @@ volumeicon &
 #pasystray &
 #~/.fehbg &
 fbsetroot -solid black &
-#nm-applet &
+#nm-applet & # Not really needed, just use nmtui.
 #xmobar ~/.xmonad/xmobarrc-top.hs &
 #qtox &
 
