@@ -26,9 +26,10 @@ volumeicon &
 #pasystray &
 #~/.fehbg &
 fbsetroot -solid black &
-nm-applet &
+#nm-applet &
 #xmobar ~/.xmonad/xmobarrc-top.hs &
 #qtox &
+#xscreensaver -no-splash &
 
 # Restart xmonad
 xmonad --restart
