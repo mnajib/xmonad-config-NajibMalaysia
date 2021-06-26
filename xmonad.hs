@@ -25,6 +25,7 @@ import XMonad.Layout.WindowNavigation
 import XMonad.Layout.Renamed
 import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 import XMonad.Layout.Column
+import XMonad.Layout.Maximize
 
 import Graphics.X11.ExtraTypes.XF86
 
@@ -98,6 +99,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
     , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
+
+    -- Toggle maximize focused window using "Super"+"\" key combo.
+    , ((modm,            xK_backslash), withFocused (sendMessage . maximizeRestore))
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -244,16 +248,38 @@ tabConfig = def {
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 myLayout =
-    renamed [Replace "Tab"] ( avoidStruts (tabbed shrinkText tabConfig) ) |||
+    renamed [Replace "Tab"] ( avoidStruts (
+              tabbed shrinkText tabConfig
+            ) ) |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
-    renamed [Replace "TabTab-VerSplit"] ( avoidStruts ( windowNavigation (    (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)    ))) |||
-    renamed [Replace "TabTab-HorSplit"] ( avoidStruts ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ))) |||
-    renamed [Replace "Columns"] ( avoidStruts( Mirror(Column 1) ) ) |||
-    renamed [Replace "Rows"] (avoidStruts(Column 1)) |||
-    renamed [Replace "TallMaster"] ( avoidStruts ( Tall 1 (3/100) (1/2) )) |||
-    renamed [Replace "WideMaster"] (avoidStruts ( Mirror (Tall 1 (3/100) (1/2)) )) |||
+    renamed [Replace "TabTab-VerSplit"] ( avoidStruts (
+           maximizeWithPadding 10 (
+             windowNavigation (
+               (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)
+             )
+           )
+         )) |||
+    renamed [Replace "TabTab-HorSplit"] ( avoidStruts (
+            maximizeWithPadding 10 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
+            )) |||
+    renamed [Replace "Columns"] ( avoidStruts(
+            maximizeWithPadding 10 (Mirror(Column 1) )
+            ) ) |||
+    renamed [Replace "Rows"] (avoidStruts(
+            maximizeWithPadding 10 (Column 1)
+            )) |||
+    renamed [Replace "TallMaster"] ( avoidStruts (
+            maximizeWithPadding 10 ( Tall 1 (3/100) (1/2) )
+            )) |||
+    renamed [Replace "WideMaster"] (avoidStruts (
+          maximizeWithPadding 10 (
+            Mirror (Tall 1 (3/100) (1/2))
+          )
+        )) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
-    renamed [Replace "Grid"] (avoidStruts Grid) |||
+    renamed [Replace "Grid"] (avoidStruts (
+          maximizeWithPadding 10 (Grid)
+        )) |||
     renamed [Replace "Max"] (avoidStruts Full) |||
     -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
