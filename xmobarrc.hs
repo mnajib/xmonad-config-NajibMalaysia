@@ -73,11 +73,13 @@ Config {
 
         -- keyboard layout indicator
         , Run Kbd [
-                    ("us(dvorak)", "<fc=#181715,#58C5F1> DV</fc>"),
-                    ("us", "<fc=#181715,#58C5F1> US</fc>"),
-                    ("ara", "<fc=#181715,#58C5F1>ARA</fc>"),
-                    ("my", "<fc=#181715,#58C5F1> MY</fc>"),
-                    ("msa", "<fc=#181715,#58C5F1>MSA</fc>")
+                    ("us(dvorak)"           , "<fc=#181715,#58C5F1> DV </fc>"),
+                    ("us"                   , "<fc=#181715,#58C5F1> US </fc>"),
+                    ("ara"                  , "<fc=#181715,#58C5F1>ARA </fc>"),
+                    ("my"                   , "<fc=#181715,#58C5F1> MY </fc>"),
+                    ("msa"                  , "<fc=#181715,#58C5F1>MSA </fc>"),
+                    ("msa(najib)"           , "<fc=#181715,#58C5F1>MSA2</fc>"),
+                    ("msa(macnajib)"        , "<fc=#181715,#58C5F1>MSA3</fc>")
                   ]
 
         -- battery monitor
