@@ -16,14 +16,14 @@ ping_interface() {
 	#echo "FAILED. Return 1."
         return 1
     else
-	if (( ${PACKETS_LOST} > ${PACKETS_LOST_TRESHOLD} )); then
-                #echo "Network Connection is FAILED with ${PACKETS_LOST} packets lost. Return 2."
-		#echo 1
-                return 2
-	else
-		#echo "Network is fine. Return 0."
-		return 0
-	fi
+        if (( ${PACKETS_LOST} > ${PACKETS_LOST_TRESHOLD} )); then
+           #echo "Network Connection is FAILED with ${PACKETS_LOST} packets lost. Return 2."
+           #echo 1
+            return 2
+        else
+            #echo "Network is fine. Return 0."
+            return 0
+        fi
     fi
 }
 
