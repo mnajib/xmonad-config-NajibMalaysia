@@ -1,4 +1,4 @@
-#!/run/current-system/sw/bin/env bash
+#!/usr/bin/env bash
 
 PING=~/.xmonad/bin/NetConnStatus.sh
 #LOGFILE=~/.xmonad/var/${USER}-NetConnStatus.log # date_time, LAN_status, WAN_status
