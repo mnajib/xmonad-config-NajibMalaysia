@@ -20,13 +20,13 @@ mkfifo /tmp/${USER}-zikirpipe
 #killall -9 pasystray
 #killall -9 volumeicon
 ~/.xmonad/bin/kill2restart.sh
-sleep 10
+sleep 1
 
 # Starting
 
 # single monitor
 trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
-sleep 2
+sleep 1
 #
 # dual monitor
 #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
