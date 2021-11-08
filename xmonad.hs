@@ -8,6 +8,7 @@ import qualified Data.Map        as M
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
 import System.IO
 
@@ -362,7 +363,14 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
+--myStartupHook = return ()
+--myStartupHook = spawn "~/.xmonad/autostart"
+myStartupHook = do {
+    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
+    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    -- ...
+    }
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -375,6 +383,7 @@ main = do
     --xmproc <- spawnPipe "~/.xmonad/xmobarrc.hs"
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
+    spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
 
     xmonad $ defaultConfig {
 -- {-

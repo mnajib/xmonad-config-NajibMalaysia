@@ -19,7 +19,7 @@ mkfifo /tmp/${USER}-zikirpipe
 #killall -9 zikir
 #killall -9 pasystray
 #killall -9 volumeicon
-~/.xmonad/bin/kill2restart.sh
+~/.xmonad/bin/kill2restart2.sh
 sleep 1
 
 # Starting
@@ -37,9 +37,12 @@ volumeicon &
 #~/.fehbg &
 fbsetroot -solid black &
 nm-applet & # Not really needed, just use nmtui.
+
 #xmobar ~/.xmonad/xmobarrc-top.hs &
+#xmobar ~/.xmonad/xmobarrc.hs &
+
 #qtox &
 #xscreensaver -no-splash &
 
 # Restart xmonad
-xmonad --restart
+#xmonad --restart
