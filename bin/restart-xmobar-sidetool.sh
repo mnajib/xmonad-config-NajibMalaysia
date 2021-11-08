@@ -20,7 +20,7 @@ mkfifo /tmp/${USER}-zikirpipe
 #killall -9 pasystray
 #killall -9 volumeicon
 ~/.xmonad/bin/kill2restart2.sh
-sleep 1
+sleep 10
 
 # Starting
 

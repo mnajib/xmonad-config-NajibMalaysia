@@ -30,6 +30,10 @@ import XMonad.Layout.Maximize
 
 import Graphics.X11.ExtraTypes.XF86
 
+-- XXX
+import Control.Concurrent
+--threadDelay 1000000 --sleep for a million microseconds, or one second
+
 myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
 -- myTerminal   = "termonad"
 -- myTerminal = "alacritty"
@@ -363,14 +367,15 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
---myStartupHook = return ()
+myStartupHook = return ()
 --myStartupHook = spawn "~/.xmonad/autostart"
-myStartupHook = do {
-    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-    spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+--myStartupHook = do {
+    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
+    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     -- ...
-    }
+    --}
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -381,9 +386,11 @@ myStartupHook = do {
 main = do
     --xmonad $ defaults
     --xmproc <- spawnPipe "~/.xmonad/xmobarrc.hs"
+    spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
+    threadDelay 1000000
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
-    spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
+    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
 
     xmonad $ defaultConfig {
 -- {-
