@@ -30,9 +30,18 @@ import XMonad.Layout.Maximize
 
 import Graphics.X11.ExtraTypes.XF86
 
--- XXX
 import Control.Concurrent
 --threadDelay 1000000 --sleep for a million microseconds, or one second
+
+-- TODO: Need different xmobar settings for different host. One way to achieve that would be to write a function that will create a new .xmobarrc file for your given host.
+--import Network.HostName
+--createXmobarrc :: String -> IO ()
+--createXmobarrc hostname = undefined -- Write your logic
+--
+--main = do
+-- hostname <- getHostName
+-- createXmobarrc hostname -- produce appropriate .xmobarrc file for a given host
+-- -- other xmonad stuff follows here
 
 myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
 -- myTerminal   = "termonad"

@@ -25,13 +25,39 @@ sleep 1
 
 # Starting
 
-# single monitor
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
-sleep 1
-#
-# dual monitor
-#trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+#case $HOSTNAME in
+#    (keira)
+#        ...
+#        ...
+#        ;;
+#    (mahirah)
+#        ...
+#        ;;
+#    (*)
+#        ...
+#        ...
+#        ;;
+#esac
+if [ "$HOSTNAME" = keira ]; then
+    # dual monitor, external-monitor on the left (keira)
 
+    ~/bin/init-second-monitor-ThinkVisionForKeira.sh
+
+    sleep 5
+    pkill trayer
+    sleep 5
+    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    sleep 5 # 1
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+
+    setxkbmap us
+    #setxkbmap us dvorak
+else
+    # single monitor
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
+fi
+
+sleep 1
 ~/.xmonad/bin/zikir &
 volumeicon &
 #pasystray &
@@ -47,8 +73,4 @@ nm-applet & # Not really needed, just use nmtui.
 
 # Restart xmonad
 #xmonad --restart
-
-# If hostname == 'keira'
-#setxkbmap us dvorak
-#setxkbmap us
 
