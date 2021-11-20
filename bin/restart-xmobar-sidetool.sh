@@ -1,6 +1,7 @@
-#!/run/current-system/sw/bin/env bash
+#!/usr/bin/env bash
 
 export DISPLAY=:0
+#umask 0002
 
 # Recompile xmonad
 #xmonad --recompile
@@ -46,3 +47,8 @@ nm-applet & # Not really needed, just use nmtui.
 
 # Restart xmonad
 #xmonad --restart
+
+# If hostname == 'keira'
+#setxkbmap us dvorak
+#setxkbmap us
+
