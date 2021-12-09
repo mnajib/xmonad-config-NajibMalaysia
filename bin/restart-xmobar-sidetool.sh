@@ -50,7 +50,7 @@ if [ "$HOSTNAME" = keira ]; then
     sleep 5 # 1
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
 
-    setxkbmap us
+    #setxkbmap us
     #setxkbmap us dvorak
 else
     # single monitor
@@ -70,7 +70,4 @@ nm-applet & # Not really needed, just use nmtui.
 
 #qtox &
 #xscreensaver -no-splash &
-
-# Restart xmonad
-#xmonad --restart
 

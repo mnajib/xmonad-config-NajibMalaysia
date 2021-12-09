@@ -396,7 +396,7 @@ main = do
     --xmonad $ defaults
     --xmproc <- spawnPipe "~/.xmonad/xmobarrc.hs"
     spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
-    threadDelay 1000000
+    threadDelay 5000000--1000000
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
     --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
