@@ -3,6 +3,11 @@
 PING=~/.xmonad/bin/NetConnStatus.sh
 #LOGFILE=~/.xmonad/var/${USER}-NetConnStatus.log # date_time, LAN_status, WAN_status
 
+# IP to run ping test
+LANIP='192.168.123.157' # mahirah OR tv OR khawlah OR khadijah
+GWIP='192.168.123.1'
+WANIP='1.1.1.1'
+
 # UP
 FgColor1="#181715"
 BgColor1="#58C5F1"
