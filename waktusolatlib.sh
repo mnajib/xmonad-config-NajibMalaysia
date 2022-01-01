@@ -21,7 +21,7 @@ ONELINE=""
 NAMASOLAT=()
 MASASOLAT=()
 KAWASAN=""
-ZON=""
+ZON="" # SGR01 (Gombak, Petaling, Sepang, Hulu Langat, Hulu Selangor, S.Alam), WLY01
 BEARING=""
 TITLE=""
 ERROR=false
@@ -67,7 +67,13 @@ fetchData (){
     log DEBUG "Start fetchData()"
     curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
     log DEBUG "End fetchData()"
-    }
+}
+
+function fetchDataZone () {
+    log DEBUG "Start fetchDataZone()"
+    curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    log DEBUG "End fetchDataZone()"
+}
 
 getOldGoodFetchData(){
     log DEBUG "Start getOldGoodFetchData()"
@@ -414,7 +420,8 @@ printWaktuSolatForCliType1() {
     local cLightGray="37m"
     local cBlack="30m"
 
-    out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+    #out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+    out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
 
     out+=" $DAY"                                 # Day
 
@@ -467,7 +474,9 @@ formatWaktuSolatForXmobar() {
     local cPink="ff66ff"
     local cWhite="ffffff"
 
-    out+="<fc=#${cPink}>Putrajaya</fc>"                 # Area/Zone
+    #out+="<fc=#${cPink}>Putrajaya</fc>"                 # Area/Zone
+    out+="<fc=#${cPink}>${zone}</fc>"                 # Area/Zone
+
     out+=" $DAY"                                 # Day
 
     HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`

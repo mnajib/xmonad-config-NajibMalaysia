@@ -22,7 +22,8 @@ Config {
     , persistent =       True    -- enable/disable hiding (True = disabled)
 
     -- plugins
-    , commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
+    --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
+    , commands = [  Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolatPutrajaya",
                     Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe"
                  ]
 }
