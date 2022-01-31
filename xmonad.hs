@@ -1,9 +1,11 @@
 import XMonad
-import Data.Monoid
+import Data.Monoid -- mapped
 import System.Exit
 
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
+import qualified Data.Map        as M -- fromList
+
+import XMonad.Actions.Volume
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -116,6 +118,21 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
     , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
+
+    -- (sound/audio) Volume control
+    , ( (0, xK_F8), lowerVolume 4 >> return () )
+    , ( (0, xK_F9), raiseVolume 4 >> return () )
+    , ( (0, xK_F10), toggleMute >> return () )
+    --
+    , ( (0, xF86XK_AudioLowerVolume), lowerVolume 4 >> return () )
+    , ( (0, xF86XK_AudioRaiseVolume), raiseVolume 4 >> return () )
+    , ( (0, xF86XK_AudioMute), toggleMute >> return () )
+    --, ( (0, xF86XK_AudioMicMute), muteMicVolume 4 >> return () )
+    -- XF86AudioMute
+    -- XF86AudioMicMute
+
+    -- XF86MonBrightnessUp
+    -- XF86MonBrightnessDown
 
     -- Toggle maximize focused window using "Super"+"\" key combo.
     , ((modm,            xK_backslash), withFocused (sendMessage . maximizeRestore))
