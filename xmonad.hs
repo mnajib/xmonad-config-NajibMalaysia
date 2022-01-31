@@ -28,6 +28,9 @@ import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 import XMonad.Layout.Column
 import XMonad.Layout.Maximize
 
+import XMonad.Config.Xfce
+import XMonad.Hooks.EwmhDesktops
+
 import Graphics.X11.ExtraTypes.XF86
 
 import Control.Concurrent
@@ -438,6 +441,7 @@ main = do
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
         startupHook        = myStartupHook <+> setWMName "LG3D",
+        --startupHook        = myStartupHook <+> ewmhDesktopStartup <+> setWMName "LG3D",
 
         -- The "manage hook" is the thing that decides how windows are supposed to appear.
         -- The <+> thing combines options for the manage hook.
