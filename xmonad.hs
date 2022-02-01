@@ -123,13 +123,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ( (0, xK_F8), lowerVolume 4 >> return () )
     , ( (0, xK_F9), raiseVolume 4 >> return () )
     , ( (0, xK_F10), toggleMute >> return () )
+    , ( (modm, xK_F10), spawn $ "pactl -- set-source-mute 1 toggle" )
     --
     , ( (0, xF86XK_AudioLowerVolume), lowerVolume 4 >> return () )
     , ( (0, xF86XK_AudioRaiseVolume), raiseVolume 4 >> return () )
-    , ( (0, xF86XK_AudioMute), toggleMute >> return () )
-    --, ( (0, xF86XK_AudioMicMute), muteMicVolume 4 >> return () )
-    -- XF86AudioMute
-    -- XF86AudioMicMute
+    , ( (0, xF86XK_AudioMute), toggleMute >> return () ) -- spawn $ "pactl -- set-sink-mute 1 toggle"
+    , ( (0, xF86XK_AudioMicMute), spawn $ "pactl -- set-source-mute 1 toggle" )
 
     -- XF86MonBrightnessUp
     -- XF86MonBrightnessDown
@@ -596,4 +595,19 @@ help = unlines [
     "",
     mmm ++ "-button1            Set the window to floating mode and move by dragging",
     mmm ++ "-button2            Raise the window to the top of the stack",
-    mmm ++ "-button3            Set the window to floating mode and resize by dragging"]
+    mmm ++ "-button3            Set the window to floating mode and resize by dragging",
+    "",
+    "Volume control",
+    "--------------",
+    "",
+    "Mute                Toggle audio output mute",
+    "Vol-ve              Decrease audio output volume",
+    "Vol+ve              Increase audio output volume",
+    "Mic                 Toggle mic mute",
+    "",
+    "F8                  Decrease audio volume",
+    "F9                  Increase audio volume",
+    "F10                 Toggle audio output mute",
+    "Shift-F10           Toggle audio input mute",
+    "",
+    ""]
