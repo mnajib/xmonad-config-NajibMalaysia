@@ -120,10 +120,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
     -- (sound/audio) Volume control
-    , ( (0, xK_F8), lowerVolume 4 >> return () )
-    , ( (0, xK_F9), raiseVolume 4 >> return () )
-    , ( (0, xK_F10), toggleMute >> return () )
-    , ( (modm, xK_F10), spawn $ "pactl -- set-source-mute 1 toggle" )
+    , ( (modm, xK_F8), lowerVolume 4 >> return () )
+    , ( (modm, xK_F9), raiseVolume 4 >> return () )
+    , ( (modm, xK_F10), toggleMute >> return () )
+    , ( (modm .|. shiftMask, xK_F10), spawn $ "pactl -- set-source-mute 1 toggle" )
     --
     , ( (0, xF86XK_AudioLowerVolume), lowerVolume 4 >> return () )
     , ( (0, xF86XK_AudioRaiseVolume), raiseVolume 4 >> return () )
