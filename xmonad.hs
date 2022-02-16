@@ -119,10 +119,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
     , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
-    -- (sound/audio) Volume control
+    -- audio-out (speaker) Volume control
     , ( (modm, xK_F8), lowerVolume 4 >> return () )
     , ( (modm, xK_F9), raiseVolume 4 >> return () )
     , ( (modm, xK_F10), toggleMute >> return () )
+    -- audio-in (microphone) volume control
+    , ( (modm .|. shiftMask, xK_F8), spawn $ "pactl -- set-source-volume 2 -4" )
+    , ( (modm .|. shiftMask, xK_F9), spawn $ "pactl -- set-source-volume 2 +4" )
     , ( (modm .|. shiftMask, xK_F10), spawn $ "pactl -- set-source-mute 1 toggle" )
     --
     , ( (0, xF86XK_AudioLowerVolume), lowerVolume 4 >> return () )
