@@ -43,9 +43,9 @@ function f_coloringNetStatus {
 	#local bgColor=$2
 
 	if [ $status -eq 0 ]; then
-		echo "<fc=${FgColor1},${BgColor1}> ${net} </fc>"
+		echo "<fc=${FgColor1},${BgColor1}> ${net}</fc>"
 	else
-		echo "<fc=${FgColor2},${BgColor2}> ${net} </fc>"
+		echo "<fc=${FgColor2},${BgColor2}> ${net}</fc>"
 	fi
 }
 
