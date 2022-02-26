@@ -3,10 +3,17 @@
 PING=~/.xmonad/bin/NetConnStatus.sh
 #LOGFILE=~/.xmonad/var/${USER}-NetConnStatus.log # date_time, LAN_status, WAN_status
 
+INTERFACE=enp7s0
+
 # IP to run ping test
 LANIP='192.168.123.157' # mahirah OR tv OR khawlah OR khadijah
-GWIP='192.168.123.1'
 WANIP='1.1.1.1'
+GWIP='192.168.123.1'
+
+# Network status (0 up; 1 down)
+LSTATUS=1
+WSTATUS=1
+GSTATUS=1
 
 # UP
 FgColor1="#181715"
@@ -17,47 +24,52 @@ BgColor2="#ff0000"
 
 timeInterval=2 #5 #10 #15 60
 
-function printStatus {
-	case $1 in
-		1)
-		    # LAN UP, WAN UP
-			echo "<fc=${FgColor1},${BgColor1}> LAN</fc>,<fc=${FgColor1},${BgColor1}> WAN</fc>"
-			;;
-		2)
-		    # LAN DOWN, WAN UP (WIERD!)
-			echo "<fc=${FgColor2},${BgColor2}> LAN</fc>,<fc=${FgColor1},${BgColor1}> WAN</fc>"
-			;;
-		3)
-		    # LAN UP, WAN DOWN
-			echo "<fc=${FgColor1},${BgColor1}> LAN</fc>,<fc=${FgColor2},${BgColor2}> WAN</fc>"
-			;;
-		4)
-		    # LAN DOWN, WAN DOWN
-		    echo "<fc=${FgColor2},${BgColor2}> LAN</fc>,<fc=${FgColor2},${BgColor2}> WAN</fc>"
-			;;
-	esac
+function f_ping {
+	local ping=$1
+	local interface=$2
+	local ip=$3
+
+	${ping} ${interface} ${ip} 2> /dev/null
+	local status=$?
+	
+	echo $status
+}
+
+function f_coloringNetStatus {
+	local net=$1
+	local status=$2
+
+	#local fgColor=$1
+	#local bgColor=$2
+
+	if [ $status -eq 0 ]; then
+		echo "<fc=${FgColor1},${BgColor1}> ${net} </fc>"
+	else
+		echo "<fc=${FgColor2},${BgColor2}> ${net} </fc>"
+	fi
+}
+
+function f_printNetsStatus {
+	local lStatus=$1
+	local wStatus=$2
+	local gStatus=$3
+
+	local lColoredStatus=$(f_coloringNetStatus LAN $lStatus)
+	local wColoredStatus=$(f_coloringNetStatus WAN $wStatus)
+	local gColoredStatus=$(f_coloringNetStatus GW $gStatus)
+
+	echo "${lColoredStatus},${wColoredStatus},${gColoredStatus}"
 }
 
 while true; do
-	${PING} enp7s0 192.168.123.1 2> /dev/null
-	pingLAN=$?
+	# Get network status
+	LSTATUS=$(f_ping ${PING} ${INTERFACE} ${LANIP})
+	WSTATUS=$(f_ping ${PING} ${INTERFACE} ${WANIP})
+	GSTATUS=$(f_ping ${PING} ${INTERFACE} ${GWIP})
 
-	${PING} enp7s0 1.1.1.1 2> /dev/null
-	pingWAN=$?
+	# Print network status
+	f_printNetsStatus $GSTATUS $LSTATUS $WSTATUS
 
-	if [ $pingLAN -eq 0 ] && [ $pingWAN -eq 0 ]; then
-		# LAN UP, WAN UP
-		printStatus 1
-	elif [ $pingLAN -ne 0 ] && [ $pingWAN -eq 0 ]; then
-	    # LAN DOWN, WAN UP
-		printStatus 2
-	elif [ $pingLAN -eq 0 ] && [ $pingWAN -ne 0 ]; then
-		# LAN UP, WAN DOWN
-		printStatus 3
-	elif [ $pingLAN -ne 0 ] && [ $pingWAN -ne 0 ]; then
-		# LAN DOWN, WAN DOWN
-		printStatus 4
-	fi
-
+	# Sleep before loop
 	sleep ${timeInterval}
 done
