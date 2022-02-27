@@ -119,6 +119,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
     , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
+    -- keyboard layout
+    , ( ( modm, xK_F4 ), spawn $ "setxkbmap -layout us -variant dvorak")
+    , ( ( modm, xK_F5 ), spawn $ "setxkbmap -layout us")
+    , ( ( modm, xK_F6 ), spawn $ "setxkbmap -layout msa -variant najib")
+    , ( ( modm, xK_F7 ), spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
+
     -- audio-out (speaker) Volume control
     , ( (modm, xK_F8), lowerVolume 4 >> return () )
     , ( (modm, xK_F9), raiseVolume 4 >> return () )
@@ -576,8 +582,8 @@ help = unlines [
     "Increase or decrease number of windows in the master area",
     "---------------------------------------------------------",
     "",
-    mmm ++ "-comma  (" ++ mmm ++ "-,)     Increment the number of windows in the master area",
-    mmm ++ "-period (" ++ mmm ++ "-.)     Deincrement the number of windows in the master area",
+    mmm ++ "-comma  (" ++ mmm ++ "-,)   Increment the number of windows in the master area",
+    mmm ++ "-period (" ++ mmm ++ "-.)   Deincrement the number of windows in the master area",
     "",
     "Quit, or restart",
     "----------------",
@@ -603,14 +609,23 @@ help = unlines [
     "Volume control",
     "--------------",
     "",
-    "Mute                Toggle audio output mute",
-    "Vol-ve              Decrease audio output volume",
-    "Vol+ve              Increase audio output volume",
-    "Mic                 Toggle mic mute",
+    "Mute                     Toggle audio output mute",
+    "Vol-ve                   Decrease audio output volume",
+    "Vol+ve                   Increase audio output volume",
+    "Mic                      Toggle mic mute",
     "",
-    "F8                  Decrease audio volume",
-    "F9                  Increase audio volume",
-    "F10                 Toggle audio output mute",
-    "Shift-F10           Toggle audio input mute",
+    mmm ++ "F8                  Decrease audio volume",
+    mmm ++ "F9                  Increase audio volume",
+    mmm ++ "F10                 Toggle audio output mute",
+    mmm ++ "Shift-F10           Toggle audio input mute",
+    "",
+    "Keyboard layout",
+    "---------------",
+    "",
+    mmm ++ "F4                  Dvorak keyboard layout",
+    mmm ++ "F5                  US keyboard layout",
+    mmm ++ "F6                  Custom Arab-Jawi keyboard layout",
+    mmm ++ "F7                  Custom-group keyboard layout",
+    "",
     "",
     ""]
