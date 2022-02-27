@@ -6,14 +6,14 @@ PING=~/.xmonad/bin/NetConnStatus.sh
 INTERFACE=enp7s0	# XXX: Not really in use
 
 # IP to run ping test
-LANIP='192.168.123.157' # XXX: Too specific, not usefull with other LAN network. mahirah OR tv OR khawlah OR khadijah
+LOBIP='127.0.0.1'
+LANIP='1.1.1.1'		# XXX: Not really in use
 WANIP='1.1.1.1'
-GWIP='192.168.123.1'	# XXX: Not really in use
 
 # Network status (0 up; 1 down)
+OSTATUS=1
 LSTATUS=1
 WSTATUS=1
-GSTATUS=1
 
 # UP
 FgColor1="#181715"
@@ -55,26 +55,25 @@ function f_coloringNetStatus {
 }
 
 function f_printNetsStatus {
-	local lStatus=$1
-	local wStatus=$2
-	local gStatus=$3
+	local oStatus=$1
+	local lStatus=$2
+	local wStatus=$3
 
+	local oColoredStatus=$(f_coloringNetStatus LOB $oStatus)
 	local lColoredStatus=$(f_coloringNetStatus LAN $lStatus)
 	local wColoredStatus=$(f_coloringNetStatus WAN $wStatus)
-	local gColoredStatus=$(f_coloringNetStatus GW $gStatus)
 
-	echo "${lColoredStatus},${wColoredStatus},${gColoredStatus}"
+	echo "${oColoredStatus},${lColoredStatus},${wColoredStatus}"
 }
 
 while true; do
 	# Get network status
-	LSTATUS=$(f_ping ${PING} ${INTERFACE} ${LANIP})
+	OSTATUS=$(f_ping ${PING} ${INTERFACE} ${LOBIP})
+	LSTATUS=$(f_ping ${PING} ${INTERFACE} $(f_gwip))
 	WSTATUS=$(f_ping ${PING} ${INTERFACE} ${WANIP})
-	#GSTATUS=$(f_ping ${PING} ${INTERFACE} ${GWIP})
-	GSTATUS=$(f_ping ${PING} ${INTERFACE} $(f_gwip))
 
 	# Print network status
-	f_printNetsStatus $GSTATUS $LSTATUS $WSTATUS
+	f_printNetsStatus $OSTATUS $LSTATUS $WSTATUS
 
 	# Sleep before loop
 	sleep ${timeInterval}
