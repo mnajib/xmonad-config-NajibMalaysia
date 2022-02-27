@@ -6,7 +6,7 @@ PING=~/.xmonad/bin/NetConnStatus.sh
 INTERFACE=enp7s0	# XXX: Not really in use
 
 # IP to run ping test
-LOBIP='127.0.0.1'
+LOIP='127.0.0.1'
 LANIP='1.1.1.1'		# XXX: Not really in use
 WANIP='1.1.1.1'
 
@@ -59,7 +59,7 @@ function f_printNetsStatus {
 	local lStatus=$2
 	local wStatus=$3
 
-	local oColoredStatus=$(f_coloringNetStatus LOB $oStatus)
+	local oColoredStatus=$(f_coloringNetStatus LO $oStatus)
 	local lColoredStatus=$(f_coloringNetStatus LAN $lStatus)
 	local wColoredStatus=$(f_coloringNetStatus WAN $wStatus)
 
@@ -68,7 +68,7 @@ function f_printNetsStatus {
 
 while true; do
 	# Get network status
-	OSTATUS=$(f_ping ${PING} ${INTERFACE} ${LOBIP})
+	OSTATUS=$(f_ping ${PING} ${INTERFACE} ${LOIP})
 	LSTATUS=$(f_ping ${PING} ${INTERFACE} $(f_gwip))
 	WSTATUS=$(f_ping ${PING} ${INTERFACE} ${WANIP})
 
