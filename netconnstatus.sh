@@ -3,12 +3,12 @@
 PING=~/.xmonad/bin/NetConnStatus.sh
 #LOGFILE=~/.xmonad/var/${USER}-NetConnStatus.log # date_time, LAN_status, WAN_status
 
-INTERFACE=enp7s0
+INTERFACE=enp7s0	# XXX: Not really in use
 
 # IP to run ping test
-LANIP='192.168.123.157' # mahirah OR tv OR khawlah OR khadijah
+LANIP='192.168.123.157' # XXX: Too specific, not usefull with other LAN network. mahirah OR tv OR khawlah OR khadijah
 WANIP='1.1.1.1'
-GWIP='192.168.123.1'
+GWIP='192.168.123.1'	# XXX: Not really in use
 
 # Network status (0 up; 1 down)
 LSTATUS=1
@@ -23,6 +23,11 @@ FgColor2="#646464"
 BgColor2="#ff0000"
 
 timeInterval=2 #5 #10 #15 60
+
+function f_gwip {
+	local gwip=$(ip route ls | grep "^default" | sed 's/^default via //g' | sed 's/ dev.*$//g')
+	echo $gwip
+}
 
 function f_ping {
 	local ping=$1
@@ -65,7 +70,8 @@ while true; do
 	# Get network status
 	LSTATUS=$(f_ping ${PING} ${INTERFACE} ${LANIP})
 	WSTATUS=$(f_ping ${PING} ${INTERFACE} ${WANIP})
-	GSTATUS=$(f_ping ${PING} ${INTERFACE} ${GWIP})
+	#GSTATUS=$(f_ping ${PING} ${INTERFACE} ${GWIP})
+	GSTATUS=$(f_ping ${PING} ${INTERFACE} $(f_gwip))
 
 	# Print network status
 	f_printNetsStatus $GSTATUS $LSTATUS $WSTATUS
