@@ -27,6 +27,8 @@ import XMonad.Layout.Combo -- combineTwo
 import XMonad.Layout.WindowNavigation
 import XMonad.Layout.Renamed
 import XMonad.Layout.LayoutCombinators hiding ( (|||) )
+--import XMonad.Layout.SubLayouts
+import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Column
 import XMonad.Layout.Maximize
 
@@ -219,10 +221,22 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
-    , ((modm .|. controlMask .|. shiftMask, xK_Right), sendMessage $ Move R)
-    , ((modm .|. controlMask .|. shiftMask, xK_Left ), sendMessage $ Move L)
-    , ((modm .|. controlMask .|. shiftMask, xK_Up   ), sendMessage $ Move U)
-    , ((modm .|. controlMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Right), sendMessage $ Move R)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Left ), sendMessage $ Move L)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Up   ), sendMessage $ Move U)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
+    , ((modm,						xK_Right), 			sendMessage $ Go R)
+    , ((modm,		 				xK_Left ), 			sendMessage $ Go L)
+    , ((modm,		 				xK_Up   ), 			sendMessage $ Go U)
+    , ((modm,		 				xK_Down ), 			sendMessage $ Go D)
+    , ((modm .|. shiftMask,				xK_Right), 			sendMessage $ Move R)
+    , ((modm .|. shiftMask, 				xK_Left ), 			sendMessage $ Move L)
+    , ((modm .|. shiftMask, 				xK_Up   ), 			sendMessage $ Move U)
+    , ((modm .|. shiftMask, 				xK_Down ), 			sendMessage $ Move D)
+    , ((modm .|. controlMask,				xK_Right), 			sendMessage $ Swap R)
+    , ((modm .|. controlMask,				xK_Left ), 			sendMessage $ Swap L)
+    , ((modm .|. controlMask,				xK_Up   ), 			sendMessage $ Swap U)
+    , ((modm .|. controlMask,				xK_Down ), 			sendMessage $ Swap D)
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     --, ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -")) -- haskellPackages.hzenity
@@ -295,32 +309,42 @@ myLayout =
             ) ) |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "TabTab-VerSplit"] ( avoidStruts (
-           maximizeWithPadding 10 (
+           maximizeWithPadding 0 (
              windowNavigation (
                (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)
              )
            )
          )) |||
     renamed [Replace "TabTab-HorSplit"] ( avoidStruts (
-            maximizeWithPadding 10 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
+            maximizeWithPadding 0 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             )) |||
+    renamed [Replace "TabOn3"] ( avoidStruts (
+            maximizeWithPadding 0 ( windowNavigation (   (tabbed shrinkText tabConfig) *|* windowNavigation ( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig))    ) )
+            )) |||
+    --renamed [Replace "TabOn4"] ( avoidStruts ( maximizeWithPadding 0 
+    --				( 
+    --    			    --windowNavigation (   (tabbed shrinkText tabConfig) *|* 
+    --	    			    windowNavigation (toggleLayouts( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)))  *|*
+    --	    			    windowNavigation (toggleLayouts( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)))   
+    --				)
+    --      )) |||
     renamed [Replace "Columns"] ( avoidStruts(
-            maximizeWithPadding 10 (Mirror(Column 1) )
+            maximizeWithPadding 0 (Mirror(Column 1) )
             ) ) |||
     renamed [Replace "Rows"] (avoidStruts(
-            maximizeWithPadding 10 (Column 1)
+            maximizeWithPadding 0 (Column 1)
             )) |||
     renamed [Replace "TallMaster"] ( avoidStruts (
-            maximizeWithPadding 10 ( Tall 1 (3/100) (1/2) )
+            maximizeWithPadding 0 ( Tall 1 (3/100) (1/2) )
             )) |||
     renamed [Replace "WideMaster"] (avoidStruts (
-          maximizeWithPadding 10 (
+          maximizeWithPadding 0 (
             Mirror (Tall 1 (3/100) (1/2))
           )
         )) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts (
-          maximizeWithPadding 10 (Grid)
+          maximizeWithPadding 0 (Grid)
         )) |||
     renamed [Replace "Max"] (avoidStruts Full) |||
     -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
