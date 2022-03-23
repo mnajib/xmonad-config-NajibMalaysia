@@ -55,25 +55,27 @@ function f_coloringNetStatus {
 }
 
 function f_printNetsStatus {
-	local oStatus=$1
-	local lStatus=$2
-	local wStatus=$3
+	local #oStatus=$1
+	local lStatus=$1 #2
+	local wStatus=$2 #3
 
-	local oColoredStatus=$(f_coloringNetStatus LO $oStatus)
+	#local oColoredStatus=$(f_coloringNetStatus LO $oStatus)
 	local lColoredStatus=$(f_coloringNetStatus LAN $lStatus)
 	local wColoredStatus=$(f_coloringNetStatus WAN $wStatus)
 
-	echo "${oColoredStatus},${lColoredStatus},${wColoredStatus}"
+	#echo "${oColoredStatus},${lColoredStatus},${wColoredStatus}"
+	echo "${lColoredStatus},${wColoredStatus}"
 }
 
 while true; do
 	# Get network status
-	OSTATUS=$(f_ping ${PING} ${INTERFACE} ${LOIP})
+	#OSTATUS=$(f_ping ${PING} ${INTERFACE} ${LOIP})
 	LSTATUS=$(f_ping ${PING} ${INTERFACE} $(f_gwip))
 	WSTATUS=$(f_ping ${PING} ${INTERFACE} ${WANIP})
 
 	# Print network status
-	f_printNetsStatus $OSTATUS $LSTATUS $WSTATUS
+	#f_printNetsStatus $OSTATUS $LSTATUS $WSTATUS
+	f_printNetsStatus $LSTATUS $WSTATUS
 
 	# Sleep before loop
 	sleep ${timeInterval}
