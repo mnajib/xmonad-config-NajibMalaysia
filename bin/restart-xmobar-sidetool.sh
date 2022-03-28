@@ -50,7 +50,7 @@ if [ "$HOSTNAME" = keira ]; then
     sleep 5 # 1
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
 
-    #setxkbmap us
+    setxkbmap us # Not sure if I really need this, but just a safe bet tu make sure user not freakout if somehow the keyboard layout not US right after login.
     #setxkbmap us dvorak
 elif [ "$HOSTNAME" = manggis ]; then
     sudo $HOME/bin/decrease-trackpoint-sensitivity-x220.sh
