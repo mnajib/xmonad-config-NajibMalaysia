@@ -54,8 +54,10 @@ if [ "$HOSTNAME" = keira ]; then
     #setxkbmap us dvorak
 elif [ "$HOSTNAME" = manggis ]; then
     sudo $HOME/bin/decrease-trackpoint-sensitivity-x220.sh
+    setxkbmap us
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
 else
+    setxkbmap dvorak
     # single monitor
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
 fi
