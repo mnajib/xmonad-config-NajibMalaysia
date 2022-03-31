@@ -440,7 +440,11 @@ myStartupHook = return ()
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     -- ...
     --}
-
+-- 
+-- Checking fo duplicate key bindings.
+-- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
+--myStartupHook = return () >> checkKeymap myConfig myKeymap
+--myStartupHook = return () >> checkKeymap myKeymap
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
