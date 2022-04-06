@@ -131,8 +131,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ( ( modm, xK_F7 ), spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
 
     -- audio-out (speaker) Volume control
-    , ( (modm, xK_F8), lowerVolume 4 >> return () )
-    , ( (modm, xK_F9), raiseVolume 4 >> return () )
+    , ( (modm, xK_F8), lowerVolume 1 >> return () )
+    , ( (modm, xK_F9), raiseVolume 1 >> return () )
     , ( (modm, xK_F10), toggleMute >> return () )
     -- audio-in (microphone) volume control
     , ( (modm .|. shiftMask, xK_F8), spawn $ "pactl -- set-source-volume 2 -4" )
