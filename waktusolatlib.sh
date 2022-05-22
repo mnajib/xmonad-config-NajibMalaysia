@@ -71,7 +71,11 @@ fetchData (){
 
 function fetchDataZone () {
     log DEBUG "Start fetchDataZone()"
-    curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    
+    # Ignore SSL/cert error ... ???
+    curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    
     log DEBUG "End fetchDataZone()"
 }
 
