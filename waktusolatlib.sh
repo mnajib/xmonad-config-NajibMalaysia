@@ -218,6 +218,49 @@ namaBulanM(){
     esac
 }
 
+nomHari(){
+	namaHari="$1"
+
+	case "$namaHari" in
+		"Sunday")
+			echo "1"
+			;;
+		"Monday")
+			echo "2"
+			;;
+		"Tuesday")
+			echo "3"
+			;;
+		"Wednesday")
+			echo "4"
+			;;
+		"Thursday")
+			echo "5"
+			;;
+		"Friday")
+			echo "6"
+			;;
+		"Saturday")
+			echo "7"
+			;;
+		*)
+			echo "eh"
+			;;
+	esac
+}
+
+namaHariBM(){
+	nomHari="$1"
+
+	#...
+}
+
+namaHariBI(){
+	nomHari="$1"
+
+	#...
+}
+
 extractData() {
     log DEBUG "Start extractData()"
 
@@ -512,7 +555,8 @@ formatWaktuSolatForXmobar() {
     fi
 
     for i in "${!NAMASOLAT[@]}"; do
-        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+        #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]}</fc> "
     done
 
     #echo -en "${out}\n"
