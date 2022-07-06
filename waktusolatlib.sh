@@ -556,7 +556,7 @@ formatWaktuSolatForXmobar() {
 
     for i in "${!NAMASOLAT[@]}"; do
         #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
-        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]}</fc> "
+        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
     done
 
     #echo -en "${out}\n"
