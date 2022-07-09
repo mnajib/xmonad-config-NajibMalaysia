@@ -343,8 +343,8 @@ setBlankDataToArray() {
     ONELINE="Waktu Solat Putrajaya Hari Ini"
     ONELINE+="  (00-00-0000 00:00:00)   <fc=#ffffff,#ff4d4d>OLD</fc>   "
     KAWASAN="Kuala Lumpur,Putrajaya"
-    #NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
-    NAMASOLAT=(Imsk Subh Syur Zohr Asar Mghr Isyk)
+    NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
+    #NAMASOLAT=(Imsk Subh Syur Zohr Asar Mghr Isyk)
     MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
     log DEBUG "End setBlankDataToArray"
 
@@ -364,8 +364,8 @@ checkData() {
     arrayLength=${#NAMASOLAT[@]}
     if (( $arrayLength == 7 )) ; then
         log DEBUG "Array length as we needed : $arrayLength"
-        #if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
-        if [ "${NAMASOLAT[0]}" != "Imsk" ] || [ "${NAMASOLAT[1]}" != "Subh" ] || [ "${NAMASOLAT[2]}" != "Syur" ] || [ "${NAMASOLAT[3]}" != "Zohr" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Mghr" ] || [ "${NAMASOLAT[6]}" != "Isyk" ]; then
+        if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
+        #if [ "${NAMASOLAT[0]}" != "Imsk" ] || [ "${NAMASOLAT[1]}" != "Subh" ] || [ "${NAMASOLAT[2]}" != "Syur" ] || [ "${NAMASOLAT[3]}" != "Zohr" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Mghr" ] || [ "${NAMASOLAT[6]}" != "Isyk" ]; then
             log DEBUG "ERROR #001: Nama waktu solat tak sama"
             ERROR=true
         else
