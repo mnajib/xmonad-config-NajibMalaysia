@@ -290,23 +290,23 @@ extractData() {
                 DAY="$VALUE"
                 ;;
             "imsak")
-                #NAMASOLAT+=("Imsak")
-                NAMASOLAT+=("Imsk")
+                NAMASOLAT+=("Imsak")
+                #NAMASOLAT+=("Imsk")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "fajr")
-                #NAMASOLAT+=("Subuh")
-                NAMASOLAT+=("Subh")
+                NAMASOLAT+=("Subuh")
+                #NAMASOLAT+=("Subh")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "syuruk")
-                #NAMASOLAT+=("Syuruk")
-                NAMASOLAT+=("Syur")
+                NAMASOLAT+=("Syuruk")
+                #NAMASOLAT+=("Syur")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "dhuhr")
-                #NAMASOLAT+=("Zohor")
-                NAMASOLAT+=("Zohr")
+                NAMASOLAT+=("Zohor")
+                #NAMASOLAT+=("Zohr")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "asr")
@@ -314,13 +314,13 @@ extractData() {
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "maghrib")
-                #NAMASOLAT+=("Maghrib")
-                NAMASOLAT+=("Mghr")
+                NAMASOLAT+=("Maghrib")
+                #NAMASOLAT+=("Mghr")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             "isha")
-                #NAMASOLAT+=("Isyak")
-                NAMASOLAT+=("Isyk")
+                NAMASOLAT+=("Isyak")
+                #NAMASOLAT+=("Isyk")
                 MASASOLAT+=(`echo "$VALUE" | sed 's/:[0-9][0-9]$//g'`)
                 ;;
             *)
