@@ -295,12 +295,15 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 -- tabConfig = defaultTheme {
 tabConfig = def {
+    --fontName = "xft:monospace:pixelsize=11:antialias=true:hinting=true",
+    fontName = "xft:monospace:pixelsize=10:antialias=true:hinting=true",
     activeBorderColor = "#FF0000",-- "#7C7C7C",
     activeTextColor = "#00FF00",--"#CEFFAC",
     activeColor = "#000000",
-    inactiveBorderColor = "#7C7C7C",
+    inactiveBorderColor = "#7C7C7C",--"#222222",
     inactiveTextColor = "#EEEEEE",
-    inactiveColor = "#000000"
+    inactiveColor = "#000000"--,
+    --inactiveBorderWidth = 0
 }
 
 -- You can specify and transform your layouts by modifying these values.
