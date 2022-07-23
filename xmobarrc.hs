@@ -13,7 +13,9 @@ Config {
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
-    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
+    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master% %battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
@@ -47,7 +49,11 @@ Config {
         --, Run Network "eno1" [
         , Run DynNetwork [
             --"--template" , "E:<tx>kB/s,<rx>kB/s"
-            "--template" , "Tx:<tx>kB/s,Rx:<rx>kB/s"
+            --"--template" , "Tx:<tx>kB/s,Rx:<rx>kB/s"
+            --"--template" , "<dev>:<tx>kB,<rx>kB"
+            --"--template" , "<dev>:Tx<tx>kB,Rx<rx>kB"
+            "--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
+            --"--template" , "<tx>,<rx>"
             , "--Low"  , "1000"  -- units: kB/s
             , "--High"  , "5000"  -- units: kB/s
             , "--low"  , "#649FB6"
@@ -55,7 +61,12 @@ Config {
             , "--high"  , "darkred"
             ] 10
 
-        , Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
+        --, Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
+        , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
+
+        --, Run DiskIO [("sda", "<read><write>")] [] 10
+        , Run DiskIO [("sda", "DiskIO:R<read>,W<write>")] [] 10
+        --, Run DiskIO [("sda", "DiskIO:<total>")] [] 10
 
         , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 10
 
@@ -70,6 +81,8 @@ Config {
 
         -- time and date indicator
         , Run Date "<fc=#ffff00>%A</fc> <fc=#00ff00>%F</fc> <fc=#00ffff>%T</fc>" "date" 10
+
+	, Run Volume "default" "Master" [ "--template", "Vol:<volume>%<status>" ] 10
 
         -- keyboard layout indicator
         , Run Kbd [
