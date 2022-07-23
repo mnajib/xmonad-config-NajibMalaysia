@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-deprecations #-}
+
 import XMonad
 import Data.Monoid -- mapped
 import System.Exit
