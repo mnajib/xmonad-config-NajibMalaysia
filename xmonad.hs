@@ -212,6 +212,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Lock screen
     --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
     --, ((modm .|. shiftMask, xK_l), spawn "xlock -mode forest")
+    --, ((modm .|. shiftMask, xK_l), spawn "xlock -mode swirl")
     , ((modm .|. shiftMask, xK_l), spawn "xscreensaver-command -lock")
 
     -- Screenshot
