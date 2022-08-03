@@ -211,7 +211,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Lock screen
     --, ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
-    , ((modm .|. shiftMask, xK_l), spawn "xlock -mode forest")
+    --, ((modm .|. shiftMask, xK_l), spawn "xlock -mode forest")
+    , ((modm .|. shiftMask, xK_l), spawn "xscreensaver-command -lock")
 
     -- Screenshot
     --, ((mod4Mask,               xK_x), spawn "scrot '%Y-%m-%d-%H%M%S.png' -b -u -e 'mv $f ~/Pictures/Screenshots/'" ) -- Focused window
@@ -297,8 +298,8 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 -- tabConfig = defaultTheme {
 tabConfig = def {
-   --fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
-   fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
+   fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
+   --fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
    --fontName = "xft:Source Code Pro:pixelsize=12:antialias=false:hinting=true",
 
     --fontName = "xft:terminus:pixelsize=10:antialias=false:hinting=true",
@@ -446,8 +447,9 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 -- per-workspace layout choices.
 --
 -- By default, do nothing.
-myStartupHook = return ()
---myStartupHook = spawn "~/.xmonad/autostart"
+-- myStartupHook = return ()
+-- myStartupHook = spawn "~/.xmonad/autostart"
+myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
 --myStartupHook = do {
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
