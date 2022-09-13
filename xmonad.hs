@@ -14,6 +14,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
+import qualified XMonad.Util.Hacks as Hacks
 import System.IO
 
 import XMonad.Hooks.ManageHelpers
@@ -58,6 +59,9 @@ myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
 --myTerminal = "termite" -- Can zoom
 
 myXmobarrc = "~/.xmonad/xmobarrc.hs"
+
+-- XXX
+--_XMONAD_TRAYPAD(UTF8_STRING) = "<hspace=53/>"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
@@ -478,7 +482,9 @@ main = do
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
     --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
 
-    xmonad $ defaultConfig {
+    --xmonad $ defaultConfig {
+    --xmonad $ Hacks.javaHack (def {
+    xmonad $ Hacks.javaHack  def { -- XXX:
 -- {-
     --xmonad $ defaults {
     --xmonad $ def {
@@ -510,7 +516,11 @@ main = do
 
         -- handleEventHook    = myEventHook,
         --handleEventHook    = docksEventHook,
-        handleEventHook    = myEventHook <+> docksEventHook,
+        --handleEventHook    = myEventHook <+> docksEventHook,
+        handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook,
+        --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook,
+        --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook <> Hacks.trayerPaddingXmobarEventHook,
+	--windowedFullscreenFixEventHook :: Event -> X All
 
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
