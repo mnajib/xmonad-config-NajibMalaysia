@@ -53,14 +53,24 @@ Config {
             --"--template" , "Tx:<tx>kB/s,Rx:<rx>kB/s"
             --"--template" , "<dev>:<tx>kB,<rx>kB"
             --"--template" , "<dev>:Tx<tx>kB,Rx<rx>kB"
-            "--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
+            --"--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
+              "--template" , "<dev>:Rx<rx>,Tx<tx>"
+	    , "-S", "True"
             --"--template" , "<tx>,<rx>"
-            , "--Low"  , "1000"  -- units: kB/s
-            , "--High"  , "5000"  -- units: kB/s
-            , "--low"  , "#649FB6"
-            , "--normal"  , "darkorange"
-            , "--high"  , "darkred"
+            , "--Low"      , "24000"  -- in kB/s (80% dari 30MBps; kelajuan internet sekarang ialah 30Mbps)
+            , "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
+            , "--low"      , "#649FB6" -- blue?
+            , "--normal"   , "darkorange"
+            , "--high"     , "darkred"
             ] 10
+	    -- 
+	    -- Note:
+	    -- 
+	    --     1 Giga bytes per second
+	    --     = 1,000 mega bytes per second
+	    --     = 1,000,000 kilo bytes per second
+	    --     = 1,000,000,000 bytes per second
+	    --
 
         --, Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
         , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
