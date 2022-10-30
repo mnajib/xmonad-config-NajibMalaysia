@@ -49,13 +49,11 @@ Config {
         -- network activity monitor for ethernet
         --, Run Network "eno1" [
         , Run DynNetwork [
-            --"--template" , "E:<tx>kB/s,<rx>kB/s"
-            --"--template" , "Tx:<tx>kB/s,Rx:<rx>kB/s"
             --"--template" , "<dev>:<tx>kB,<rx>kB"
-            --"--template" , "<dev>:Tx<tx>kB,Rx<rx>kB"
-            --"--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
-              "--template" , "<dev>:Rx<rx>,Tx<tx>"
-	    , "-S", "True"
+            "--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
+            --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
+            --"--template" , "<dev>:Rx<rx>,Tx<tx>"
+	    --, "-S", "True"
             --"--template" , "<tx>,<rx>"
             --, "--Low"      , "240000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
             --, "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
