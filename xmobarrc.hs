@@ -57,8 +57,10 @@ Config {
               "--template" , "<dev>:Rx<rx>,Tx<tx>"
 	    , "-S", "True"
             --"--template" , "<tx>,<rx>"
-            , "--Low"      , "24000"  -- in kB/s (80% dari 30MBps; kelajuan internet sekarang ialah 30Mbps)
-            , "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
+            --, "--Low"      , "240000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
+            --, "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
+            , "--Low"      , "300000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
+            , "--High"     , "1000000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
             , "--low"      , "#649FB6" -- blue?
             , "--normal"   , "darkorange"
             , "--high"     , "darkred"
@@ -71,6 +73,23 @@ Config {
 	    --     = 1,000,000 kilo bytes per second
 	    --     = 1,000,000,000 bytes per second
 	    --
+	    -- 1 Mbps = 1000 kbps
+            --
+            -- Internet Download speed = 300 Mbps
+            --                         = 300 * 1000 kbps
+            --                         = 300 000 kbps
+            --
+            -- 80% from internet download speed = (80 / 100) * 300 000 kbps
+            --                  = 240 000 kpbs
+            --                  = 240 Mbps
+            --
+            -- Lan speed = 1 Gbps
+            --           = 1000 Mbps
+            --           = 1 000 000 kbps
+            --
+            -- 80% from LAN speed = (80/100) * 1000 Mbps
+            --                    = 800 Mbps
+            --	                  = 800 000 kbps
 
         --, Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
         , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
