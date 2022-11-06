@@ -26,22 +26,21 @@ sleep 1
 # Starting
 
 #case $HOSTNAME in
-#    (keira)
-#        ...
-#        ...
+#    keira)
+#        echo "keira"
 #        ;;
-#    (mahirah)
-#        ...
+#    mahirah)
+#        echo "mahirah"
 #        ;;
-#    (*)
-#        ...
-#        ...
+#    *)
+#        echo "lain"
 #        ;;
 #esac
 if [ "$HOSTNAME" = keira ]; then
     # dual monitor, external-monitor on the left (keira)
 
-    ~/bin/init-second-monitor-ThinkVisionForKeira.sh
+    #~/bin/init-second-monitor1280x1024-forKeira.sh dual
+    $HOME/bin/init-second-monitor1280x1024-forKeira.sh dual
 
     sleep 5
     pkill trayer
