@@ -16,7 +16,8 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio%%memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
-    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
@@ -93,11 +94,11 @@ Config {
         , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
 
         --, Run DiskIO [("sda", "<read><write>")] [] 10
-        , Run DiskIO [
-			--("sda", "sdaIO:R<read>,W<write>")
-			--, ("sdb", "sdbIO:R<read>,W<write>")
-			("/", "/:R<read>,W<write>")
-		     ] [] 10
+        --, Run DiskIO [
+	--		--("sda", "sdaIO:R<read>,W<write>")
+	--		--, ("sdb", "sdbIO:R<read>,W<write>")
+	--		("/", "/:R<read>,W<write>")
+	--	     ] [] 10
         --, Run DiskIO [("sda", "DiskIO:<total>")] [] 10
 
         , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 10
