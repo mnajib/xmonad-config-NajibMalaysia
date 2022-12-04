@@ -53,10 +53,10 @@ import Control.Concurrent
 -- createXmobarrc hostname -- produce appropriate .xmobarrc file for a given host
 -- -- other xmonad stuff follows here
 
-myTerminal      = "urxvt +sb -bg black -fg white -uc -bc"
+myTerminal      = "urxvt +sb -bg black -fg white -uc -bc" -- my current urxvt give better clear font with smaller font size, and also color theme
 -- myTerminal   = "termonad"
 -- myTerminal = "alacritty"
---myTerminal = "termite" -- Can zoom
+--myTerminal = "termite" -- Can zoom; but my current termite font and color not better than urxvt
 
 myXmobarrc = "~/.xmonad/xmobarrc.hs"
 
