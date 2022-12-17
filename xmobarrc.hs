@@ -5,6 +5,7 @@ Config {
     , position =     Bottom
     -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
     -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
+    , font = "Monospace Extra-Light Thin 8" -- Need this change because xmobar now use pango insteed of xft
     --, textOffset =   13
     , border =       TopB
     , borderColor =  "#181715"

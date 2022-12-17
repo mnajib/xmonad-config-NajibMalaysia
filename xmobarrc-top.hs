@@ -2,7 +2,12 @@ Config {
     -- appearance
     bgColor =      "#181715"
     , fgColor =    "#f3f3f1"
-    -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
+    --, font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
+    --, font =         "-*-monospace-*-*-*-*-10-*-*-*-*-*-*-*"
+    --, font =         "xft:Bitstream Vera Sans Mono:size=9:bold:antialias=true"
+    --, font = "Monospace Extra-Light Thin 9"
+    , font = "Monospace Extra-Light Thin 8" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+                                            -- Need this changes because xmobar now use pango instead of xft as before
     , position =     Top
     --, textOffset =   13
     , border =       TopB
