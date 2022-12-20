@@ -552,7 +552,7 @@ main = do
             ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")",
             ppUrgent = xmobarColor "#181715" "#D81816",
             ppHidden = xmobarColor "#58C5F1" "#181715",
-            ppSep = " * "
+            ppSep = " "
             }
 
         -- } `additionalKeys` myKeys `removeKeys` [(mod4Mask, xK_q)]
