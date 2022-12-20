@@ -332,14 +332,14 @@ myLayout =
               tabbed shrinkText tabConfig
             ) ) |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
-    renamed [Replace "TabTab-VerSplit"] ( avoidStruts (
+    renamed [Replace "Tab2VSplit"] ( avoidStruts (
            maximizeWithPadding 0 (
              windowNavigation (
                (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)
              )
            )
          )) |||
-    renamed [Replace "TabTab-HorSplit"] ( avoidStruts (
+    renamed [Replace "Tab2HSplit"] ( avoidStruts (
             maximizeWithPadding 0 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             )) |||
     renamed [Replace "TabOn3"] ( avoidStruts (
