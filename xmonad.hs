@@ -236,22 +236,22 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
-    --, ((modm .|. controlMask .|. shiftMask, xK_Right), sendMessage $ Move R)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Left ), sendMessage $ Move L)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Up   ), sendMessage $ Move U)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Down ), sendMessage $ Move D)
-    , ((modm,						xK_Right), 			sendMessage $ Go R)
-    , ((modm,		 				xK_Left ), 			sendMessage $ Go L)
-    , ((modm,		 				xK_Up   ), 			sendMessage $ Go U)
-    , ((modm,		 				xK_Down ), 			sendMessage $ Go D)
-    , ((modm .|. shiftMask,				xK_Right), 			sendMessage $ Move R)
-    , ((modm .|. shiftMask, 				xK_Left ), 			sendMessage $ Move L)
-    , ((modm .|. shiftMask, 				xK_Up   ), 			sendMessage $ Move U)
-    , ((modm .|. shiftMask, 				xK_Down ), 			sendMessage $ Move D)
-    , ((modm .|. controlMask,				xK_Right), 			sendMessage $ Swap R)
-    , ((modm .|. controlMask,				xK_Left ), 			sendMessage $ Swap L)
-    , ((modm .|. controlMask,				xK_Up   ), 			sendMessage $ Swap U)
-    , ((modm .|. controlMask,				xK_Down ), 			sendMessage $ Swap D)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Right),  sendMessage $ Move R)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Left ),  sendMessage $ Move L)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Up   ),  sendMessage $ Move U)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Down ),  sendMessage $ Move D)
+    , ((modm,                                 xK_Right),  sendMessage $ Go R)
+    , ((modm,                                 xK_Left ),  sendMessage $ Go L)
+    , ((modm,                                 xK_Up   ),  sendMessage $ Go U)
+    , ((modm,                                 xK_Down ),  sendMessage $ Go D)
+    , ((modm .|. shiftMask,                   xK_Right),  sendMessage $ Move R)
+    , ((modm .|. shiftMask,                   xK_Left ),  sendMessage $ Move L)
+    , ((modm .|. shiftMask,                   xK_Up   ),  sendMessage $ Move U)
+    , ((modm .|. shiftMask,                   xK_Down ),  sendMessage $ Move D)
+    , ((modm .|. controlMask,                 xK_Right),  sendMessage $ Swap R)
+    , ((modm .|. controlMask,                 xK_Left ),  sendMessage $ Swap L)
+    , ((modm .|. controlMask,                 xK_Up   ),  sendMessage $ Swap U)
+    , ((modm .|. controlMask,                 xK_Down ),  sendMessage $ Swap D)
 
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     --, ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -")) -- haskellPackages.hzenity
@@ -342,19 +342,41 @@ myLayout =
     renamed [Replace "Tab2HSplit"] ( avoidStruts (
             maximizeWithPadding 0 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             )) |||
-    renamed [Replace "TabOn3"] ( avoidStruts (
-            maximizeWithPadding 0 ( windowNavigation (   (tabbed shrinkText tabConfig) *|* windowNavigation ( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig))    ) )
-            )) |||
-    --renamed [Replace "TabOn4"] ( avoidStruts ( maximizeWithPadding 0 
-    --				( 
-    --    			    --windowNavigation (   (tabbed shrinkText tabConfig) *|* 
-    --	    			    windowNavigation (toggleLayouts( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)))  *|*
-    --	    			    windowNavigation (toggleLayouts( (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)))   
-    --				)
-    --      )) |||
+    renamed [Replace "TabOn3"] (
+      avoidStruts (
+        maximizeWithPadding 0 (
+          windowNavigation (
+            (tabbed shrinkText tabConfig)
+            *|*
+            windowNavigation (
+              (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)
+            )
+          )
+        )
+      )
+    )
+    |||
+    --{-
+    renamed [Replace "TabOn4"] (
+      avoidStruts (
+        maximizeWithPadding 0 (
+          windowNavigation (
+            windowNavigation (
+              (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)
+            )
+            *|*
+            windowNavigation (
+              (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)
+            )
+          )
+        )
+      )
+    )
+    |||
+    ---}
     renamed [Replace "Columns"] ( avoidStruts(
             maximizeWithPadding 0 (Mirror(Column 1) )
-            ) ) |||
+            )) |||
     renamed [Replace "Rows"] (avoidStruts(
             maximizeWithPadding 0 (Column 1)
             )) |||
