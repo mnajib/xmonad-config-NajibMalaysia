@@ -19,6 +19,7 @@ import System.IO
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
+
 import XMonad.Layout.Fullscreen
 import XMonad.Layout.NoBorders
 -- import XMonad.Layout.Spiral
@@ -34,6 +35,10 @@ import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Column
 import XMonad.Layout.Maximize
+
+--import XMonad.Layout.Groups
+import XMonad.Layout.Groups.Helpers
+import XMonad.Layout.Groups.Examples
 
 import XMonad.Config.Xfce
 import XMonad.Hooks.EwmhDesktops
@@ -106,6 +111,10 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 --    , ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest" )
 --    --, ((mod4Mask .|. shiftMask, xK_l), spawn "xscreensaver-command --lock" )
 --    ]
+--
+-- To get list of mod keys:
+--    xmodmap
+--
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch a terminal
@@ -134,16 +143,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ( ( modm, xK_F4 ), spawn $ "setxkbmap -layout us -variant dvorak")
     , ( ( modm, xK_F5 ), spawn $ "setxkbmap -layout us")
     , ( ( modm, xK_F6 ), spawn $ "setxkbmap -layout msa -variant najib")
-    , ( ( modm, xK_F7 ), spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
+    --, ( ( modm, xK_F7 ), spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
 
     -- audio-out (speaker) Volume control
-    , ( (modm, xK_F8), lowerVolume 1 >> return () )
-    , ( (modm, xK_F9), raiseVolume 1 >> return () )
-    , ( (modm, xK_F10), toggleMute >> return () )
+    , ( (modm, xK_F10), lowerVolume 1 >> return () )
+    , ( (modm, xK_F11), raiseVolume 1 >> return () )
+    , ( (modm, xK_F12), toggleMute >> return () )
     -- audio-in (microphone) volume control
-    , ( (modm .|. shiftMask, xK_F8), spawn $ "pactl -- set-source-volume 2 -4" )
-    , ( (modm .|. shiftMask, xK_F9), spawn $ "pactl -- set-source-volume 2 +4" )
-    , ( (modm .|. shiftMask, xK_F10), spawn $ "pactl -- set-source-mute 1 toggle" )
+    , ( (modm .|. shiftMask, xK_F10), spawn $ "pactl -- set-source-volume 2 -4" )
+    , ( (modm .|. shiftMask, xK_F11), spawn $ "pactl -- set-source-volume 2 +4" )
+    , ( (modm .|. shiftMask, xK_F12), spawn $ "pactl -- set-source-mute 1 toggle" )
     --
     , ( (0, xF86XK_AudioLowerVolume), lowerVolume 4 >> return () )
     , ( (0, xF86XK_AudioRaiseVolume), raiseVolume 4 >> return () )
@@ -236,10 +245,22 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
 
-    --, ((modm .|. controlMask .|. shiftMask, xK_Right),  sendMessage $ Move R)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Left ),  sendMessage $ Move L)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Up   ),  sendMessage $ Move U)
-    --, ((modm .|. controlMask .|. shiftMask, xK_Down ),  sendMessage $ Move D)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Right),                  sendMessage $ Move R)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Left ),                  sendMessage $ Move L)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Up   ),                  sendMessage $ Move U)
+    --, ((modm .|. controlMask .|. shiftMask, xK_Down ),                  sendMessage $ Move D)
+    --, ((modm .|. controlMask .|. shiftMask .|. mod1Mask, xK_k),         sendMessage $ moveToNewGroupUp)
+    --, ((modm .|. controlMask .|. shiftMask .|. mod1Mask, xK_j),         sendMessage $ moveToNewGroupDown)
+    --, ((modm .|. controlMask .|. shiftMask,                    xK_K),      moveToNewGroupUp)
+
+    , ((modm .|. shiftMask,                                 xK_F1),     nextOuterLayout)
+    , ((modm .|. shiftMask,                                 xK_F2),     decreaseNMasterGroups)
+    , ((modm .|. shiftMask,                                 xK_F3),     increaseNMasterGroups)
+    , ((modm .|. shiftMask,                                 xK_F5),     moveToGroupDown True)
+    , ((modm .|. shiftMask,                                 xK_F6),     moveToGroupUp True)
+    , ((modm .|. shiftMask,                                 xK_F7),     moveToNewGroupDown)
+    , ((modm .|. shiftMask,                                 xK_F8),     moveToNewGroupUp)
+
     , ((modm,                                 xK_Right),  sendMessage $ Go R)
     , ((modm,                                 xK_Left ),  sendMessage $ Go L)
     , ((modm,                                 xK_Up   ),  sendMessage $ Go U)
@@ -320,6 +341,10 @@ tabConfig = def {
     --inactiveBorderWidth = 0
 }
 
+myTiledTabsConfig = def {
+  tabsTheme = tabConfig
+}
+
 -- You can specify and transform your layouts by modifying these values.
 -- If you change layout bindings be sure to use 'mod-shift-space' after
 -- restarting (with 'mod-q') to reset your layout state to the new
@@ -374,6 +399,29 @@ myLayout =
     )
     |||
     ---}
+    {-
+    renamed [Replace "TabInTallMstr"] (
+      avoidStruts (
+        maximizeWithPadding 0 (
+          Tall 1 (3/100) (1/2)
+        )
+      )
+    )
+    |||
+    -}
+    --{-
+    renamed [Replace "TiledTabGroups"] (
+      avoidStruts (
+        maximizeWithPadding 0 (
+          --tallTabs def
+          tallTabs myTiledTabsConfig
+          --tallTabs 1 (3/100) (1/2)
+          --rowOfColumns
+        )
+      )
+    )
+    |||
+    ---}
     renamed [Replace "Columns"] ( avoidStruts(
             maximizeWithPadding 0 (Mirror(Column 1) )
             )) |||
@@ -400,13 +448,13 @@ myLayout =
      tiled   = Tall nmaster delta ratio
 
      -- The default number of windows in the master pane
-     nmaster = 1
+     nmaster = 1        -- 1 window in the master pane
 
      -- Default proportion of screen occupied by master pane
-     ratio   = 1/2
+     ratio   = 1/2      -- half of the screen size
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3/100
+     delta   = 3/100    -- 3% of the screen
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -484,7 +532,7 @@ myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     -- ...
     --}
--- 
+--
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
 --myStartupHook = return () >> checkKeymap myConfig myKeymap
