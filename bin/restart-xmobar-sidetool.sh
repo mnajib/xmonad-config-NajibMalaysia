@@ -74,15 +74,19 @@ case $HOSTNAME in
     ;;
   khawlah)
     echo "khawlah"
-    ./bin/init-secondMonitorThinkVision1280x1024-forkhawlah.sh dual
-    : '
+    $HOME/.xmonad/bin/init-secondMonitorThinkVision1280x1024-forkhawlah.sh dual
     sleep 5
     pkill trayer
     sleep 5
     pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
     sleep 5 # 1
-    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
-    '
+
+    # top-right on laptop monitor
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+
+    # top-fullexpand on ThinkVision monitor
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 --iconspacing 2 &
+
     setxkbmap dvorak
     ;;
   *)
