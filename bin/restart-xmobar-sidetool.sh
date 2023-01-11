@@ -74,7 +74,10 @@ case $HOSTNAME in
     ;;
   khawlah)
     echo "khawlah"
-    $HOME/.xmonad/bin/init-secondMonitorThinkVision1280x1024-forkhawlah.sh dual
+
+    #$HOME/.xmonad/bin/init-secondMonitorThinkVision1280x1024-forkhawlah.sh dual
+    xrandr --output LVDS-1 --off --output VGA-1 --primary --mode 1280x1024 --pos 0x0 --rotate normal --output HDMI-1 --off --output DP-1 --off --output HDMI-2 --off --output HDMI-3 --off --output DP-2 --off --output DP-3 --off
+
     sleep 5
     pkill trayer
     sleep 5
@@ -85,7 +88,10 @@ case $HOSTNAME in
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
 
     # top-fullexpand on ThinkVision monitor
-    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 --iconspacing 2 &
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 --iconspacing 2 &
+
+    # top-right on ThinkVision monitor as the only monitor (with build-in Thinkpad-X230 monitor disabled)
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 --iconspacing 2 &
 
     setxkbmap dvorak
     ;;
