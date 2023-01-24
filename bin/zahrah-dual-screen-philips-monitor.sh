@@ -17,12 +17,8 @@ external=VGA-1  # left
 # set dual monitors
 dual () {
     echo "Activating dual mode ..."
-
-    xrandr --output $internal --mode 1366x768 --primary --pos 1280x756 --rotate normal \
+    xrandr --output $internal --mode 1280x800 --primary --pos 1280x327 --rotate normal \
            --output $external --mode 1280x1024 --pos 0x0 --rotate normal \
-           --output HDMI-1 --off \
-           --output HDMI-2 --off \
-           --output HDMI-3 --off \
            --output DP-1 --off \
            --output DP-2 --off \
            --output DP-3 --off

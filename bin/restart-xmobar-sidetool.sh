@@ -45,7 +45,8 @@ case $HOSTNAME in
   zahrah)
     echo "zahrah"
     #$HOME/bin/init-second-monitor1280x1024-forZahrah.sh dual
-    $HOME/.xmonad/bin/init-secondMonitorPhilips1280x1024-forZahrah.sh dual
+    #$HOME/.xmonad/bin/init-secondMonitorPhilips1280x1024-forZahrah.sh dual
+    $HOME/.xmonad/bin/zahrah-dual-screen-philips-monitor.sh dual
     sleep 5
     pkill trayer
     sleep 5
