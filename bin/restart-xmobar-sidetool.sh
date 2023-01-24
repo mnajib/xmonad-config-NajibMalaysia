@@ -31,7 +31,8 @@ case $HOSTNAME in
     # dual monitor, external-monitor on the left (keira)
     #~/bin/init-second-monitor1280x1024-forKeira.sh dual
     #$HOME/bin/init-second-monitor1280x1024-forKeira.sh dual
-    $HOME/.xmonad/bin/init-second-monitor1280x1024-forKeira.sh dual
+    #$HOME/.xmonad/bin/init-second-monitor1280x1024-forKeira.sh dual
+    $HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
     sleep 5
     pkill trayer
     sleep 5
