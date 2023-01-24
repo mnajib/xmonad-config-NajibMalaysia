@@ -8,7 +8,7 @@ case $HOSTNAME in
 
     # If VGA-1 connected, do
     # setting for dual monitor
-    $HOME/bin/keira-dual-screen-dell-monitor.sh dual
+    $HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
     # else do
     # setting for single monitor
     # ...
