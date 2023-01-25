@@ -24,6 +24,8 @@ case $HOSTNAME in
     ;;
   sakinah)
     echo "Running some customization for $HOSTNAME"
+    $HOME/.xmonad/bin/sakinah-dual-screen-dell-monitor.sh dual
+    setxkbmap dvorak
     ;;
   *)
     echo "Else .."

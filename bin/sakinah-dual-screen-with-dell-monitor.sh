@@ -18,7 +18,7 @@ external=VGA-1  # left
 dual () {
     echo "Activating dual mode ..."
 
-    xrandr --output $internal --mode 1366x768 --primary --pos 1280x756 --rotate normal \
+    xrandr --output $internal --mode 1366x768 --primary --pos 1280x499 --rotate normal \
            --output $external --mode 1280x1024 --pos 0x0 --rotate normal \
            --output HDMI-1 --off \
            --output HDMI-2 --off \

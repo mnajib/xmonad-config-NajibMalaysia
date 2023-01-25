@@ -58,7 +58,7 @@ case $HOSTNAME in
   sakinah)
     echo "sakinah"
     #$HOME/bin/sakinah-dual-screen-with-dell-monitor.sh
-    $HOME/.xmonad/bin/sakinah-dual-screen-with-dell-monitor.sh
+    $HOME/.xmonad/bin/sakinah-dual-screen-with-dell-monitor.sh dual
     setxkbmap dvorak
     sleep 5
     pkill trayer
