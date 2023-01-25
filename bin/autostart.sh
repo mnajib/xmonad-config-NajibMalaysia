@@ -13,6 +13,7 @@ case $HOSTNAME in
     # setting for single monitor
     # ...
 
+    sleep 1
     setxkbmap us
     ;;
   zahrah)
@@ -25,6 +26,7 @@ case $HOSTNAME in
   sakinah)
     echo "Running some customization for $HOSTNAME"
     $HOME/.xmonad/bin/sakinah-dual-screen-dell-monitor.sh dual
+    sleep 1
     setxkbmap dvorak
     ;;
   *)
