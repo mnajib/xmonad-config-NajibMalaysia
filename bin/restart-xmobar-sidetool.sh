@@ -69,7 +69,8 @@ case $HOSTNAME in
     ;;
   asmak|naqib)
     echo "asmak"
-    $HOME/.xmonad/bin/asmak-dual-screen-with-thinkvision-monitor.sh dual
+    #$HOME/.xmonad/bin/asmak-dual-screen-with-thinkvision-monitor.sh dual
+    $HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
     setxkbmap dvorak
     sleep 5
     pkill trayer

@@ -29,6 +29,12 @@ case $HOSTNAME in
     sleep 1
     setxkbmap dvorak
     ;;
+  asmak|naqib)
+    echo "Running some customization for $HOSTNAME"
+    $HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
+    sleep 1
+    setxkbmap dvorak
+    ;;
   *)
     echo "Else .."
     ;;

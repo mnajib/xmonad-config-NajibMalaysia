@@ -14,7 +14,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
-import qualified XMonad.Util.Hacks as Hacks
+-- import qualified XMonad.Util.Hacks as Hacks
 import System.IO
 
 import XMonad.Hooks.ManageHelpers
@@ -553,9 +553,9 @@ main = do
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
     --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
 
-    --xmonad $ defaultConfig {
+    xmonad $ defaultConfig {
     --xmonad $ Hacks.javaHack (def {
-    xmonad $ Hacks.javaHack  def { -- XXX:
+    --xmonad $ Hacks.javaHack  def { -- XXX:
 -- {-
     --xmonad $ defaults {
     --xmonad $ def {
@@ -588,7 +588,8 @@ main = do
         -- handleEventHook    = myEventHook,
         --handleEventHook    = docksEventHook,
         --handleEventHook    = myEventHook <+> docksEventHook,
-        handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook,
+        --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook,
+        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook <> Hacks.trayerPaddingXmobarEventHook,
 	--windowedFullscreenFixEventHook :: Event -> X All

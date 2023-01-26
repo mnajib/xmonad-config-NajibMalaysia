@@ -12,7 +12,7 @@ export DISPLAY=:0
 internal=LVDS-1 # right
 intRes="1600x900"
 external=VGA-1  # left
-extRes="1024x768"
+extRes="1280x1024"
 
 #dmode="$(cat /sys/class/drm/card0-VGA-1/status)"
 
