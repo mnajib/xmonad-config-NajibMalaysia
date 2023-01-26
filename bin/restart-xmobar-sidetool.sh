@@ -67,6 +67,17 @@ case $HOSTNAME in
     sleep 5 # 1
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     ;;
+  asmak|naqib)
+    echo "asmak"
+    $HOME/.xmonad/bin/asmak-dual-screen-with-thinkvision-monitor.sh dual
+    setxkbmap dvorak
+    sleep 5
+    pkill trayer
+    sleep 5
+    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    sleep 5 # 1
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+    ;;
   manggis)
     echo "maggis"
     #sudo $HOME/bin/decrease-trackpoint-sensitivity-x220.sh
