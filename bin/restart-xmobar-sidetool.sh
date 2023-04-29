@@ -42,7 +42,7 @@ case $HOSTNAME in
     setxkbmap us # Not sure if I really need this, but just a safe bet tu make sure user not freakout if somehow the keyboard layout not US right after login.
     #setxkbmap us dvorak
     ;;
-  zahrah)
+  zahrahDISABLEXXX)
     echo "zahrah"
     #$HOME/bin/init-second-monitor1280x1024-forZahrah.sh dual
     #$HOME/.xmonad/bin/init-secondMonitorPhilips1280x1024-forZahrah.sh dual
