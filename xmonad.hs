@@ -358,18 +358,18 @@ myLayout =
             ) ) |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "Tab2VSplit"] ( avoidStruts (
-           maximizeWithPadding 0 (
+           maximizeWithPadding myMaxWithPad (
              windowNavigation (
                (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)
              )
            )
          )) |||
     renamed [Replace "Tab2HSplit"] ( avoidStruts (
-            maximizeWithPadding 0 ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
+            maximizeWithPadding myMaxWithPad ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             )) |||
     renamed [Replace "TabOn3"] (
       avoidStruts (
-        maximizeWithPadding 0 (
+        maximizeWithPadding myMaxWithPad (
           windowNavigation (
             (tabbed shrinkText tabConfig)
             *|*
@@ -384,7 +384,7 @@ myLayout =
     --{-
     renamed [Replace "TabOn4"] (
       avoidStruts (
-        maximizeWithPadding 0 (
+        maximizeWithPadding myMaxWithPad (
           windowNavigation (
             windowNavigation (
               (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)
@@ -402,7 +402,7 @@ myLayout =
     {-
     renamed [Replace "TabInTallMstr"] (
       avoidStruts (
-        maximizeWithPadding 0 (
+        maximizeWithPadding myMaxWithPad (
           Tall 1 (3/100) (1/2)
         )
       )
@@ -412,7 +412,7 @@ myLayout =
     --{-
     renamed [Replace "TiledTabGroups"] (
       avoidStruts (
-        maximizeWithPadding 0 (
+        maximizeWithPadding myMaxWithPad (
           --tallTabs def
           tallTabs myTiledTabsConfig
           --tallTabs 1 (3/100) (1/2)
@@ -423,22 +423,22 @@ myLayout =
     |||
     ---}
     renamed [Replace "Columns"] ( avoidStruts(
-            maximizeWithPadding 0 (Mirror(Column 1) )
+            maximizeWithPadding myMaxWithPad (Mirror(Column 1) )
             )) |||
     renamed [Replace "Rows"] (avoidStruts(
-            maximizeWithPadding 0 (Column 1)
+            maximizeWithPadding myMaxWithPad (Column 1)
             )) |||
     renamed [Replace "TallMaster"] ( avoidStruts (
-            maximizeWithPadding 0 ( Tall 1 (3/100) (1/2) )
+            maximizeWithPadding myMaxWithPad ( Tall 1 (3/100) (1/2) )
             )) |||
     renamed [Replace "WideMaster"] (avoidStruts (
-          maximizeWithPadding 0 (
+          maximizeWithPadding myMaxWithPad (
             Mirror (Tall 1 (3/100) (1/2))
           )
         )) |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts (
-          maximizeWithPadding 0 (Grid)
+          maximizeWithPadding myMaxWithPad (Grid)
         )) |||
     renamed [Replace "Max"] (avoidStruts Full) |||
     -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
@@ -455,6 +455,9 @@ myLayout =
 
      -- Percent of screen to increment by when resizing panes
      delta   = 3/100    -- 3% of the screen
+
+     -- maximizeWithPadding
+     myMaxWithPad = 7
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -592,7 +595,7 @@ main = do
         handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook <> Hacks.trayerPaddingXmobarEventHook,
-	--windowedFullscreenFixEventHook :: Event -> X All
+        --windowedFullscreenFixEventHook :: Event -> X All
 
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
