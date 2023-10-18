@@ -12,8 +12,10 @@ printT(){
 printT "xmobar"
 pgrep -a xmobar | grep 'xmobar /home'
 
-printT "waktusolat-putrajaya-hbar-v2"
-pgrep -a bash | grep 'waktusolat-putrajaya-hbar-v2'
+#printT "waktusolat-putrajaya-hbar-v2"
+#pgrep -a bash | grep 'waktusolat-putrajaya-hbar-v2'
+printT "waktusolat-hbar"
+pgrep -a bash | grep 'waktusolat-hbar'
 
 printT "keyboard-LED-status"
 pgrep -a bash | grep '.xmonad/bin/keyboard-LED-status.sh'

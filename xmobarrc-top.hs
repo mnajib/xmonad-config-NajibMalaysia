@@ -29,7 +29,7 @@ Config {
 
     -- plugins
     --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
-    , commands = [  
+    , commands = [
                     Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolatPutrajaya"
                     , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe"
                     --, Run XPropertyLog "_XMONAD_TRAYPAD"

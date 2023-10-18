@@ -527,14 +527,17 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 -- By default, do nothing.
 -- myStartupHook = return ()
 -- myStartupHook = spawn "~/.xmonad/autostart"
-myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
---myStartupHook = do {
+--myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
+myStartupHook = do {
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    --spawnOnce "~/.xmonad/bin/autostart.sh";
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    spawn "~/.xmonad/bin/autostart.sh";
+    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     -- ...
-    --}
+    }
 --
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
@@ -546,14 +549,15 @@ myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
-main = do
+main = do {
     --xmonad $ defaults
     --xmproc <- spawnPipe "~/.xmonad/xmobarrc.hs"
-    spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
-    threadDelay 5000000--1000000
-    threadDelay 5000000--1000000
-    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
-    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
+    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    --threadDelay 5000000;
+    --threadDelay 5000000--1000000;
+    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
+    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
     --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
 
     xmonad $ defaultConfig {
@@ -635,7 +639,7 @@ main = do
         --    ((controlMask, xK_Print), spawn "sleep 0.2; scrot"),
         --    ((0, xK_Print), spawn "scrot")
         --    ]
--- -}
+    }
 
 -- A structure containing your configuration settings, overriding
 -- fields in the default config. Any you don't override, will

@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-#echo "XXX: test test test"
+echo "XXX: test test test"
 
-#export DISPLAY=:0
-#xhost +
-
+echo $DISPLAY
+#export DISPLAY=":0"
 #umask 0002
 
 # Recompile xmonad
@@ -14,7 +13,7 @@
 cat /dev/null > /tmp/${USER}-wsp.log
 
 # If not already created
-rm -f /tmp/${USER}-zikirpipe
+#rm -f /tmp/${USER}-zikirpipe # xmobar need this file before xmobar start
 mkfifo /tmp/${USER}-zikirpipe
 
 # Killing
@@ -25,7 +24,8 @@ mkfifo /tmp/${USER}-zikirpipe
 #killall -9 pasystray
 #killall -9 volumeicon
 #~/.xmonad/bin/kill2restart.sh
-sleep 1
+#~/.xmonad/bin/kill2restartSidetool.sh
+#sleep 1
 
 # Starting
 
@@ -106,7 +106,8 @@ case $HOSTNAME in
     #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
     #sleep 5 # 1
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
-    trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
+    trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 & # laptop as 2'nd monitor positioned from left-to-right
     ;;
@@ -151,12 +152,12 @@ case $HOSTNAME in
 esac
 
 sleep 1
-~/.xmonad/bin/zikir &                         # rolling text
-volumeicon &                                  # audio/sound volume
-#pasystray &                                  # audio/sound volume and more
-#~/.fehbg &                                   # background/wallpaper
-fbsetroot -solid black &                      # background/wallpaper
-nm-applet &                                   # Not really needed, just use nmtui.
+~/.xmonad/bin/zikir &
+volumeicon &
+#pasystray &
+#~/.fehbg &
+fbsetroot -solid black &
+nm-applet & # Not really needed, just use nmtui.
 
 #xmobar ~/.xmonad/xmobarrc-top.hs &
 #xmobar ~/.xmonad/xmobarrc.hs &
