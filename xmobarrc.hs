@@ -56,7 +56,7 @@ Config {
             "--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
             --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
             --"--template" , "<dev>:Rx<rx>,Tx<tx>"
-	    --, "-S", "True"
+            --, "-S", "True"
             --"--template" , "<tx>,<rx>"
             --, "--Low"      , "240000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
             --, "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
@@ -66,15 +66,15 @@ Config {
             , "--normal"   , "darkorange"
             , "--high"     , "darkred"
             ] 10
-	    -- 
-	    -- Note:
-	    -- 
-	    --     1 Giga bytes per second
-	    --     = 1,000 mega bytes per second
-	    --     = 1,000,000 kilo bytes per second
-	    --     = 1,000,000,000 bytes per second
-	    --
-	    -- 1 Mbps = 1000 kbps
+    --
+    -- Note:
+    --
+    --     1 Giga bytes per second
+    --     = 1,000 mega bytes per second
+    --     = 1,000,000 kilo bytes per second
+    --     = 1,000,000,000 bytes per second
+    --
+    -- 1 Mbps = 1000 kbps
             --
             -- Internet Download speed = 300 Mbps
             --                         = 300 * 1000 kbps
@@ -90,17 +90,17 @@ Config {
             --
             -- 80% from LAN speed = (80/100) * 1000 Mbps
             --                    = 800 Mbps
-            --	                  = 800 000 kbps
+            --                  = 800 000 kbps
 
         --, Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
         , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
 
         --, Run DiskIO [("sda", "<read><write>")] [] 10
         --, Run DiskIO [
-	--		--("sda", "sdaIO:R<read>,W<write>")
-	--		--, ("sdb", "sdbIO:R<read>,W<write>")
-	--		("/", "/:R<read>,W<write>")
-	--	     ] [] 10
+        --  --("sda", "sdaIO:R<read>,W<write>")
+        --  --, ("sdb", "sdbIO:R<read>,W<write>")
+        --  ("/", "/:R<read>,W<write>")
+        --     ] [] 10
         --, Run DiskIO [("sda", "DiskIO:<total>")] [] 10
 
         , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 10
@@ -117,7 +117,7 @@ Config {
         -- time and date indicator
         , Run Date "<fc=#ffff00>%A</fc> <fc=#00ff00>%F</fc> <fc=#00ffff>%T</fc>" "date" 10
 
-	, Run Volume "default" "Master" [ "--template", "Vol:<volume>%<status>" ] 10
+        , Run Volume "default" "Master" [ "--template", "Vol:<volume>%<status>" ] 10
 
         -- keyboard layout indicator
         , Run Kbd [
