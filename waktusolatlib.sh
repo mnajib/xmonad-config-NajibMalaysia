@@ -503,9 +503,23 @@ printWaktuSolatForCliType1() {
     fi
 
     out+="\n"
-    for i in "${!NAMASOLAT[@]}"; do
-        out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
-    done
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    #done
+    i=5
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=6
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=0
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=1
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=2
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=3
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=4
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
 
     echo -en "${out}\n"
     #ONELINE="${out}"
@@ -554,10 +568,24 @@ formatWaktuSolatForXmobar() {
         out+="      "
     fi
 
-    for i in "${!NAMASOLAT[@]}"; do
-        #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
-        out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
-    done
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+    #    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    #done
+    i=5
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=6
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=0
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=1
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=2
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=3
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=4
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
 
     #echo -en "${out}\n"
     ONELINE="${out}"

@@ -115,12 +115,12 @@ parse_params() {
 parse_params "$@"
 setup_colors
 
-msg "${RED}Read parameters:${NOFORMAT}"
-msg "- flag: ${flag}"
-msg "- param: ${param}"
-msg "- zone: ${zone}"
-msg "- arguments: ${args[*]-}"
-msg "- \$1: ${1}"
+#msg "${RED}Read parameters:${NOFORMAT}"
+#msg "- flag: ${flag}"
+#msg "- param: ${param}"
+#msg "- zone: ${zone}"
+#msg "- arguments: ${args[*]-}"
+#msg "- \$1: ${1}"
 #msg "- \$2: ${2}"
 #msg "- \$3: ${3}"
 
