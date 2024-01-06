@@ -72,10 +72,10 @@ fetchData (){
 function fetchDataZone () {
     log DEBUG "Start fetchDataZone()"
     #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-    
+
     # Ignore SSL/cert error ... ???
     curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-    
+
     log DEBUG "End fetchDataZone()"
 }
 
@@ -543,30 +543,34 @@ formatWaktuSolatForXmobar() {
     local cPink="ff66ff"
     local cWhite="ffffff"
 
-    #out+="<fc=#${cPink}>Putrajaya</fc>"                 # Area/Zone
-    out+="<fc=#${cPink}>${zone}</fc>"                 # Area/Zone
-
-    out+=" $DAY"                                 # Day
-
-    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
-    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
-    out+=" <fc=#${cGreen}>(${HMONTHFULLNAME})${HDATE}</fc>"             # Hijrah date
-
     mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
     mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
-
     MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
     MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
-    out+=" <fc=#${cBlue}>(${MMONTHFULLNAME})${mDate}</fc>"              # Masihi date
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
 
-    out+=" <fc=#${cYellow}>${mTime}</fc>"               # Time
     out+=" "
+    out+="$DAY"                                                                 # Day in English
+
+    out+=" <fc=#${cBlue}>${MMONTHFULLNAME} </fc><fc=#${cYellow}>${mDate}</fc>"   # Masihi date
+
+    out+=" <fc=#${cWhite}>${mTime}</fc>"                                       # Time
+    #out+=" "
 
     if $ERROR; then
-        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "                                # Mark old data
     else
         out+="      "
     fi
+
+    #out+="<fc=#${cPink}>Putrajaya</fc>"                                        # Area/Zone
+    out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
+
+    #out+=" <fc=#${cGreen}>(${HMONTHFULLNAME})${HDATE}</fc>"                    # Hijrah date
+    out+=" <fc=#${cBlue}>${HMONTHFULLNAME} </fc><fc=#${cYellow}>${HDATE}</fc>"   # Hijrah date
+
+    out+=" "
 
     #for i in "${!NAMASOLAT[@]}"; do
     #    #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
@@ -585,7 +589,7 @@ formatWaktuSolatForXmobar() {
     i=3
     out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
     i=4
-    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc>"
 
     #echo -en "${out}\n"
     ONELINE="${out}"

@@ -25,7 +25,8 @@ sleep 1
 # Starting
 
 # single monitor
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
+#trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
+trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width request --transparent true --tint 0xffffff --height 14 --alpha 0 &
 sleep 2
 #
 # dual monitor

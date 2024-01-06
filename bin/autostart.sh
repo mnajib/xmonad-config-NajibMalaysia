@@ -56,4 +56,7 @@ case $HOSTNAME in
     ;;
 esac
 
+#$HOME/.xmonad/bin/kill2restart.sh
+#$HOME/.xmonad/bin/kill2restartSidetool.sh
+#sleep 3
 #$HOME/.xmonad/bin/restart-xmobar-sidetool.sh

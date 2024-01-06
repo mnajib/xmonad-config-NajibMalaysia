@@ -14,7 +14,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
--- import qualified XMonad.Util.Hacks as Hacks
+import qualified XMonad.Util.Hacks as Hacks
 import System.IO
 
 import XMonad.Hooks.ManageHelpers
@@ -531,11 +531,14 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 myStartupHook = do {
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
     --spawnOnce "~/.xmonad/bin/autostart.sh";
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     spawn "~/.xmonad/bin/autostart.sh";
-    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
+    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
+    --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
+    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
     -- ...
     }
 --
@@ -551,14 +554,15 @@ myStartupHook = do {
 -- main = xmonad defaults
 main = do {
     --xmonad $ defaults
-    --xmproc <- spawnPipe "~/.xmonad/xmobarrc.hs"
-    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
-    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
-    --threadDelay 5000000;
-    --threadDelay 5000000--1000000;
+
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"
+    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
+
+    spawn "~/.xmonad/bin/start-sidetool.sh";
+    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
+    threadDelay 5000000;
+    --threadDelay 5000000--1000000;
+    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
 
     xmonad $ defaultConfig {
     --xmonad $ Hacks.javaHack (def {
@@ -596,10 +600,13 @@ main = do {
         --handleEventHook    = docksEventHook,
         --handleEventHook    = myEventHook <+> docksEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook,
-        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook,
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook <> Hacks.trayerPaddingXmobarEventHook,
         --windowedFullscreenFixEventHook :: Event -> X All
+        --
+        -- XXX: TEST:
+        --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
+        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
 
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
@@ -619,7 +626,11 @@ main = do {
             myManageHook--,
             --manageHook defaultConfig
             ],
-        -- NOTE: You can float your windows before fullscreening them. This is usually accomplished by holding down the modkey and left clicking on the window once. When you have floated the window, it can cover all other windows, including xmobar. So if you then try to fullscreen the window, it should cover the entire screen.
+        -- NOTE: You can float your windows before fullscreening them. This is
+        -- usually accomplished by holding down the modkey and left clicking on
+        -- the window once. When you have floated the window, it can cover all
+        -- other windows, including xmobar. So if you then try to fullscreen
+        -- the window, it should cover the entire screen.
 
         --logHook            = myLogHook,
         logHook = dynamicLogWithPP  $ xmobarPP {

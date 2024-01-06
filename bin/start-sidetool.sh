@@ -14,7 +14,10 @@ cat /dev/null > /tmp/${USER}-wsp.log
 
 # If not already created
 #rm -f /tmp/${USER}-zikirpipe # xmobar need this file before xmobar start
-mkfifo /tmp/${USER}-zikirpipe
+if [ ! -f /tmp/${USER}-zikirpipe ]; then
+  #echo "File does not exist"
+  mkfifo /tmp/${USER}-zikirpipe
+fi
 
 # Killing
 #ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
@@ -110,6 +113,7 @@ case $HOSTNAME in
     trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 & # laptop as 2'nd monitor positioned from left-to-right
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --width 12 --distance 1 --margin 1 --alpha 0 --monitor 0
     ;;
   manggis)
     echo "maggis"
