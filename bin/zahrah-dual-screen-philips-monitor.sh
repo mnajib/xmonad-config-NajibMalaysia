@@ -17,11 +17,13 @@ external=VGA-1  # left
 # set dual monitors
 dual () {
     echo "Activating dual mode ..."
-    #cvt -r 1280 1024 60
-    xrandr --newmode "1280x1024"  90.75  1280 1328 1360 1440  1024 1027 1034 1054 +hsync -vsync
-    xrandr --addmode $external "1280x1024"
+    # cvt -r 1280 1024 60
+    #xrandr --newmode "1280x1024"  90.75  1280 1328 1360 1440  1024 1027 1034 1054 +hsync -vsync
+    #xrandr --addmode $external "1280x1024"
 
     # external monitor on the right
+    #local intMonPos="1280x327"
+    #local extMonPos="0x0"
     local intMonPos="0x475"
     local extMonPos="1280x0"
     #
@@ -29,8 +31,8 @@ dual () {
     #local intMonPos="1280x327"
     #local extMonPos="0x0"
     xrandr \
-      --output $internal --mode 1280x800 --primary --pos 1280x327 --rotate normal \
-      --output $external --mode 1280x1024 --pos 0x0 --rotate normal \
+      --output $internal --mode 1280x800 --primary --pos $intMonPos --rotate normal \
+      --output $external --mode 1280x1024 --pos $extMonPos --rotate normal \
       --output DP-1 --off \
       --output DP-2 --off \
       --output DP-3 --off
