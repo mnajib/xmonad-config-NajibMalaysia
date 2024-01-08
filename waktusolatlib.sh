@@ -173,7 +173,7 @@ namaBulanH(){
 }
 
 namaBulanM(){
-    noBulanM="$1"
+    local noBulanM="$1"
 
     case "$noBulanM" in
         "01")
@@ -219,46 +219,121 @@ namaBulanM(){
 }
 
 nomHari(){
-	namaHari="$1"
+  namaHari="$1"
 
-	case "$namaHari" in
-		"Sunday")
-			echo "1"
-			;;
-		"Monday")
-			echo "2"
-			;;
-		"Tuesday")
-			echo "3"
-			;;
-		"Wednesday")
-			echo "4"
-			;;
-		"Thursday")
-			echo "5"
-			;;
-		"Friday")
-			echo "6"
-			;;
-		"Saturday")
-			echo "7"
-			;;
-		*)
-			echo "eh"
-			;;
-	esac
+  case "$namaHari" in
+    "Sunday")
+      echo "1"
+      ;;
+    "Monday")
+      echo "2"
+      ;;
+    "Tuesday")
+      echo "3"
+      ;;
+    "Wednesday")
+      echo "4"
+      ;;
+    "Thursday")
+      echo "5"
+      ;;
+    "Friday")
+      echo "6"
+      ;;
+    "Saturday")
+      echo "7"
+      ;;
+    *)
+      echo "eh"
+      ;;
+  esac
+}
+
+namaHariAR(){
+  local nomHari="$1"
+
+  case "$nomHari" in
+    "1")
+      echo "al-a-had"
+      ;;
+    "2")
+      echo "al-ith-neen"
+      ;;
+    "3")
+      echo "ath-thu-la-tha'"
+      ;;
+    "4")
+      echo "al-ar-bi-3a'"
+      ;;
+    "5")
+      echo "al-kha-mees"
+      ;;
+    "6")
+      echo "al-ju-ma-3a"
+      ;;
+    "7")
+      echo "as-sabt"
+      ;;
+    *)
+      echo "eh"
+      ;;
+  esac
 }
 
 namaHariBM(){
-	nomHari="$1"
+  local nomHari="$1"
 
-	#...
+  case "$nomHari" in
+    1)
+      echo "Ahad"
+      ;;
+    2)
+      echo "Isnin"
+      ;;
+    3)
+      echo "Selasa"
+      ;;
+    4)
+      echo "Rabu"
+      ;;
+    5)
+      echo "Khamis"
+      ;;
+    6)
+      echo "Jumaat"
+      ;;
+    7)
+      echo "Sabtu"
+      ;;
+  esac
 }
 
 namaHariBI(){
-	nomHari="$1"
+  local nomHari="$1"
 
-	#...
+  case "$nomHari" in
+    1)
+      echo "Sunday"
+      ;;
+    2)
+      echo "Monday"
+      ;;
+    3)
+      echo "Tuesday"
+      ;;
+    4)
+      echo "Wednesday"
+      ;;
+    5)
+      echo "Thursday"
+      ;;
+    6)
+      echo "Friday"
+      ;;
+    7)
+      echo "Saturday"
+      ;;
+  esac
 }
 
 extractData() {
@@ -460,6 +535,8 @@ printWaktuSolatForCliType1() {
     local cPre="\e["
     local cPost="\e[0m"
 
+    local cRed="97;41m"
+    local cLightRed="1;97;41m"
     local cGreen="32m"
     local cLightGreen="1;32m"
     local cBlue="34m"
@@ -475,32 +552,25 @@ printWaktuSolatForCliType1() {
     local cLightGray="37m"
     local cBlack="30m"
 
-    #out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
-    out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
-
-    out+=" $DAY"                                 # Day
-
-    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
-    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
-    out+=" ${cPre}${cGreen}(${HMONTHFULLNAME})${HDATE}${cPost}"             # Hijrah date
-
     mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
     mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
 
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
     MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
     MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
     #MMONTHFULLNAME="January" # XXX
-    out+=" ${cPre}${cCyan}(${MMONTHFULLNAME})${mDate}${cPost}"              # Masihi date
 
-    out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
+    local nomborHari=`nomHari $DAY`
+    local hariInBM=`namaHariBM $nomborHari`
 
-    out+=" "
+    #--------------------------------------------------------------------------
+    out+="Jadual Waktu Solat untuk "
+    #out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+    out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
 
-    if $ERROR; then
-        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "        # Mark old data
-    else
-        out+="      "
-    fi
+    out+=" ${cPre}${cYellow}$hariInBM${cPost}"                                 # Day
+    out+=" ${cPre}${cGreen}${HMONTHFULLNAME} ${HDATE}${cPost}"             # Hijrah date
 
     out+="\n"
     #for i in "${!NAMASOLAT[@]}"; do
@@ -519,8 +589,29 @@ printWaktuSolatForCliType1() {
     i=3
     out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
     i=4
-    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}"
 
+    #--------------------------------------------------------------------------
+    #out+="\n"
+    out+="\nThis data was downloaded on ${cPre}${cYellow}$DAY${cPost}"                                 # Day
+    out+=" ${cPre}${cCyan}${MMONTHFULLNAME} ${mDate}${cPost}"              # Masihi date
+    out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
+    out+=" from www.e-solat.gov.my"
+    out+=" "
+    #out+="["
+    if $ERROR; then
+    #if false; then
+    #if true; then
+        out+="${cPre}${cLightRed}"
+        out+="!!! WARNING:OLD !!!"
+        out+="${cPost}"                                        # Mark old data
+    else
+        out+="                   "
+    fi
+    #out+="]"
+
+    #--------------------------------------------------------------------------
+    # Return
     echo -en "${out}\n"
     #ONELINE="${out}"
 
