@@ -536,7 +536,7 @@ printWaktuSolatForCliType1() {
     local cPost="\e[0m"
 
     local cRed="97;41m"
-    local cLightRed="1;97;41m"
+    local cLightRed="01;05;37;41m"              #"1;97;41m"
     local cGreen="32m"
     local cLightGreen="1;32m"
     local cBlue="34m"
