@@ -126,13 +126,14 @@ case $HOSTNAME in
   asmak|naqib)
     echo "asmak"
     #$HOME/.xmonad/bin/asmak-dual-screen-with-thinkvision-monitor.sh dual
-    $HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
+    #$HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
     setxkbmap dvorak
-    sleep 5
-    pkill trayer
-    sleep 5
-    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-    sleep 5 # 1
+    #sleep 5
+    #pkill trayer
+    #sleep 5
+    #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    #sleep 5 # 1
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     ;;
   delldesktop)
