@@ -532,14 +532,19 @@ myStartupHook = do {
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
     --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-    --spawnOnce "~/.xmonad/bin/autostart.sh";
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
-    spawn "~/.xmonad/bin/autostart.sh";
+    --spawn "~/.xmonad/bin/kill2restart.sh";
     --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
     --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
     --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
-    -- ...
+
+    -- Status: Testing
+    --spawnOnce "~/.xmonad/bin/autostart.sh";
+
+    -- Status: Working
+    spawn "~/.xmonad/bin/autostart.sh";
+
     }
 --
 -- Checking fo duplicate key bindings.
@@ -555,14 +560,14 @@ myStartupHook = do {
 main = do {
     --xmonad $ defaults
 
-    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
-    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-
+    spawn "~/.xmonad/bin/kill2restart-xmobar.sh";
+    --threadDelay 5000000;
+    spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
+    --threadDelay 5000000;
     spawn "~/.xmonad/bin/start-sidetool.sh";
-    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     threadDelay 5000000;
-    --threadDelay 5000000--1000000;
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
 
     xmonad $ defaultConfig {
     --xmonad $ Hacks.javaHack (def {

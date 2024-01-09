@@ -32,6 +32,47 @@ fi
 
 # Starting
 
+trayerIsAlive(){
+  local processName="trayer"
+
+  #ps auxwww | grep -i trayer
+  #ps aux | grep -i trayer | grep -v grep
+
+  processId =$(ps aux | grep $processName | grep -v grep| awk '{print $2}')
+  #if cat /proc/$processId/status | grep "State:  R (running)" > /dev/null
+  if cat /proc/$processId/status | grep "State:  R (running)" > /dev/null
+  then
+    #echo "Running"
+    # return 0 for running
+    echo 0
+  else
+    #echo "Not running"
+    # return 1 for "Not running"
+    echo 1
+  fi
+
+}
+
+killTrayerIfAlive(){
+  if $(pidof trayer); then
+    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+  fi
+}
+
+killTrayer(){
+  #if $(pidof trayer); then
+    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+  #fi
+  #pidof trayer
+  #kill(pid,0)
+  #killall -s 0 trayer
+  #cat /proc/${pid}/status
+}
+
+startTrayer(){
+  trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
+}
+
 case $HOSTNAME in
   keira)
     echo "keira"
@@ -111,7 +152,9 @@ case $HOSTNAME in
     #sleep 5 # 1
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
-    trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
+    if [ ! trayerIsAlive ]; then
+      trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
+    fi
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 & # laptop as 2'nd monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --width 12 --distance 1 --margin 1 --alpha 0 --monitor 0
