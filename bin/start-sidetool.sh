@@ -105,6 +105,12 @@ case $HOSTNAME in
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     setxkbmap dvorak
     ;;
+  raudah)
+    echo "raudah"
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+    setxkbmap dvorak
+    ;;
   sakinah)
     echo "sakinah"
     #$HOME/bin/sakinah-dual-screen-with-dell-monitor.sh
@@ -200,8 +206,9 @@ case $HOSTNAME in
     ;;
 esac
 
-sleep 1
+#sleep 1
 ~/.xmonad/bin/zikir &
+sleep 1
 volumeicon &
 #pasystray &
 #~/.fehbg &
