@@ -24,7 +24,7 @@ pgrep -a bash | grep 'netconnstatus.sh' | awk '{print $1}' | tr '\n' ' ' | sed '
 pgrep -a bash | grep 'NetConnStatus' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a xscreensaver | grep 'xscreensaver' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
-#sleep 2
+sleep 2
 #echo "--------------------"
 #ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
 #~/.xmonad/bin/list-running-process.sh

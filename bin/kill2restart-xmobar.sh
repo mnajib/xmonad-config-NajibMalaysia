@@ -24,7 +24,7 @@ pgrep -a xmobar | grep 'xmobar /home' | awk '{print $1}' | tr '\n' ' ' | sed 's/
 #pgrep -a bash | grep 'NetConnStatus' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 #pgrep -a xscreensaver | grep 'xscreensaver' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
-#sleep 2
+sleep 2
 #echo "--------------------"
 ##ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
 #~/.xmonad/bin/list-running-process.sh

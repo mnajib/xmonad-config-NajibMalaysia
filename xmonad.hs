@@ -561,13 +561,13 @@ main = do {
     --xmonad $ defaults
 
     spawn "~/.xmonad/bin/kill2restart-xmobar.sh";
-    --threadDelay 5000000;
     spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
-    --threadDelay 5000000;
+    threadDelay 5000000;
     spawn "~/.xmonad/bin/start-sidetool.sh";
     threadDelay 5000000;
-    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
+
+    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
+    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
 
     xmonad $ defaultConfig {
     --xmonad $ Hacks.javaHack (def {
