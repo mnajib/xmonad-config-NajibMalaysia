@@ -641,6 +641,9 @@ formatWaktuSolatForXmobar() {
     HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
     HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
 
+    local nomborHari=`nomHari $DAY`
+    local hariInBM=`namaHariBM $nomborHari`
+
     out+=" "
     out+="$DAY"                                                                 # Day in English
 
@@ -657,6 +660,9 @@ formatWaktuSolatForXmobar() {
 
     #out+="<fc=#${cPink}>Putrajaya</fc>"                                        # Area/Zone
     out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
+
+    out+=" "
+    out+="$hariInBM"
 
     #out+=" <fc=#${cGreen}>(${HMONTHFULLNAME})${HDATE}</fc>"                    # Hijrah date
     out+=" <fc=#${cBlue}>${HMONTHFULLNAME} </fc><fc=#${cYellow}>${HDATE}</fc>"   # Hijrah date
