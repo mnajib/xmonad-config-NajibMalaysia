@@ -17,7 +17,8 @@ Config {
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
     --, template = " %WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> "
-    , template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> %_XMONAD_TRAYPAD%" -- XXX: TEST
+    , template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> "
+    --, template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> %_XMONAD_TRAYPAD%" -- XXX: TEST
 
     -- general behavior
     , lowerOnStart =     True    -- send to bottom of window stack on start
