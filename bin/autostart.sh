@@ -48,7 +48,8 @@ case $HOSTNAME in
     echo "Running some customization for $HOSTNAME"
     #$HOME/.xmonad/bin/delldesktop-dualMonitor-ThinkVision1280x1024-PanasonicTV1920x1080.sh
     #$HOME/.screenlayout/host-khadijah-with2externalDellMonitor-122.sh
-    $HOME/.xmonad/bin/host-khadijah-with2externalDellMonitor-122.sh
+    #$HOME/.xmonad/bin/host-khadijah-with2externalDellMonitor-122.sh
+    $HOME/.xmonad/bin/screenlayout.khadijah.sh
     sleep 1
     setxkbmap dvorak
     ;;
