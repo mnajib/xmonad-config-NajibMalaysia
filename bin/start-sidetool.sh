@@ -76,19 +76,19 @@ startTrayer(){
 case $HOSTNAME in
   keira)
     echo "keira"
+    setxkbmap us # Not sure if I really need this, but just a safe bet tu make sure user not freakout if somehow the keyboard layout not US right after login.
+    #setxkbmap us dvorak
     # dual monitor, external-monitor on the left (keira)
     #~/bin/init-second-monitor1280x1024-forKeira.sh dual
     #$HOME/bin/init-second-monitor1280x1024-forKeira.sh dual
     #$HOME/.xmonad/bin/init-second-monitor1280x1024-forKeira.sh dual
-    $HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
-    sleep 5
-    pkill trayer
-    sleep 5
-    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-    sleep 5 # 1
+    #$HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
+    #sleep 5
+    #pkill trayer
+    #sleep 5
+    #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    #sleep 5 # 1
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
-    setxkbmap us # Not sure if I really need this, but just a safe bet tu make sure user not freakout if somehow the keyboard layout not US right after login.
-    #setxkbmap us dvorak
     ;;
   #zahrahDISABLEXXX)
   zahrah)
@@ -101,6 +101,12 @@ case $HOSTNAME in
     #sleep 5
     #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
     #sleep 5 # 1
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+    setxkbmap dvorak
+    ;;
+  raudah)
+    echo "raudah"
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     setxkbmap dvorak
@@ -120,13 +126,14 @@ case $HOSTNAME in
   asmak|naqib)
     echo "asmak"
     #$HOME/.xmonad/bin/asmak-dual-screen-with-thinkvision-monitor.sh dual
-    $HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
+    #$HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
     setxkbmap dvorak
-    sleep 5
-    pkill trayer
-    sleep 5
-    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-    sleep 5 # 1
+    #sleep 5
+    #pkill trayer
+    #sleep 5
+    #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    #sleep 5 # 1
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     ;;
   delldesktop)
@@ -200,8 +207,9 @@ case $HOSTNAME in
     ;;
 esac
 
-sleep 1
+#sleep 1
 ~/.xmonad/bin/zikir &
+sleep 1
 volumeicon &
 #pasystray &
 #~/.fehbg &
