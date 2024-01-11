@@ -153,9 +153,9 @@ case $HOSTNAME in
     #sleep 5 # 1
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 & # laptop as 1'sf monitor positioned from left-to-right
-    if [ ! trayerIsAlive ]; then
-      trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
-    fi
+    #if [ ! trayerIsAlive ]; then
+    trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
+    #fi
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 & # laptop as 2'nd monitor positioned from left-to-right
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --transparent true --tint 0xffffff --height 14 --width 12 --distance 1 --margin 1 --alpha 0 --monitor 0
