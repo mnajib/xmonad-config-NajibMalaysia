@@ -132,9 +132,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --, ((modm, xK_p), spawn "rofi -show run")
     --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi")
     --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
-    , ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\"")
+    --, ((modm, xK_p), spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\"")
+    , ((modm, xK_p), spawn "rofi -font \"hack 10\" -show drun")
+    , ((modm .|. shiftMask, xK_p), spawn "rofi -theme solarized -font \"hack 10\" -show drun -icon-theme \"Papirus\" -show-icons")
+    --, ((modm .|. shiftMask, xK_p), spawn "rofi -combi-modi drun,run -theme solarized -font \"hack 10\" -show combi")
     --, ((modm, xK_f), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
-    , ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
+    --, ((modm .|. shiftMask, xK_p), spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
 
     -- toggle enable/disable touchpad
     , ( ( modm, xK_F3 ), spawn $ "~/.xmonad/bin/toggleTouchpadEnableDisable-Thinkpad.sh")
@@ -700,8 +703,8 @@ help = unlines [
     "Launching and killing programs",
     "⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺",
     mmm ++ "-Shift-Enter        Launch xterminal",
-    mmm ++ "-p                  Launch dmenu",
-    mmm ++ "-Shift-p            Launch gmrun",
+    mmm ++ "-p                  Launch rofi",                     -- dmenu
+    mmm ++ "-Shift-p            Launch rofi with icons",          -- gmrun
     mmm ++ "-Shift-c            Close/kill the focused window",
     mmm ++ "-Space              Rotate through the available layout algorithms",
     mmm ++ "-Shift-Space        Reset the layouts on the current workSpace to default",
