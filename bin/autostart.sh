@@ -39,6 +39,12 @@ case $HOSTNAME in
     sleep 1
     setxkbmap dvorak
     ;;
+  raudah)
+    echo "Running some customization for $HOSTNAME"
+    $HOME/.xmonad/bin/screenlayout.raudah.sh
+    sleep 1
+    setxkbmap dvorak
+    ;;
   delldesktop)
     echo "Running some customization for $HOSTNAME"
     $HOME/.xmonad/bin/delldesktop-dualMonitor-ThinkVision1280x1024-PanasonicTV1920x1080.sh
