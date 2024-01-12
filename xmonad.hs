@@ -564,7 +564,7 @@ main = do {
     spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
     threadDelay 5000000;
     spawn "~/.xmonad/bin/start-sidetool.sh";
-    threadDelay 5000000;
+    threadDelay 5000000;                            -- in miliseconds
 
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar

@@ -17,7 +17,7 @@ Config {
     , sepChar =  "%"   -- delineator between plugin names and straight text
     , alignSep = "}{"  -- separator between left-right alignment
     --, template = " %WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> "
-    , template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> "
+    , template = "%WaktuSolat%  <fc=#ff9933,#663300>%mpipe%</fc> "
     --, template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> %_XMONAD_TRAYPAD%" -- XXX: TEST
 
     -- general behavior
@@ -31,7 +31,7 @@ Config {
     -- plugins
     --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
     , commands = [
-                    Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolatPutrajaya"
+                    Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolat"
                     --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe"
                     , Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "   +   ") "mpipe"
                     , Run XPropertyLog "_XMONAD_TRAYPAD" -- XXX: TEST

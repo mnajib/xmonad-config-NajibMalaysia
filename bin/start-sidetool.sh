@@ -18,6 +18,9 @@ if [ ! -f /tmp/${USER}-zikirpipe ]; then
   #echo "File does not exist"
   mkfifo /tmp/${USER}-zikirpipe
 fi
+sleep 1
+~/.xmonad/bin/zikir &
+sleep 1
 
 # Killing
 #ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
@@ -101,8 +104,8 @@ case $HOSTNAME in
     #sleep 5
     #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
     #sleep 5 # 1
-    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
-    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
+    #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
+    trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     setxkbmap dvorak
     ;;
   raudah)
@@ -113,14 +116,14 @@ case $HOSTNAME in
     ;;
   sakinah)
     echo "sakinah"
-    #$HOME/bin/sakinah-dual-screen-with-dell-monitor.sh
-    $HOME/.xmonad/bin/sakinah-dual-screen-with-dell-monitor.sh dual
+    ##$HOME/bin/sakinah-dual-screen-with-dell-monitor.sh
+    #$HOME/.xmonad/bin/sakinah-dual-screen-with-dell-monitor.sh dual
     setxkbmap dvorak
-    sleep 5
-    pkill trayer
-    sleep 5
-    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-    sleep 5 # 1
+    #sleep 5
+    #pkill trayer
+    #sleep 5
+    #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    #sleep 5 # 1
     trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     ;;
   asmak|naqib)
@@ -138,13 +141,13 @@ case $HOSTNAME in
     ;;
   delldesktop)
     echo "delldesktop"
-    #$HOME/.xmonad/bin/delldesktop-dualMonitor-ThinkVision1280x1024-PanasonicTV1920x1080.sh
+    ##$HOME/.xmonad/bin/delldesktop-dualMonitor-ThinkVision1280x1024-PanasonicTV1920x1080.sh
     setxkbmap dvorak
-    sleep 5
-    pkill trayer
-    sleep 5
-    pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
-    sleep 5 # 1
+    #sleep 5
+    #pkill trayer
+    #sleep 5
+    #pgrep -a trayer | grep 'trayer --edge top --align right' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+    #sleep 5 # 1
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 0 &
     #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
     trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor 1 &
@@ -208,7 +211,7 @@ case $HOSTNAME in
 esac
 
 #sleep 1
-~/.xmonad/bin/zikir &
+#~/.xmonad/bin/zikir &
 sleep 1
 volumeicon &
 #pasystray &

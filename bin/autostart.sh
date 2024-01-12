@@ -18,9 +18,10 @@ case $HOSTNAME in
     ;;
   zahrah)
     echo "Running some customization for $HOSTNAME"
-    #$HOME/.xmonad/bin/init-secondMonitorPhilips1280x1024-forZahrah.sh dual
-    $HOME/.xmonad/bin/zahrah-dual-screen-philips-monitor.sh dual
-    #$HOME/.xmonad/bin/zahrah-dual-screen-philips-monitor.sh single
+    ##$HOME/.xmonad/bin/init-secondMonitorPhilips1280x1024-forZahrah.sh dual
+    #$HOME/.xmonad/bin/zahrah-dual-screen-philips-monitor.sh dual
+    ##$HOME/.xmonad/bin/zahrah-dual-screen-philips-monitor.sh single
+    $HOME/.xmonad/bin/screenlayout-zahrah.sh
     sleep 1
     setxkbmap dvorak
     ;;
