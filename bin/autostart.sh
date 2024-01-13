@@ -35,7 +35,8 @@ case $HOSTNAME in
     echo "Running some customization for $HOSTNAME"
     #$HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-ThinkVision1280x1024.sh
     #$HOME/.xmonad/bin/asmak-dualMonitor-ThinkpadT430s_1600x900-Dell_P1913S_1280x1024.sh
-    $HOME/.xmonad/bin/asmak_with_vga_PanasonicTV_1024x768.sh dual
+    #$HOME/.xmonad/bin/asmak_with_vga_PanasonicTV_1024x768.sh dual
+    $HOME/.xmonad/bin/screenlayout.asmak.sh
     sleep 1
     setxkbmap dvorak
     ;;
