@@ -213,8 +213,11 @@ while : ; do
     #     waktusolat-putrajaya-hbar cli
     #     waktusolat-putrajaya-hbar xmobar
     #
-    printWaktuSolatForCliType1
+    #printWaktuSolatForCliType1
+    #echo ""
     #printWaktuSolatForCliType2
+    #echo ""
+    printWaktuSolatForCliType3
 
     # exit from while loop
     if [ "$done" -ne 0 ]; then

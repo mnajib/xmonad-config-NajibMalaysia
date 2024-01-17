@@ -126,45 +126,112 @@ resetData() {
 # Usage:
 #    namaBulanH $nomborBulan
 #    namaBulanH "02"
-namaBulanH(){
-    noBulanH="$1"
+namaBulanH() {
+    local noBulanH="$1"
+
+    local ntype="${2:-short}"
+    #local ntype="${2:-long}"
+
+    if [ "$ntype" = "long" ]; then
+      ntype="long"
+    fi
 
     case "$noBulanH" in
         "01")
-            echo "Muharam"
+            if [ "$ntype"  = "long" ]; then
+              echo "Muharam"
+            else
+              echo "Mhram"
+            fi
             ;;
         "02")
-            echo "Safar"
+            #echo "Safar"
+            if [ "$ntype"  = "long" ]; then
+              echo "Safar"
+            else
+              echo "Safar"
+            fi
             ;;
         "03")
-            echo "Rabiulawal"
+            #echo "Rabiulawal"
+            if [ "$ntype"  = "long" ]; then
+              echo "Rabiulawal"
+            else
+              echo "Rbawl"
+            fi
             ;;
         "04")
-            echo "Rabiulakhir"
+            #echo "Rabiulakhir"
+            if [ "$ntype"  = "long" ]; then
+              echo "Rabiulakhir"
+            else
+              echo "Rbakh"
+            fi
             ;;
         "05")
-            echo "Jamadilawal"
+            #echo "Jamadilawal"
+            if [ "$ntype"  = "long" ]; then
+              echo "Jamadilawal"
+            else
+              echo "Jmawl"
+            fi
             ;;
         "06")
-            echo "Jamadilakhir"
+            #echo "Jamadilakhir"
+            if [ "$ntype"  = "long" ]; then
+              echo "Jamadilakhir"
+            else
+              echo "Jmakh"
+            fi
             ;;
         "07")
             echo "Rejab"
+            # XXX: test
+            #if [ "$ntype"  = "long" ]; then
+            #  echo "REJAB"
+            #else
+            #  echo "ReJaB"
+            #fi
             ;;
         "08")
-            echo "Saaban"
+            #echo "Saaban"
+            if [ "$ntype"  = "long" ]; then
+              echo "Saaban"
+            else
+              echo "Sy3bn"
+            fi
             ;;
         "09")
-            echo "Ramadan"
+            #echo "Ramadan"
+            if [ "$ntype"  = "long" ]; then
+              echo "Ramadan"
+            else
+              echo "Rmdan"
+            fi
             ;;
         "10")
-            echo "Syawal"
+            #echo "Syawal"
+            if [ "$ntype"  = "long" ]; then
+              echo "Syawal"
+            else
+              echo "Syawl"
+            fi
             ;;
         "11")
-            echo "Zulkaedah"
+            #echo "Zulkaedah"
+            if [ "$ntype"  = "long" ]; then
+              echo "Zulkaedah"
+            else
+              echo "Zlkdh"
+            fi
             ;;
         "12")
-            echo "Zulhijjah"
+            #echo "Zulhijjah"
+            if [ "$ntype"  = "long" ]; then
+              echo "Zulhijjah"
+            else
+              echo "Zlhjh"
+            fi
             ;;
         *)
             echo "eh"
@@ -335,6 +402,16 @@ namaHariBI(){
       ;;
   esac
 }
+
+# Tak perlu ada
+#namaNextHariBM(){
+#  local nomHari=$1
+#  local namaNextHariInBM=""
+#
+#  nomNextHari=$(${1}+1)
+#  #echo "nomNextHari: $nomNextHari"
+#  namaNextHariInBM=$(namaHariBM $nomNextHari)
+#}
 
 extractData() {
     log DEBUG "Start extractData()"
@@ -525,6 +602,7 @@ printWaktuSolatForHtml() {
     log DEBUG "End formatWaktuSolatForXmobar()"
     }
 
+# Berasaskan hari/tarihk hijrah, bertukar hari pada waktu maghrib
 printWaktuSolatForCliType1() {
     #log DEBUG "Start qqfy665..."
 
@@ -609,6 +687,212 @@ printWaktuSolatForCliType1() {
         out+="                   "
     fi
     #out+="]"
+
+    #--------------------------------------------------------------------------
+    # Return
+    echo -en "${out}\n"
+    #ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
+# Berasaskan hari/tarikh masihi, bertukar hari pada 12 tengah malam.
+printWaktuSolatForCliType2() {
+    #log DEBUG "Start qqfy665..."
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    local cPre="\e["
+    local cPost="\e[0m"
+
+    local cRed="97;41m"
+    local cLightRed="01;05;37;41m"              #"1;97;41m"
+    local cGreen="32m"
+    local cLightGreen="1;32m"
+    local cBlue="34m"
+    local cLightBlue="1;34m"
+    local cPurple="35m"
+    local cLightPurple="1;35m"
+    local cCyan="36m"
+    local cLightCyan="1;36m"
+    local cYellow="33m"
+    local cLightYellow="1;33m"
+    #local cPink="ff66ff"
+    local cWhite="1;37m"
+    local cLightGray="37m"
+    local cBlack="30m"
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    #MMONTHFULLNAME="January" # XXX
+
+    local nomborHari=`nomHari $DAY`
+    local hariInBM=`namaHariBM $nomborHari`
+
+    #--------------------------------------------------------------------------
+    out+="Jadual Waktu Solat untuk "
+    #out+="${cPre}${cPurple}Putrajaya${cPost}"                 # Area/Zone
+    out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
+
+    out+=" ${cPre}${cYellow}$hariInBM${cPost}"                                 # Day
+    out+=" ${cPre}${cGreen}${HMONTHFULLNAME} ${HDATE}${cPost}"             # Hijrah date
+
+    out+="\n"
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    #done
+    out+="("
+    i=5
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=6
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=0
+    out+=")"
+    out+="("
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=1
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=2
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=3
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    i=4
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}"
+    out+=")"
+
+    #--------------------------------------------------------------------------
+    #out+="\n"
+    out+="\nThis data was downloaded on ${cPre}${cYellow}$DAY${cPost}"                                 # Day
+    out+=" ${cPre}${cCyan}${MMONTHFULLNAME} ${mDate}${cPost}"              # Masihi date
+    out+=" ${cPre}${cYellow}${mTime}${cPost}"               # Time
+    out+=" from www.e-solat.gov.my"
+    out+=" "
+    #out+="["
+    if $ERROR; then
+    #if false; then
+    #if true; then
+        out+="${cPre}${cLightRed}"
+        out+="!!! WARNING:OLD !!!"
+        out+="${cPost}"                                        # Mark old data
+    else
+        out+="                   "
+    fi
+    #out+="]"
+
+    #--------------------------------------------------------------------------
+    # Return
+    echo -en "${out}\n"
+    #ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
+#startTxtSyle() {
+#  echo ""
+#}
+
+#endTxtSyle() {
+#  echo ""
+#}
+
+# Berasaskan hari/tarikh masihi, bertukar hari pada 12 tengah malam.
+printWaktuSolatForCliType3() {
+    #log DEBUG "Start qqfy665..."
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    local cPre="\e["
+    local cPost="\e[0m"
+
+    local cRed="97;41m"
+    local cLightRed="01;05;37;41m"              #"1;97;41m"
+    local cGreen="32m"
+    local cLightGreen="1;32m"
+    local cBlue="34m"
+    local cLightBlue="1;34m"
+    local cPurple="35m"
+    local cLightPurple="1;35m"
+    local cCyan="36m"
+    local cLightCyan="1;36m"
+    local cYellow="33m"
+    local cLightYellow="1;33m"
+    #local cPink="ff66ff"
+    local cWhite="1;37m"
+    local cLightGray="37m"
+    local cBlack="30m"
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    #MMONTHFULLNAME="January" # XXX
+
+    local nomborHari=`nomHari $DAY`
+    local nomborNextHari=$(( $nomborHari + 1 ))
+    local hariInBM=`namaHariBM $nomborHari`
+    local nextHariInBM=`namaHariBM $nomborNextHari`
+
+    #--------------------------------------------------------------------------
+    out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
+    #out+="\n"
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    out+="${cPre}${cGreen}${NAMASOLAT[$i]}${cPost}${cPre}${cWhite} ${MASASOLAT[$i]}${cPost}, "
+    #done
+    out+=" T${cPre}${cYellow}${mTime}${cPost}"               # Time
+    #--------------------------------------------------------------------------
+    out+=" "
+    #out+="["
+    if $ERROR; then
+    #if false; then
+    #if true; then
+        out+="${cPre}${cLightRed}"
+        out+="OLD"
+        out+="${cPost}"                                        # Mark old data
+    else
+        out+="   "
+    fi
+    #out+="]"
+    out+=" "
+    #--------------------------------------------------------------------------
+    out+="("
+    out+="${MMONTHFULLNAME:0:3} ${mDate} "              # Masihi date
+    out+="${DAY:0:3}"                                 # Day
+    out+=" ("
+    out+="${HMONTHFULLNAME} ${HDATE} "             # Hijrah date
+    out+="${hariInBM:0:3}"                                 # Day
+    out+=" "
+    i=0
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost},"
+    i=1
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost},"
+    i=2
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost},"
+    i=3
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost},"
+    i=4
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost}"
+    out+=")"
+    out+=" ("
+    out+="${nextHariInBM:0:3} "
+    i=5
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost},"
+    i=6
+    out+="${cPre}${cGreen}${NAMASOLAT[$i]:0:3}${cPost}${cPre}${cWhite}${MASASOLAT[$i]}${cPost}"
+    out+=")"
+    out+=")"
+
 
     #--------------------------------------------------------------------------
     # Return
