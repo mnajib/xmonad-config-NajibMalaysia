@@ -930,15 +930,19 @@ formatWaktuSolatForXmobar() {
     local hariInBM=`namaHariBM $nomborHari`
     local nextHariInBM=`namaHariBM $nomborNextHari`
 
-    out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
-    out+=" <fc=#${cWhite}>${mTime}</fc>"                                        # Time
+    out+="Downloaded from www.e-solat.gov.my on"
+    out+=" <fc=#${cWhite}>${mDate}</fc>"                                       # Masihi date
+    out+=" <fc=#${cWhite}>T${mTime}</fc>"                                        # Time
     #------------------
+    out+=" "
     if $ERROR; then
-        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "                                # Mark old data
+        out+="<fc=#ffffff,#ff4d4d> OLD </fc>"                                # Mark old data
     else
-        out+="      "
+        out+="     "
     fi
+    out+=" "
     #------------------
+    out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
     out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                               # Masihi month
     out+=" <fc=#${cBlue}>${mDate}</fc>"                                       # Masihi date
     out+=" <fc=#${cYellow}>${DAY:0:3}</fc>"                                           # Day in English
