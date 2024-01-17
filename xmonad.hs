@@ -172,11 +172,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- XF86MonBrightnessUp
     -- XF86MonBrightnessDown
 
+    -- clipcat-menu: Clipboard Manager
+    , ((modm,                         xK_c),          spawn "clipcat-menu")
+
     -- Toggle maximize focused window using "Super"+"\" key combo.
     , ((modm,            xK_backslash), withFocused (sendMessage . maximizeRestore))
 
     -- close focused window
-    , ((modm .|. shiftMask, xK_c     ), kill)
+    , ((modm .|. shiftMask,           xK_c),          kill)
 
      -- Rotate through the available layout algorithms
     , ((modm,               xK_space ), sendMessage NextLayout)
