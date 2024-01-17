@@ -926,6 +926,79 @@ formatWaktuSolatForXmobar() {
     HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
 
     local nomborHari=`nomHari $DAY`
+    local nomborNextHari=$(( $nomborHari + 1 ))
+    local hariInBM=`namaHariBM $nomborHari`
+    local nextHariInBM=`namaHariBM $nomborNextHari`
+
+    out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
+    out+=" <fc=#${cWhite}>${mTime}</fc>"                                        # Time
+    #------------------
+    if $ERROR; then
+        out+=" <fc=#ffffff,#ff4d4d> OLD </fc>  "                                # Mark old data
+    else
+        out+="      "
+    fi
+    #------------------
+    out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                               # Masihi month
+    out+=" <fc=#${cBlue}>${mDate}</fc>"                                       # Masihi date
+    out+=" <fc=#${cYellow}>${DAY:0:3}</fc>"                                           # Day in English
+
+    out+=" ("
+    out+="<fc=#${cYellow}>${HMONTHFULLNAME}</fc>"
+    out+=" <fc=#${cBlue}>${HDATE}</fc>"                                          # Hijrah date
+    out+=" <fc=#${cYellow}>${hariInBM:0:3}</fc>"
+    out+=" "
+
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+    #    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    #done
+    i=0
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=1
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=2
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=3
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=4
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc>) "
+    out+="(<fc=#${cYellow}>${nextHariInBM:0:3}</fc> "
+    i=5
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    i=6
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc>))"
+
+    #echo -en "${out}\n"
+    ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
+formatWaktuSolatForXmobar2() {
+    log DEBUG "Start formatWaktuSolatForXmobar()"
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    #local cPre="<fc=#"
+    #local cPost="\e[0m"
+
+    local cGreen="00ff00"
+    local cBlue="00ffff"
+    local cYellow="ffff00"
+    local cPink="ff66ff"
+    local cWhite="ffffff"
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+
+    local nomborHari=`nomHari $DAY`
     local hariInBM=`namaHariBM $nomborHari`
 
     out+=" "
