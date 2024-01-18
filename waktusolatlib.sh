@@ -942,6 +942,7 @@ formatWaktuSolatForXmobar() {
     fi
     out+=" "
     #------------------
+    out+="("
     out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
     out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                               # Masihi month
     out+=" <fc=#${cBlue}>${mDate}</fc>"                                       # Masihi date
@@ -971,7 +972,7 @@ formatWaktuSolatForXmobar() {
     i=5
     out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
     i=6
-    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc>))"
+    out+="<fc=#00ff00>${NAMASOLAT[$i]:0:3}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc>)))"
 
     #echo -en "${out}\n"
     ONELINE="${out}"
