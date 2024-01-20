@@ -285,6 +285,21 @@ namaBulanM(){
     esac
 }
 
+#   nomNextHari <nomborHari>
+# Usage example
+#   nomNextHari 8
+nomNextHari(){
+  local currentDay=$1
+  local nextDay=0 # 1=sunday, 2=monday, 3=tuesday, ...
+
+  nextDay=$(( $1 + 1 ))
+  if [ "$nextDay" -eq "8" ]; then
+    nextDay=1
+  fi
+
+  echo $nextDay
+}
+
 nomHari(){
   namaHari="$1"
 
@@ -804,7 +819,7 @@ printWaktuSolatForCliType2() {
 
 # Berasaskan hari/tarikh masihi, bertukar hari pada 12 tengah malam.
 printWaktuSolatForCliType3() {
-    #log DEBUG "Start qqfy665..."
+    log DEBUG "Start qqfy665gg..."
 
     local out=""
     local mDate=""
@@ -840,9 +855,14 @@ printWaktuSolatForCliType3() {
     #MMONTHFULLNAME="January" # XXX
 
     local nomborHari=`nomHari $DAY`
-    local nomborNextHari=$(( $nomborHari + 1 ))
+    #local nomborNextHari=$(( $nomborHari + 1 ))
+    local nomborNextHari=`nomNextHari $nomborHari`
     local hariInBM=`namaHariBM $nomborHari`
-    local nextHariInBM=`namaHariBM $nomborNextHari`
+    local nextHariInBM=`namaHariBM ${nomborNextHari}`
+    log DEBUG "nomborHari = ${nomborHari}"
+    log DEBUG "hariInBM = ${hariInBM}"
+    log DEBUG "nomborNextHari = ${nomborNextHari}"
+    log DEBUG "nextHariInBM = ${nextHariInBM}"
 
     #--------------------------------------------------------------------------
     out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
@@ -899,7 +919,7 @@ printWaktuSolatForCliType3() {
     echo -en "${out}\n"
     #ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log DEBUG "End qqfy665gg..."
     }
 
 formatWaktuSolatForXmobar() {
@@ -926,9 +946,12 @@ formatWaktuSolatForXmobar() {
     HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
 
     local nomborHari=`nomHari $DAY`
-    local nomborNextHari=$(( $nomborHari + 1 ))
+    #local nomborNextHari=$(( $nomborHari + 1 ))
+    local nomborNextHari=`nomNextHari $nomborHari`
     local hariInBM=`namaHariBM $nomborHari`
     local nextHariInBM=`namaHariBM $nomborNextHari`
+    log DEBUG "nomborNexHari=${nomborNextHari}"
+    log DEBUG "nextHariInBM=${nextHariInBM}"
 
     out+="Downloaded from www.e-solat.gov.my on"
     out+=" <fc=#${cWhite}>${mDate}</fc>"                                       # Masihi date
