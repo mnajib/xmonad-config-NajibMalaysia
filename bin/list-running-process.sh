@@ -17,6 +17,9 @@ pgrep -a xmobar | grep 'xmobar /home'
 printT "waktusolat-hbar"
 pgrep -a bash | grep 'waktusolat-hbar'
 
+printT "netconnstatus"
+pgrep -a bash | grep -i 'netconnstatus'
+
 printT "keyboard-LED-status"
 pgrep -a bash | grep '.xmonad/bin/keyboard-LED-status.sh'
 
