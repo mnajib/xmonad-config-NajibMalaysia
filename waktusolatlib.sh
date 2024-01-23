@@ -953,13 +953,14 @@ formatWaktuSolatForXmobar() {
     log DEBUG "nomborNexHari=${nomborNextHari}"
     log DEBUG "nextHariInBM=${nextHariInBM}"
 
-    out+="Downloaded from www.e-solat.gov.my on"
-    out+=" <fc=#${cWhite}>${mDate}</fc>"                                       # Masihi date
-    out+=" <fc=#${cWhite}>T${mTime}</fc>"                                        # Time
+    #out+="Downloaded from www.e-solat.gov.my on"
+    out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+=" <fc=#${cWhite}>${mDate}</fc>"                                        # Masihi date
+    out+=" <fc=#${cWhite}>T${mTime}</fc>"                                       # Time
     #------------------
     out+=" "
     if $ERROR; then
-        out+="<fc=#ffffff,#ff4d4d> OLD </fc>"                                # Mark old data
+        out+="<fc=#ffffff,#ff4d4d> OLD </fc>"                                   # Mark old data
     else
         out+="     "
     fi
@@ -967,13 +968,13 @@ formatWaktuSolatForXmobar() {
     #------------------
     out+="("
     out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
-    out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                               # Masihi month
-    out+=" <fc=#${cBlue}>${mDate}</fc>"                                       # Masihi date
-    out+=" <fc=#${cYellow}>${DAY:0:3}</fc>"                                           # Day in English
+    out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                         # Masihi month
+    out+=" <fc=#${cBlue}>${mDate}</fc>"                                         # Masihi date
+    out+=" <fc=#${cYellow}>${DAY:0:3}</fc>"                                     # Day in English
 
     out+=" ("
     out+="<fc=#${cYellow}>${HMONTHFULLNAME}</fc>"
-    out+=" <fc=#${cBlue}>${HDATE}</fc>"                                          # Hijrah date
+    out+=" <fc=#${cBlue}>${HDATE}</fc>"                                         # Hijrah date
     out+=" <fc=#${cYellow}>${hariInBM:0:3}</fc>"
     out+=" "
 
