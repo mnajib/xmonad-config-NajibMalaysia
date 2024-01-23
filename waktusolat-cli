@@ -72,7 +72,7 @@ msg() {
 
 die() {
         local msg=$1
-        local code=${2-1} # default exit status 1
+        local code=${2-1} # default exit status is 1
         msg "$msg"
         exit "$code"
 }
@@ -82,25 +82,40 @@ parse_params() {
   flag=0
   param=''
   zone=''
+  local debugmode=""
 
   while :; do
-        case "${1-}" in
-            -h | --help) usage ;;
-            -v | --verbose) set -x ;;
-            --no-color) NO_COLOR=1 ;;
-            -f | --flag) flag=1 ;; # example flag
-            -p | --param) # example named parameter
-                param="${2-}"
-                shift
-                ;;
-            -z | --zone) # Code ZONE Jakim
-                zone="${2-}"
-                shift
-                ;;
-            -?*) die "Unknown option: $1" ;;
-              *) break ;;
+    case "${1-}" in
+      -h | --help) usage ;;
+      -v | --verbose) set -x ;;
+      --no-color) NO_COLOR=1 ;;
+      -f | --flag) flag=1 ;; # example flag
+      -p | --param) # example named parameter
+        param="${2-}"
+        shift
+        ;;
+      -z | --zone) # Code ZONE Jakim
+        zone="${2-}"
+        shift
+        ;;
+      -d | --debug)
+        debugmode="${2-}"
+        case "$debugmode" in
+          "DEBUG"|"INFO"|"NORMAL")
+            LOGMODE=$debugmode
+            ;;
+          *)
+            die "tak kenal pilihan: $debugmode"
+            ;;
         esac
         shift
+        ;;
+      -?*) die "Unknown option: $1"
+        ;;
+      *)
+        break
+        ;;
+    esac
   done
 
   args=("$@")
@@ -125,6 +140,7 @@ setup_colors
 #msg "- \$3: ${3}"
 
 # source FILE
+. loglib.sh
 . waktusolatlib.sh
 
 FILE1=/tmp/${USER}-wsp1         # source data file
@@ -153,6 +169,8 @@ MMONTHFULLNAME=""
 
 LOGMODE="NORMAL"
 #LOGMODE="DEBUG"
+LOG_LEVEL="NORMAL"              # No need to change here; supply '--debug verbose' option
+#LOG_LEVEL="info"              # No need to change here; supply '--debug verbose' option
 
 #----------------------------------------------------------------------
 
