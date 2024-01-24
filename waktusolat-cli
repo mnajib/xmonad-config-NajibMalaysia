@@ -15,6 +15,59 @@
 #      waktusolat-cli TRG01
 #
 
+#------------------------------------------------------------------------------
+
+#msg "${RED}Read parameters:${NOFORMAT}"
+#msg "- flag: ${flag}"
+#msg "- param: ${param}"
+#msg "- zone: ${zone}"
+#msg "- arguments: ${args[*]-}"
+#msg "- \$1: ${1}"
+#msg "- \$2: ${2}"
+#msg "- \$3: ${3}"
+
+# include
+source loglib.sh
+source waktusolatlib.sh
+
+FILE1=/tmp/${USER}-wsp1         # source data file
+FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+LOG=/tmp/${USER}-wsp.log        # for logging
+LOG_FILE=/tmp/${USER}-wsp.log        # for logging
+
+zone=$1
+
+ERROR=false
+ONELINE=""
+NAMASOLAT=()
+MASASOLAT=()
+
+KAWASAN=""
+ZON="" #"$1" #"SGR01" # WLY01 MLK01 TRG01
+BEARING=""
+TITLE=""
+HDATE=""
+MDATE=""
+MDATETIME=""
+DAY=""
+STATUS=""
+HMONTHFULLNAME=""
+MMONTHFULLNAME=""
+
+#LOGMODE="NORMAL"
+#LOGMODE="DEBUG"
+#LOG_LEVEL="NORMAL"              # No need to change here; supply '--debug verbose' option
+#LOG_LEVEL="info"              # No need to change here; supply '--debug verbose' option
+LOG_LEVEL="VERBOSE"
+
+timeInterval1=$(echo "60 * 60 * 6" | bc) # every 6 hours
+timeInterval2=$(echo "60 * 1" | bc) # every 1 minutes; used this if last fetch was failed
+timeInterval=${timeInterval1}
+
+log INFO "==============================="
+log INFO "Start waktusolat-cli"
+
 # Fail fast.
 # The set command changes script execution options.
 # For example, normally Bash does not care if some command failed, returning a non-zero exit status code. It just happily jumps to the next one.
@@ -22,6 +75,8 @@ set -Eeuo pipefail
 
 # Get the location
 script_dir=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+
+#------------------------------------------------------------------------------
 
 # Display helpful help
 usageTest() {
@@ -127,64 +182,16 @@ parse_params() {
   return 0
 }
 
+#------------------------------------------------------------------------------
+#------------------------------------------------------------------------------
+
 parse_params "$@"
 setup_colors
-
-#msg "${RED}Read parameters:${NOFORMAT}"
-#msg "- flag: ${flag}"
-#msg "- param: ${param}"
-#msg "- zone: ${zone}"
-#msg "- arguments: ${args[*]-}"
-#msg "- \$1: ${1}"
-#msg "- \$2: ${2}"
-#msg "- \$3: ${3}"
-
-# source FILE
-. loglib.sh
-. waktusolatlib.sh
-
-FILE1=/tmp/${USER}-wsp1         # source data file
-FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
-FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
-LOG=/tmp/${USER}-wsp.log        # for logging
-
-zone=$1
-
-ERROR=false
-ONELINE=""
-NAMASOLAT=()
-MASASOLAT=()
-
-KAWASAN=""
-ZON="" #"$1" #"SGR01" # WLY01 MLK01 TRG01
-BEARING=""
-TITLE=""
-HDATE=""
-MDATE=""
-MDATETIME=""
-DAY=""
-STATUS=""
-HMONTHFULLNAME=""
-MMONTHFULLNAME=""
-
-LOGMODE="NORMAL"
-#LOGMODE="DEBUG"
-LOG_LEVEL="NORMAL"              # No need to change here; supply '--debug verbose' option
-#LOG_LEVEL="info"              # No need to change here; supply '--debug verbose' option
-
-#----------------------------------------------------------------------
-
-log INFO "==============================="
-log INFO "Start waktusolat-cli"
-
-timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
-timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
-timeInterval=${timeInterval1}
 
 done=0
 while : ; do
     log DEBUG "-------------------------------"
-    log DEBUG "`date` : Start main loop"
+    log DEBUG "$(date) : Start main loop"
 
     ## Note:
     ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
@@ -193,7 +200,7 @@ while : ; do
     resetData
 
     #fetchData
-    fetchDataZone $zone #SGR01
+    fetchDataZone "$zone" #SGR01
     #simulateFetchData
     #simulateFailFetchData
     #setBlankDataToArray # may need revise
@@ -246,7 +253,7 @@ while : ; do
     # if ERROR ; then
     # ...
     log DEBUG "Do sleep for ${timeInterval}"
-    sleep ${timeInterval}
+    sleep "${timeInterval}"
 
     log DEBUG "End main loop"
 done

@@ -20,6 +20,7 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio%%memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
