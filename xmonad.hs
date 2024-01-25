@@ -136,12 +136,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --, ((modm,                       xK_p),          spawn "rofi -combi-modi window,drun,ssh -theme solarized -font \"hack 10\" -show combi -icon-theme \"Papirus\"")
     --, ((modm,                       xK_p),          spawn "rofi -font \"hack 10\" -show drun")
     --, ((modm,                       xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi")
+    --
+    --, ((modm .|. shiftMask,           xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi")
     , ((modm .|. shiftMask,           xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi")
+    --
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -theme solarized -font \"hack 10\" -show drun -icon-theme \"Papirus\" -show-icons")
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -font \"hack 10\" -show drun -icon-theme \"Papirus\" -show-icons")
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -combi-modi drun,run -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
-    , ((modm,                         xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm,                         xK_p),          spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,file-browser-extended,keys,calc,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -combi-modi drun,run -theme solarized -font \"hack 10\" -show combi")
     --, ((modm,                       xK_f),          spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -font \"mono 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
     --, ((modm .|. shiftMask,         xK_p),          spawn "rofi -show run -modi run -location 1 -width 100 -lines 2 -line-margin 0 -line-padding 1 -separator-style none -theme solarized -font \"hack 10\" -columns 9 -bw 0 -disable-history -hide-scrollbar -color-window \"#222222, #222222, #b1b4b3\" -color-normal \"#222222, #b1b4b3, #222222, #005577, #b1b4b3\" -color-active \"#222222, #b1b4b3, #222222, #007763, #b1b4b3\" -color-urgent \"#222222, #b1b4b3, #222222, #77003d, #b1b4b3\" -kb-row-select \"Tab\" -kb-row-tab \"\"")
