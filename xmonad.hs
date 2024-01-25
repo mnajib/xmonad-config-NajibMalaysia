@@ -130,8 +130,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch rofi
     -- rofi -dump-config > ~/.config/rofi/config.rasi
-    , ((modm,               xK_p), spawn "rofi -font \"hack 10\" -modes \"drun,run,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
-    , ((modm .|. shiftMask, xK_p), spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,file-browser-extended,keys,calc,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi")
+    , ((modm,               xK_p), spawn "rofi -font \"hack 10\" -modes \"window,calc,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm .|. shiftMask, xK_p), spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,calc,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
 
     -- toggle enable/disable touchpad
     , ( ( modm, xK_F3 ), spawn $ "~/.xmonad/bin/toggleTouchpadEnableDisable-Thinkpad.sh")
@@ -569,7 +569,7 @@ main = do {
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
 
-    xmonad $ defaultConfig {
+    xmonad $ ewmh defaultConfig {
     --xmonad $ Hacks.javaHack (def {
     --xmonad $ Hacks.javaHack  def { -- XXX:
 -- {-
