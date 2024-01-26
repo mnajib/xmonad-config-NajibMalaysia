@@ -130,7 +130,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- launch rofi
     -- rofi -dump-config > ~/.config/rofi/config.rasi
-    , ((modm,               xK_p), spawn "rofi -font \"hack 10\" -modes \"window,calc,ssh,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm,               xK_p), spawn "rofi -font \"hack 10\" -modes \"window,calc,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     , ((modm .|. shiftMask, xK_p), spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,calc,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
 
     -- toggle enable/disable touchpad
