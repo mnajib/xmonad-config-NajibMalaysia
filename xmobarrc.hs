@@ -25,7 +25,7 @@ Config {
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
 
     -- general behavior
-    , lowerOnStart =     True    -- send to bottom of window stack on start
+    , lowerOnStart =     False    -- send to bottom of window stack on start
     , hideOnStart =      False   -- start with window unmapped (hidden)
     , allDesktops =      True    -- show on all desktops
     , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
@@ -53,27 +53,30 @@ Config {
         -- network activity monitor for ethernet
         --, Run Network "eno1" [
         , Run DynNetwork [
-            --"--template" , "<dev>:<tx>kB,<rx>kB"
-            "--template" , "<dev>:Rx<rx>kB,Tx<tx>kB"
-            --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
-            --"--template" , "<dev>:Rx<rx>,Tx<tx>"
             --, "-S", "True"
-            --"--template" , "<tx>,<rx>"
-            --, "--Low"      , "240000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
-            --, "--High"     , "800000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
-            , "--Low"      , "300000"  -- in kB/s (80% dari 300MBps; kelajuan internet sekarang ialah 300Mbps ???)
-            , "--High"     , "1000000"  -- in kB/s (80% dari 1GBps; kelajuan ethernet/LAN network kita ialah 1GBps)
-            , "--low"      , "#649FB6" -- blue?
-            , "--normal"   , "darkorange"
-            , "--high"     , "darkred"
+
+            "--template" , "<dev>:Rx<rx>kb/s,Tx<tx>kb/s"
+            --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
+
+            --, "--Low"    ,  "300000000"     -- in B/s (100% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
+            --, "--High"   , "1000000000"     -- in B/s (100% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
+            , "--Low"      ,  "240000000"     -- in B/s (80% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
+            , "--High"     ,  "800000000"     -- in B/s (80% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
+
+            , "--low"      , "#649FB6"        -- color below '--low' cutoff
+            , "--normal"   , "darkorange"     -- color between '--low' and '--high' cutoff
+            , "--high"     , "darkred"        -- color above '--high' cutoff
+
             ] 10
     --
     -- Note:
     --
-    --     1 Giga bytes per second
-    --     = 1,000 mega bytes per second
-    --     = 1,000,000 kilo bytes per second
-    --     = 1,000,000,000 bytes per second
+    --     1 Giga bits per second
+    --     = 1 Gbits/s
+    --     = 1,000 mega bits per second
+    --     = 1,000 Mbits/s
+    --     = 1,000,000 kilo bits per second
+    --     = 1,000,000,000 bits per second
     --
     -- 1 Mbps = 1000 kbps
             --
