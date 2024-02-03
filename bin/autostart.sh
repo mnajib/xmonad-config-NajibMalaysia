@@ -5,14 +5,13 @@ xscreensaver --no-splash &
 case $HOSTNAME in
   keira)
     echo "Running some customization for $HOSTNAME"
-
     # If VGA-1 connected, do
     # setting for dual monitor
-    $HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
+    #$HOME/.xmonad/bin/keira-dual-screen-dell-monitor.sh dual
+    $HOME/.xmonad/bin/screenlayout.khadijah.sh
     # else do
     # setting for single monitor
     # ...
-
     sleep 1
     setxkbmap us
     ;;
