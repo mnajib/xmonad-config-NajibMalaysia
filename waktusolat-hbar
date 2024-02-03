@@ -45,8 +45,8 @@ LOGMODE="NORMAL"
 log INFO "==============================="
 log INFO "Start waktusolat-putrajaya-hbar"
 
-timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
-timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
+timeInterval1=`echo "60 * 60 * 3" | bc`       # every 3 hours
+timeInterval2=`echo "60 * 1" | bc`            # every 1 minutes; used this if last fetch was failed
 timeInterval=${timeInterval1}
 
 while true; do
