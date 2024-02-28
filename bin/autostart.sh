@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-xscreensaver --no-splash &
+#xscreensaver --no-splash &
 
 case $HOSTNAME in
   keira)
@@ -69,3 +69,7 @@ esac
 #$HOME/.xmonad/bin/kill2restartSidetool.sh
 #sleep 3
 #$HOME/.xmonad/bin/restart-xmobar-sidetool.sh
+
+xset -dpms
+xset s blank
+xset s 300  # screen will blank/power-off after 5-minutes session is in idle state
