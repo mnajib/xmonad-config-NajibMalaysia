@@ -164,5 +164,6 @@ nm-applet & # Not really needed, just use nmtui.
 #xmobar ~/.xmonad/xmobarrc.hs &
 
 #qtox &
-#xscreensaver -no-splash &
 
+#xscreensaver -no-splash &
+$HOME/.xmonad/bin/set-display-screen-power-saver.sh

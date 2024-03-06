@@ -61,6 +61,12 @@ esac
 #sleep 3
 #$HOME/.xmonad/bin/restart-xmobar-sidetool.sh
 
-xset -dpms
-xset s blank
-xset s 300  # screen will blank/power-off after 5-minutes session is in idle state
+$HOME/.xmonad/bin/set-display-screen-power-saver.sh
+#xset -dpms                              # to disable DPMS
+#xset s blank                            #
+#xset s 300                              # screen will blank/power-off after 5-minutes session is in idle state
+#xset +dpms                              # to enable DPMS
+#xset dpms 300 300 300                   # for standby, suspend, and off
+#xset dmps force off                    # there is normally no difference between the 'standby', 'suspend' and 'off' modes
+#xset dmps force stanby                 #
+#xset dmps force suspend                #
