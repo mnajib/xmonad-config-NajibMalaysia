@@ -19,7 +19,8 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio%%memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
-    , template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    , template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
@@ -52,22 +53,22 @@ Config {
 
         -- network activity monitor for ethernet
         --, Run Network "eno1" [
-        , Run DynNetwork [
-            --, "-S", "True"
+--      , Run DynNetwork [
+--          --, "-S", "True"
 
-            "--template" , "<dev>:Rx<rx>kb/s,Tx<tx>kb/s"
-            --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
+--          "--template" , "<dev>:Rx<rx>kb/s,Tx<tx>kb/s"
+--          --"--template" , "<dev>:Rx<rx>kbps,Tx<tx>kbps"
 
-            --, "--Low"    ,  "300000000"     -- in B/s (100% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
-            --, "--High"   , "1000000000"     -- in B/s (100% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
-            , "--Low"      ,  "240000000"     -- in B/s (80% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
-            , "--High"     ,  "800000000"     -- in B/s (80% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
+--          --, "--Low"    ,  "300000000"     -- in B/s (100% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
+--          --, "--High"   , "1000000000"     -- in B/s (100% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
+--          , "--Low"      ,  "240000000"     -- in B/s (80% dari 300Mb/s; kelajuan internet sekarang ialah 300Mbps ???)
+--          , "--High"     ,  "800000000"     -- in B/s (80% dari 1Gb/s; kelajuan ethernet/LAN network kita ialah 1GBps)
 
-            , "--low"      , "#649FB6"        -- color below '--low' cutoff
-            , "--normal"   , "darkorange"     -- color between '--low' and '--high' cutoff
-            , "--high"     , "darkred"        -- color above '--high' cutoff
+--          , "--low"      , "#649FB6"        -- color below '--low' cutoff
+--          , "--normal"   , "darkorange"     -- color between '--low' and '--high' cutoff
+--          , "--high"     , "darkred"        -- color above '--high' cutoff
 
-            ] 10
+--          ] 10
     --
     -- Note:
     --
