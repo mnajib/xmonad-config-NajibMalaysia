@@ -954,15 +954,16 @@ formatWaktuSolatForXmobar() {
     log DEBUG "nextHariInBM=${nextHariInBM}"
 
     #out+="Downloaded from www.e-solat.gov.my on"
-    out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+="On"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
     out+=" <fc=#${cWhite}>${mDate}</fc>"                                        # Masihi date
-    out+=" <fc=#${cWhite}>T${mTime}</fc>"                                       # Time
+    out+=" <fc=#${cWhite}>T${mTime}</fc>;"                                       # Time
     #------------------
     out+=" "
     if $ERROR; then
-        out+="<fc=#ffffff,#ff4d4d> OLD </fc>"                                   # Mark old data
+        out+="<fc=#ffffff,#ff4d4d>OLD</fc>"                                   # Mark old data
     else
-        out+="     "
+        out+="   "
     fi
     out+=" "
     #------------------
@@ -983,20 +984,20 @@ formatWaktuSolatForXmobar() {
     #    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
     #done
     i=0
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=1
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=2
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=3
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=4
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>) "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc>) "
     out+="(<fc=#${cYellow}>${nextHariInBM:0:3}</fc> "
     i=5
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=6
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>)))"
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc>)))"
 
     #echo -en "${out}\n"
     ONELINE="${out}"
