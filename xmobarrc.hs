@@ -21,6 +21,7 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     , template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %memory% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %kbd% %date% "
@@ -98,7 +99,8 @@ Config {
             --                  = 800 000 kbps
 
         --, Run Memory [ "--template" , "Mem:<usedratio>%(<cache>M)" ] 10
-        , Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
+        --, Run Memory [ "--template" , "Mem:<usedratio>%" ] 10
+        , Run Memory [ "--template" , "Mem:<usedratio>%" ] 25
 
         --, Run DiskIO [("sda", "<read><write>")] [] 10
         --, Run DiskIO [
@@ -108,7 +110,8 @@ Config {
         --     ] [] 10
         --, Run DiskIO [("sda", "DiskIO:<total>")] [] 10
 
-        , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 10
+        --, Run MultiCpu [ "--template" , "Cpu:<total>%" ] 10
+        , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 25
 
         -- cpu core temperature monitor
         , Run CoreTemp       [ "--template" , "Temp:<core0>°C,<core1>°C"
