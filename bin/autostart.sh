@@ -5,7 +5,7 @@
 case $HOSTNAME in
   keira)
     echo "Running some customization for $HOSTNAME"
-    $HOME/.xmonad/bin/screenlayout-khadijah.sh
+    $HOME/.xmonad/bin/screenlayout-keira.sh
     sleep 1
     setxkbmap us
     ;;
