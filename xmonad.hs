@@ -9,12 +9,14 @@ import qualified Data.Map        as M -- fromList
 
 import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
+import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent two focused windows
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
+import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO
 
@@ -185,49 +187,61 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_Tab),            windows W.focusDown)
 
     -- Move focus to the next window
-    , ((modm,                                               xK_j),              windows W.focusDown)
+    --, ((modm,                                               xK_j),              windows W.focusDown)
 
     -- Move focus to the previous window
-    , ((modm,                                               xK_k),              windows W.focusUp)
+    --, ((modm,                                               xK_k),              windows W.focusUp)
     , ((modm .|. shiftMask,                                 xK_Tab),            windows W.focusUp)
 
     -- Move focus to the master window
     , ((modm,                                               xK_m),              windows W.focusMaster)
 
-    -- TODO: XXX: Toggle focus between two recent windows
-    --, ((modm .|. mod1Mask,                                  xK_Tab),            cycleRecentWindows [xK_Super_L] xK_j xK_k)
+    -- TODO: Toggle focus between two recent windows. XXX: slow???
+    --, ((modm .|. mod1Mask,                                xK_Tab),            cycleRecentWindows [xK_Super_L] xK_j xK_k)
+    -- Status: OK, but between next and current window
+    --, ((modm .|. mod1Mask,                                  xK_Tab),            cycleAction "toggleTwoRecentWindows" [windows W.focusDown, windows W.focusUp])
+    -- Status: Working, should toggle between two last focus windows. But need to relase buttons after each time apply
+    , ((modm .|. mod1Mask,                                  xK_Tab),            mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
+
 
     -------------------------------------------------------
     -- Window swap
     -------------------------------------------------------
-
     -- Swap the focused window and the master window
-    , ((modm,                                               xK_Return),         windows W.swapMaster)
+    --, ((modm,                                             xK_Return),         windows W.swapMaster)
+    , ((modm .|. shiftMask,                                 xK_m),              windows W.swapMaster)
 
     -- Swap the focused window with the next window
-    , ((modm .|. shiftMask,                                 xK_j),              windows W.swapDown)
+    --, ((modm .|. shiftMask,                                 xK_j),              windows W.swapDown)
+    , ((modm .|. shiftMask,                                 xK_Page_Down),      windows W.swapDown)
 
     -- Swap the focused window with the previous window
-    , ((modm .|. shiftMask,                                 xK_k),              windows W.swapUp)
+    --, ((modm .|. shiftMask,                                 xK_k),              windows W.swapUp)
+    , ((modm .|. shiftMask,                                 xK_Page_Up),        windows W.swapUp)
+
 
     ------------------------------------------------------------------------
-    -- Shrink the master area
-    , ((modm,                                               xK_h),              sendMessage Shrink)
-    -- Expand the master area
-    , ((modm,                                               xK_l),              sendMessage Expand)
-
-
+    -- Windows Layout
     ------------------------------------------------------------------------
     -- Push window back into tiling
     , ((modm,                                               xK_t),              withFocused $ windows . W.sink)
 
 
     ------------------------------------------------------------------------
+    -- Master Area
+    ------------------------------------------------------------------------
+    -- Shrink the master area
+    , ((modm,                                               xK_h),              sendMessage Shrink)
+    -- Expand the master area
+    , ((modm,                                               xK_l),              sendMessage Expand)
+
     -- Increment the number of windows in the master area
     , ((modm,                                               xK_comma),          sendMessage (IncMasterN 1))
     -- Deincrement the number of windows in the master area
     , ((modm,                                               xK_period),         sendMessage (IncMasterN (-1)))
 
+
+    ------------------------------------------------------------------------
 
     -- Toggle the status bar gap
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
@@ -251,6 +265,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_Print),          spawn "sleep 0.2; scrot -u -b")
     , ((modm .|. shiftMask,                                 xK_Print),          spawn "sleep 0.2; scrot -u -b")
 
+    --------------------------------------------------------
+    -- XMonad
+    --------------------------------------------------------
     -- Quit xmonad
     , ((modm .|. shiftMask,                                 xK_q),              io (exitWith ExitSuccess))
 
@@ -265,6 +282,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     --, ((modm .|. controlMask .|. shiftMask .|. mod1Mask,  xK_j),              sendMessage $ moveToNewGroupDown)
     --, ((modm .|. controlMask .|. shiftMask,               xK_K),              moveToNewGroupUp)
 
+
+    --------------------------------------------------------
+    -- XXX: not working???
+    --------------------------------------------------------
     , ((modm .|. shiftMask,                                 xK_F1),             nextOuterLayout)
     , ((modm .|. shiftMask,                                 xK_F2),             decreaseNMasterGroups)
     , ((modm .|. shiftMask,                                 xK_F3),             increaseNMasterGroups)
@@ -286,12 +307,20 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm .|. controlMask,                               xK_Up),             sendMessage $ Swap U)
     , ((modm .|. controlMask,                               xK_Down),           sendMessage $ Swap D)
 
+
+    --------------------------------------------------------
+    -- Help
+    --------------------------------------------------------
     -- Run xmessage with a summary of the default keybindings (useful for beginners)
     --, ((modm .|. shiftMask, xK_slash ), spawn ("echo \"" ++ help ++ "\" | xmessage -file -")) -- haskellPackages.hzenity
     , ((modm .|. shiftMask,                                 xK_slash ),         spawn ("echo \"" ++ help ++ "\" | gxmessage -font monospace -file -"))
     --, ((modm .|. shiftMask, xK_slash ), spawn ("gxmessage" ++ help ))
     ]
 
+
+    --------------------------------------------------------
+    -- Workspace
+    --------------------------------------------------------
     --
     -- mod-[1..9], Switch to workspace N
     -- mod-shift-[1..9], Move client to workspace N
@@ -301,6 +330,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
 
+
+    --------------------------------------------------------
+    -- physical/Xinerama screens
+    --------------------------------------------------------
     --
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
@@ -366,8 +399,10 @@ myTiledTabsConfig = def {
 -- which denotes layout choice.
 myLayout =
     renamed [Replace "Tab"] ( avoidStruts (
-              tabbed shrinkText tabConfig
-            ) )
+                              windowNavigation (
+                                tabbed shrinkText tabConfig
+                              )
+                            ))
     |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "Tab2VSplit"] ( avoidStruts (
@@ -590,7 +625,8 @@ main = do {
     --xmonad $ defaults
     --xmonad $ Hacks.javaHack (def {
     --xmonad $ Hacks.javaHack  def { -- XXX:
-    xmonad $ ewmh defaultConfig {
+    --xmonad $ ewmh defaultConfig {
+    xmonad . configureMRU $ ewmh defaultConfig {
 -- {-
         -- simple stuff
         terminal           = myTerminal,
@@ -724,18 +760,16 @@ help = unlines [
     "",
     "Move focus up or down the window stack",
     "⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺⎺",
-    mmm ++ "-Tab                Move focus to the next window",
-    mmm ++ "-Shift-Tab          Move focus to the previous window",
-    mmm ++ "-j                  Move focus to the next window",
-    mmm ++ "-k                  Move focus to the previous window",
-    mmm ++ "-m                  Move focus to the master window",
+    mmm ++ "-Tab                Change focus to the next window",
+    mmm ++ "-Shift-Tab          Change focus to the previous window",
+    mmm ++ "-m                  Change focus to the master window",
     "",
     "Modifying the window order",
     "--------------------------",
     "",
-    mmm ++ "-Return             Swap the focused window and the master window",
-    mmm ++ "-Shift-j            Swap the focused window with the next window",
-    mmm ++ "-Shift-k            Swap the focused window with the previous window",
+    mmm ++ "-Shift-m            Swap position of the focused window and the master window",
+    mmm ++ "-Shift-PageDown     Swap position of the focused window with the next window",
+    mmm ++ "-Shift-PageUp       Swap position of the focused window with the previous window",
     "",
     "Resizing the master/slave ratio",
     "-------------------------------",
