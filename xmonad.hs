@@ -8,6 +8,7 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M -- fromList
 
 import XMonad.Actions.Volume
+import XMonad.Actions.CycleWindows      -- now working like what I want
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
@@ -175,6 +176,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- Resize viewed windows to the correct size
     , ((modm,                                               xK_n),              refresh)
 
+
+    -------------------------------------------------------
+    -- Window focus
+    -------------------------------------------------------
+
     -- Move focus to the next window
     , ((modm,                                               xK_Tab),            windows W.focusDown)
 
@@ -183,9 +189,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
 
     -- Move focus to the previous window
     , ((modm,                                               xK_k),              windows W.focusUp)
+    , ((modm .|. shiftMask,                                 xK_Tab),            windows W.focusUp)
 
     -- Move focus to the master window
     , ((modm,                                               xK_m),              windows W.focusMaster)
+
+    -- TODO: XXX: Toggle focus between two recent windows
+    --, ((modm .|. mod1Mask,                                  xK_Tab),            cycleRecentWindows [xK_Super_L] xK_j xK_k)
+
+    -------------------------------------------------------
+    -- Window swap
+    -------------------------------------------------------
 
     -- Swap the focused window and the master window
     , ((modm,                                               xK_Return),         windows W.swapMaster)
