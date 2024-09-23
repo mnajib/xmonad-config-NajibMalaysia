@@ -30,6 +30,13 @@
 
 #xset s dmps force on
 
+# To disable DPMS
+#xset -dpms
+#xset dpms 0 0 0
+# To set screen saver to noblank, but this is NOT for disable screensaver
+#xset s noblank
+#xset s off
+
 #xrandr --output VGA-1 -off
 #xrandr --output VGA-1 --brightness 0.1
 
