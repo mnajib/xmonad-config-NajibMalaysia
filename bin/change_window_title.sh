@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#sudo apt-get install xdotool zenity
+#sudo apt-get install xdotool zenity libnotify
 
 # Get the current window ID
 WINDOW_ID=$(xdotool getwindowfocus)
