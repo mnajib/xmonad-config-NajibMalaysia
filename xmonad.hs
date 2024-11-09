@@ -120,7 +120,8 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 --    xmodmap
 --
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
-    -- launch a terminal
+
+    -- launch a terminal -------------------------------------------------------
     ((modm .|. shiftMask,                                   xK_Return),         spawn $ XMonad.terminal conf)
 
     -- launch dmenu
@@ -130,24 +131,24 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     --, ((modm .|. shiftMask,                               xK_p),              spawn "gmrun")
     --, ((modm .|. shiftMask,                               xK_p),              spawn "")
 
-    -- launch rofi
+    -- launch rofi -------------------------------------------------------------
     , ((modm,                                               xK_p),              spawn "rofi -font \"hack 10\" -modes \"window,calc,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
     , ((modm .|. shiftMask,                                 xK_p),              spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,calc,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
 
-    -- toggle enable/disable touchpad
+    -- toggle enable/disable touchpad ------------------------------------------
     , ((modm, xK_F3 ), spawn $ "~/.xmonad/bin/toggleTouchpadEnableDisable-Thinkpad.sh")
 
-    -- keyboard layout
+    -- keyboard layout ---------------------------------------------------------
     , ((modm,                                               xK_F4),             spawn $ "setxkbmap -layout us -variant dvorak")
     , ((modm,                                               xK_F5),             spawn $ "setxkbmap -layout us")
     , ((modm,                                               xK_F6),             spawn $ "setxkbmap -layout msa -variant najib")
     --, ((modm,                                             xK_F7 ),            spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
 
-    -- audio-out (speaker) Volume control
+    -- audio-out (speaker) Volume control --------------------------------------
     , ((modm,                                               xK_F10),            lowerVolume 1 >> return () )
     , ((modm,                                               xK_F11),            raiseVolume 1 >> return () )
     , ((modm,                                               xK_F12),            toggleMute >> return () )
-    -- audio-in (microphone) volume control
+    -- audio-in (microphone) volume control ------------------------------------
     , ((modm .|. shiftMask,                                 xK_F10),            spawn $ "pactl -- set-source-volume 2 -4" )
     , ((modm .|. shiftMask,                                 xK_F11),            spawn $ "pactl -- set-source-volume 2 +4" )
     , ((modm .|. shiftMask,                                 xK_F12),            spawn $ "pactl -- set-source-mute 1 toggle" )
@@ -160,24 +161,26 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- XF86MonBrightnessUp
     -- XF86MonBrightnessDown
 
-    -- clipcat-menu: Clipboard Manager
+    -- clipcat-menu: Clipboard Manager -----------------------------------------
     , ((modm,                                               xK_c),              spawn "clipcat-menu")
 
-    -- Toggle maximize focused window using "Super"+"\" key combo.
+    -- Toggle maximize focused window using "Super"+"\" key combo. -------------
     , ((modm,                                               xK_backslash),      withFocused (sendMessage . maximizeRestore))
 
-    -- close focused window
+    -- close focused window ----------------------------------------------------
     , ((modm .|. shiftMask,                                 xK_c),              kill)
 
-     -- Rotate through the available layout algorithms
+     -- Rotate through the available layout algorithms -------------------------
     , ((modm,                                               xK_space),          sendMessage NextLayout)
 
-    --  Reset the layouts on the current workspace to default
+    --  Reset the layouts on the current workspace to default ------------------
     , ((modm .|. shiftMask,                                 xK_space),          setLayout $ XMonad.layoutHook conf)
 
-    -- Resize viewed windows to the correct size
+    -- Resize viewed windows to the correct size -------------------------------
     , ((modm,                                               xK_n),              refresh)
 
+    -- Change (the currently focus) window title -------------------------------
+    , ( (modm .|. mod1Mask, xK_t), spawn "~/.xmonad/bin/change_window_title.sh" ) -- <super><alt><t>
 
     -------------------------------------------------------
     -- Window focus
@@ -359,6 +362,9 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- mod-button3, Set the window to floating mode and resize by dragging
     ((modm, button3), (\w -> focus w >> mouseResizeWindow w
                                        >> windows W.shiftMaster))
+
+    -- Change (the currently focus) window title -------------------------------
+    , (( modm .|. mod1Mask, button3), \w -> spawn "~/.xmonad/bin/change_window_title.sh") -- <super><alt><mouse-right-click>
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
