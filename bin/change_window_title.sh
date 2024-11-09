@@ -11,7 +11,7 @@ CURRENT_TITLE="$(xdotool getwindowname $WINDOW_ID)"
 #echo "CURRENT_TITLE: $CURRENT_TITLE"
 
 # Open a dialog to enter the new title
-NEW_TITLE=$(zenity --entry --title="Change Window Title" --text=$CURRENT_TITLE)
+NEW_TITLE=$(zenity --entry --title="Change Window Title" --text="${CURRENT_TITLE}")
 #NEW_TITLE=$(zenity --entry --title="Change Window Title" --text=$CURRENT_TITLE --cancel-label="Abort")
 #if [ $? -eq 1 ]; then
 #  # User clicked Cancel
