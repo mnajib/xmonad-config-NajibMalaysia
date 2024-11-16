@@ -13,6 +13,8 @@ import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent t
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Util.XUtils (fi)
+import Graphics.X11.Xlib
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
@@ -23,7 +25,7 @@ import System.IO
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
 
-import XMonad.Layout.Fullscreen
+import XMonad.Layout.Fullscreen -- (fullscreenFull)
 import XMonad.Layout.NoBorders
 -- import XMonad.Layout.Spiral
 import XMonad.Layout.Grid
@@ -37,7 +39,8 @@ import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 --import XMonad.Layout.SubLayouts
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Column
-import XMonad.Layout.Maximize
+import XMonad.Layout.Maximize -- (maximize) --, RestoreMaximized)
+import XMonad.Layout.Decoration (ModifiedLayout)
 
 --import XMonad.Layout.Groups
 import XMonad.Layout.Groups.Helpers
@@ -50,6 +53,8 @@ import Graphics.X11.ExtraTypes.XF86
 
 import Control.Concurrent
 --threadDelay 1000000 --sleep for a million microseconds, or one second
+
+import Control.Monad (forM_, when)
 
 -- TODO: Need different xmobar settings for different host. One way to achieve that would be to write a function that will create a new .xmobarrc file for your given host.
 --import Network.HostName
@@ -551,6 +556,77 @@ myManageHook = composeAll [
 --
 myEventHook = mempty
 
+
+-- Custom hook to change border color when a window gains focus
+-- zoomEventHook :: Event -> X All
+-- zoomEventHook (ClientMessageEvent {ev_window = w}) = do
+--   withDisplay $ \dpy -> do
+--     let blue = 0x0000FF -- Blue color in hexadecimal
+--     io $ setWindowBorder dpy w (fromIntegral blue)
+--   return (All True)
+-- zoomEventHook _ = return (All True)
+
+
+-- Change border color based on window state
+changeBorderColor :: Window -> Pixel -> X ()
+changeBorderColor w color = withDisplay $ \dpy ->
+    io $ setWindowBorder dpy w color
+
+-- Hook to change border color when a window is maximized or restored
+zoomEventHook :: Event -> X All
+zoomEventHook (ClientMessageEvent {ev_window = w}) = do
+    -- Check if the window is in the current window set
+    withWindowSet $ \ws -> do
+        let isMaximized = any (\win -> win == w) (W.allWindows ws)
+        if isMaximized
+            then changeBorderColor w (fromIntegral 0x0000FF) -- Blue when maximized
+            else changeBorderColor w (fromIntegral 0x000000) -- Default when not maximized
+    return (All True)
+zoomEventHook _ = return (All True)
+
+
+-- maximizeRestoreHook :: Event -> X All
+-- maximizeRestoreHook (ClientMessageEvent {ev_window = w}) = do
+--     withFocused $ \focusedWindow -> do
+--         if focusedWindow == w
+--             then do
+--                 -- Assuming maximized windows have a specific border color
+--                 isMaximized <- isWindowMaximized w
+--                 if isMaximized
+--                     then setBorderColor w 0x0000FF -- Blue for maximized
+--                     else setBorderColor w 0x000000 -- Default border color
+--             else return ()
+--     return (All True)
+-- maximizeRestoreHook _ = return (All True)
+
+-- Utility function to check if a window is maximized
+-- isWindowMaximized :: Window -> X Bool
+-- isWindowMaximized w = do
+--     ws <- gets windowset
+--     let stack = W.stack . W.workspace . W.current $ ws
+--     return $ case stack of
+--         Just s -> w == W.focus s && isMaximizedLayout (W.layout $ W.workspace $ W.current ws)
+--         Nothing -> False
+
+-- Example implementation for border color change (requires X11 interaction)
+-- setBorderColor :: Window -> Pixel -> X ()
+-- setBorderColor w color = withDisplay $ \dpy -> io $ setWindowBorder dpy w color
+
+-- Check if the current layout is maximized
+-- isMaximizedLayout :: Layout Window -> Bool
+-- isMaximizedLayout layout =
+--     case fromLayout layout of
+--         Just _ -> True
+--         Nothing -> False
+--   where
+--     fromLayout :: Layout Window -> Maybe (ModifiedLayout Maximize Window)
+--     -- fromLayout = asTypeOf Nothing . cast
+--     fromLayout = cast
+--
+-- isMaximizedLayout :: Layout Window -> Bool
+-- isMaximizedLayout _ = True  -- Simplified; maximization state tracking happens elsewhere
+
+
 ------------------------------------------------------------------------
 -- Status bars and logging
 
@@ -671,6 +747,8 @@ main = do {
         -- XXX: TEST:
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
         handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        -- handleEventHook    = handleEventHook def <+> myEventHook <+> zoomEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        --handleEventHook    = handleEventHook def <+> myEventHook <+> maximizeRestoreHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
 
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
@@ -696,6 +774,7 @@ main = do {
         -- other windows, including xmobar. So if you then try to fullscreen
         -- the window, it should cover the entire screen.
 
+        --logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
         --logHook            = myLogHook,
         logHook = dynamicLogWithPP  $ xmobarPP {
         --logHook = myLogHook <+> dynamicLogWithPP $ xmobarPP {
