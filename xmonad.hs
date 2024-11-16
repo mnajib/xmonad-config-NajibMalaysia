@@ -364,7 +364,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
                                        >> windows W.shiftMaster))
 
     -- Change (the currently focus) window title -------------------------------
-    , (( modm .|. mod1Mask, button3), \w -> spawn "~/.xmonad/bin/change_window_title.sh") -- <super><alt><mouse-right-click>
+    -- , (( modm .|. mod1Mask, button3), \w -> spawn "~/.xmonad/bin/change_window_title.sh") -- <super><alt><mouse-right-click>
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
@@ -808,6 +808,11 @@ help = unlines [
     mmm ++ "-{w,e,r}            Switch to physical/Xinerama screens 1, 2, or 3",
     mmm ++ "-Shift-{w,e,r}      Move client to screen 1, 2, or 3",
     "",
+    "Change window title",
+    "-----------------------------------------------------",
+    "",
+    mmm ++ "-Alt-t              Change window title",
+    "",
     "Mouse bindings: default actions bound to mouse events",
     "-----------------------------------------------------",
     "",
@@ -818,10 +823,10 @@ help = unlines [
     "Volume control",
     "--------------",
     "",
-    "Mute                     Toggle audio output mute",
-    "Vol-ve                   Decrease audio output volume",
-    "Vol+ve                   Increase audio output volume",
-    "Mic                      Toggle mic mute",
+    "Mute                       Toggle audio output mute",
+    "Vol-ve                     Decrease audio output volume",
+    "Vol+ve                     Increase audio output volume",
+    "Mic                        Toggle mic mute",
     "",
     mmm ++ "-F8                 Decrease audio volume",
     mmm ++ "-F9                 Increase audio volume",
