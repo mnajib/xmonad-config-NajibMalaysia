@@ -5,7 +5,7 @@ import Data.Monoid -- mapped
 import System.Exit
 
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M -- fromList
+import qualified Data.Map as M -- fromList
 
 import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
@@ -557,6 +557,37 @@ myManageHook = composeAll [
 myEventHook = mempty
 
 
+-- myEventHook :: Event -> X All
+-- myEventHook (ClientMessageEvent _ _ _ _ msg) = do
+--     let maximizeMessage = "_NET_WM_STATE_MAXIMIZED_VERT"  -- Message for vertical maximization
+--     let restoreMessage = "_NET_WM_STATE_NORMAL"            -- Message for restoring
+--     when (msg == maximizeMessage || msg == restoreMessage) $ do
+--         win <- asks theRoot >>= \r -> getFocus r  -- Get currently focused window
+--         setWindowBorderColor win  -- Call function to set border color
+--     return (All True)
+-- myEventHook _ = return (All True)
+--
+-- setWindowBorderColor :: Window -> X ()
+-- setWindowBorderColor win = do
+--     isMaximized <- withDisplay $ \d -> do
+--         wmState <- getAtom "_NET_WM_STATE"
+--         maxVert <- getAtom "_NET_WM_STATE_MAXIMIZED_VERT"
+--         maxHorz <- getAtom "_NET_WM_STATE_MAXIMIZED_HORZ"
+--         state <- getProperty32 d win wmState 0 1024  -- Check the window's state properties
+--         return $ maxVert `elem` state || maxHorz `elem` state  -- Check if it's maximized
+--
+--     if isMaximized
+--         then setBorderColor win "blue"  -- Set border color to blue if maximized
+--         else setBorderColor win "default"  -- Set back to default if not maximized
+--
+-- setBorderColor :: Window -> String -> X ()
+-- setBorderColor win color = withDisplay $ \d -> do
+--     gc <- createGC d win  -- Create graphics context for drawing borders
+--     setForeground d gc (colorToPixel d color)  -- Set the border color using pixel value
+--     drawRectangle d win gc 0 0 width height  -- Draw the rectangle as border (you may need to adjust this)
+
+
+
 -- Custom hook to change border color when a window gains focus
 -- zoomEventHook :: Event -> X All
 -- zoomEventHook (ClientMessageEvent {ev_window = w}) = do
@@ -565,7 +596,6 @@ myEventHook = mempty
 --     io $ setWindowBorder dpy w (fromIntegral blue)
 --   return (All True)
 -- zoomEventHook _ = return (All True)
-
 
 -- Change border color based on window state
 changeBorderColor :: Window -> Pixel -> X ()
@@ -633,7 +663,7 @@ zoomEventHook _ = return (All True)
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
---myLogHook = return ()
+myLogHook = mempty
 
 {-
 -- use xmobar as status bar, overriding the default config file path
@@ -746,7 +776,9 @@ main = do {
         --
         -- XXX: TEST:
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
-        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        --handleEventHook    = handleEventHook def <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> zoomEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> maximizeRestoreHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
 
@@ -776,8 +808,8 @@ main = do {
 
         --logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
         --logHook            = myLogHook,
-        logHook = dynamicLogWithPP  $ xmobarPP {
-        --logHook = myLogHook <+> dynamicLogWithPP $ xmobarPP {
+        --logHook = dynamicLogWithPP  $ xmobarPP {
+        logHook = myLogHook <+> dynamicLogWithPP $ xmobarPP {
             ppOutput = hPutStrLn xmproc,
             ppTitle = xmobarColor "#14FF08" "" . shorten 30,                    -- 50, 60
             ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]",
