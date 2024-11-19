@@ -80,7 +80,8 @@ instance ExtensionClass MaximizeState where
 
 -- Color Definitions
 blueColor, redColor :: String
-blueColor = "#0000FF"
+-- blueColor = "#0000FF"
+blueColor = "#FF00FF"
 redColor = "#FF0000"
 
 -- Color Initialization for X11
@@ -96,8 +97,8 @@ setWindowBorderColor win color = do
     d <- asks display
     pixel <- io $ initColorPixel d color
     io $ setWindowBorder d win pixel
-    -- io $ setWindowBorderWidth d win 2
-    io $ setWindowBorderWidth d win 1
+    io $ setWindowBorderWidth d win 2
+    -- io $ setWindowBorderWidth d win 1
 
 -- Toggle Maximize with Border Color
 toggleMaximizeWithBorder :: X ()
@@ -116,7 +117,7 @@ toggleMaximizeWithBorder = do
                 newColor = if newMaximizedState then blueColor else redColor
             
             -- Update window border color
-            setWindowBorderColor win newColor
+            -- setWindowBorderColor win newColor
             
             -- Update state
             XS.put $ MaximizeState 
@@ -126,6 +127,10 @@ toggleMaximizeWithBorder = do
             
             -- Send maximize/restore message
             withFocused (sendMessage . maximizeRestore)
+
+            -- Update window border color
+            setWindowBorderColor win newColor
+            
 
 
 -- ----------------------------------------------------------------------------
@@ -495,6 +500,8 @@ myLayout =
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     renamed [Replace "Tab2VSplit"] ( avoidStruts (
            maximizeWithPadding myMaxWithPad (
+           -- windowNavigation (
+             -- maximizeWithPadding myMaxWithPad (
              windowNavigation (
                (tabbedAlways shrinkText tabConfig) *|* (tabbedAlways shrinkText tabConfig)
              )
