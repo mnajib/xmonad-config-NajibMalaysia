@@ -9,18 +9,21 @@ import qualified Data.Map as M -- fromList
 
 import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
+import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
 import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent two focused windows
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Util.XUtils (fi)
 import Graphics.X11.Xlib
+import Graphics.X11.Xlib.Extras
 import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO
+import XMonad.Util.ExtensibleState as XS
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
@@ -56,6 +59,79 @@ import Control.Concurrent
 
 import Control.Monad (forM_, when)
 
+
+-- ----------------------------------------------------------------------------
+
+-- XXX:
+
+-- Custom State for Maximize Tracking
+data MaximizeState = MaximizeState 
+    { isMaximized :: Bool 
+    , lastWindow :: Maybe Window
+    }
+    deriving (Typeable, Read, Show)
+
+-- Initialize the state
+instance ExtensionClass MaximizeState where
+    initialValue = MaximizeState 
+        { isMaximized = False 
+        , lastWindow = Nothing 
+        }
+
+-- Color Definitions
+blueColor, redColor :: String
+blueColor = "#0000FF"
+redColor = "#FF0000"
+
+-- Color Initialization for X11
+initColorPixel :: Display -> String -> IO Pixel
+initColorPixel d colorString = do
+    let colormap = defaultColormap d (defaultScreen d)
+    (color, _) <- allocNamedColor d colormap colorString
+    return $ color_pixel color
+
+-- Window Border Color Setting
+setWindowBorderColor :: Window -> String -> X ()
+setWindowBorderColor win color = do
+    d <- asks display
+    pixel <- io $ initColorPixel d color
+    io $ setWindowBorder d win pixel
+    -- io $ setWindowBorderWidth d win 2
+    io $ setWindowBorderWidth d win 1
+
+-- Toggle Maximize with Border Color
+toggleMaximizeWithBorder :: X ()
+toggleMaximizeWithBorder = do
+    -- Get current focused window
+    maybeWindow <- XMonad.gets (W.peek . windowset)
+    
+    case maybeWindow of
+        Nothing -> return ()
+        Just win -> do
+            -- Retrieve current state
+            currentState <- XS.get
+            
+            -- Determine new state and color
+            let newMaximizedState = not (isMaximized currentState)
+                newColor = if newMaximizedState then blueColor else redColor
+            
+            -- Update window border color
+            setWindowBorderColor win newColor
+            
+            -- Update state
+            XS.put $ MaximizeState 
+                { isMaximized = newMaximizedState
+                , lastWindow = Just win 
+                }
+            
+            -- Send maximize/restore message
+            withFocused (sendMessage . maximizeRestore)
+
+
+-- ----------------------------------------------------------------------------
+
+
+
 -- TODO: Need different xmobar settings for different host. One way to achieve that would be to write a function that will create a new .xmobarrc file for your given host.
 --import Network.HostName
 --createXmobarrc :: String -> IO ()
@@ -74,7 +150,6 @@ myTerminal      = "terminology" -- my current urxvt give better clear font with 
 
 myXmobarrc = "~/.xmonad/xmobarrc.hs"
 
--- XXX
 --_XMONAD_TRAYPAD(UTF8_STRING) = "<hspace=53/>"
 
 -- Whether focus follows the mouse pointer.
@@ -170,7 +245,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_c),              spawn "clipcat-menu")
 
     -- Toggle maximize focused window using "Super"+"\" key combo. -------------
-    , ((modm,                                               xK_backslash),      withFocused (sendMessage . maximizeRestore))
+    -- , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
+    --, ((modm, xK_backslash), toggleMaximizeRestore)
+    , ((modm, xK_backslash), toggleMaximizeWithBorder) -- XXX:
 
     -- close focused window ----------------------------------------------------
     , ((modm .|. shiftMask,                                 xK_c),              kill)
@@ -204,7 +281,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- Move focus to the master window
     , ((modm,                                               xK_m),              windows W.focusMaster)
 
-    -- TODO: Toggle focus between two recent windows. XXX: slow???
+    -- TODO: Toggle focus between two recent windows. slow???
     --, ((modm .|. mod1Mask,                                xK_Tab),            cycleRecentWindows [xK_Super_L] xK_j xK_k)
     -- Status: OK, but between next and current window
     --, ((modm .|. mod1Mask,                                  xK_Tab),            cycleAction "toggleTwoRecentWindows" [windows W.focusDown, windows W.focusUp])
@@ -292,7 +369,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
 
 
     --------------------------------------------------------
-    -- XXX: not working???
+    -- not working???
     --------------------------------------------------------
     , ((modm .|. shiftMask,                                 xK_F1),             nextOuterLayout)
     , ((modm .|. shiftMask,                                 xK_F2),             decreaseNMasterGroups)
@@ -517,8 +594,11 @@ myLayout =
      -- Percent of screen to increment by when resizing panes
      delta   = 3/100    -- 3% of the screen
 
-     -- maximizeWithPadding
-     myMaxWithPad = 7
+     -- To be use by maximizeWithPadding
+     -- myMaxWithPad = 7
+     -- myMaxWithPad = 1
+     myMaxWithPad = 0
+     -- XXX:
 
 ------------------------------------------------------------------------
 -- Window rules:
@@ -736,7 +816,7 @@ main = do {
     --xmonad $ def {
     --xmonad $ defaults
     --xmonad $ Hacks.javaHack (def {
-    --xmonad $ Hacks.javaHack  def { -- XXX:
+    --xmonad $ Hacks.javaHack  def {
     --xmonad $ ewmh defaultConfig {
     xmonad . configureMRU $ ewmh defaultConfig {
 -- {-
@@ -774,7 +854,6 @@ main = do {
         --handleEventHook    = handleEventHook def <> Hacks.windowedFullscreenFixEventHook <+> myEventHook <+> docksEventHook <> Hacks.trayerAboveXmobarEventHook <> Hacks.trayerPaddingXmobarEventHook,
         --windowedFullscreenFixEventHook :: Event -> X All
         --
-        -- XXX: TEST:
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
