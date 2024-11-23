@@ -65,17 +65,17 @@ import Control.Monad (forM_, when)
 -- XXX:
 
 -- Custom State for Maximize Tracking
-data MaximizeState = MaximizeState 
-    { isMaximized :: Bool 
+data MaximizeState = MaximizeState
+    { isMaximized :: Bool
     , lastWindow :: Maybe Window
     }
     deriving (Typeable, Read, Show)
 
 -- Initialize the state
 instance ExtensionClass MaximizeState where
-    initialValue = MaximizeState 
-        { isMaximized = False 
-        , lastWindow = Nothing 
+    initialValue = MaximizeState
+        { isMaximized = False
+        , lastWindow = Nothing
         }
 
 -- Color Definitions
@@ -97,40 +97,54 @@ setWindowBorderColor win color = do
     d <- asks display
     pixel <- io $ initColorPixel d color
     io $ setWindowBorder d win pixel
-    io $ setWindowBorderWidth d win 2
-    -- io $ setWindowBorderWidth d win 1
+    -- io $ setWindowBorderWidth d win 2 -- 1-pixels window border width?
+    io $ setWindowBorderWidth d win 1 -- 2-pixels window border width?
 
 -- Toggle Maximize with Border Color
 toggleMaximizeWithBorder :: X ()
 toggleMaximizeWithBorder = do
     -- Get current focused window
     maybeWindow <- XMonad.gets (W.peek . windowset)
-    
+
     case maybeWindow of
         Nothing -> return ()
         Just win -> do
             -- Retrieve current state
             currentState <- XS.get
-            
+
             -- Determine new state and color
             let newMaximizedState = not (isMaximized currentState)
                 newColor = if newMaximizedState then blueColor else redColor
-            
+
             -- Update window border color
             -- setWindowBorderColor win newColor
-            
-            -- Update state
-            XS.put $ MaximizeState 
-                { isMaximized = newMaximizedState
-                , lastWindow = Just win 
-                }
-            
+
             -- Send maximize/restore message
             withFocused (sendMessage . maximizeRestore)
 
+            -- -------------------------------------------
+
+            -- Retrieve current state
+            -- currentState2 <- XS.get
+
+            -- Determine new state and color
+            -- let newMaximizedState2 = isMaximized currentState2
+            --     newColor2 = if newMaximizedState2 then blueColor else redColor
+
             -- Update window border color
             setWindowBorderColor win newColor
-            
+            -- setWindowBorderColor win newColor2
+
+            -- -------------------------------------------
+
+            -- Update state
+            XS.put $ MaximizeState
+                { isMaximized = newMaximizedState
+                -- { isMaximized = newMaximizedState2
+                , lastWindow = Just win
+                }
+
+
 
 
 -- ----------------------------------------------------------------------------
@@ -782,6 +796,12 @@ toggleGapsKey XConfig {XMonad.modMask = mod4Mask} = (mod4Mask, xK_b)
 -- myStartupHook = spawn "~/.xmonad/autostart"
 --myStartupHook = spawn "~/.xmonad/bin/autostart.sh"
 myStartupHook = do {
+    -- Reset custom maximize state
+    XS.put $ MaximizeState
+      { isMaximized = False
+      , lastWindow = Nothing
+      };
+
     --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
     --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
     --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
@@ -796,7 +816,12 @@ myStartupHook = do {
     --spawnOnce "~/.xmonad/bin/autostart.sh";
 
     -- Status: Working
-    spawn "~/.xmonad/bin/autostart.sh";
+    spawnOnce "~/.xmonad/bin/autostart.sh"
+      >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
+      >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
+      -- >> threadDelay 5000000 -- in miliseconds;
+      >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
+
     }
 --
 -- Checking fo duplicate key bindings.
@@ -810,15 +835,8 @@ myStartupHook = do {
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
 main = do {
-    spawn "~/.xmonad/bin/kill2restart-xmobar.sh";
-    spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
-    threadDelay 5000000;
-    spawn "~/.xmonad/bin/start-sidetool.sh";
-    threadDelay 5000000;                            -- in miliseconds
-
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
     xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
-
     --xmonad $ defaults {
     --xmonad $ def {
     --xmonad $ defaults
@@ -846,12 +864,10 @@ main = do {
         --layoutHook         = smartBorders $ myLayout,
         --layoutHook = smartBorders . avoidStruts $ layoutHook defaultConfig
         -- The . thing combines several functions into one, in this case it will combine smartBorders with avoidStruts to give you the benefits of both.
-        {-
-        layoutHook = composeAll [
-            myLayout--,
-            --layoutHook defaultConfig
-            ],
-        -}
+        -- layoutHook = composeAll [
+        --    myLayout--,
+        --    --layoutHook defaultConfig
+        --    ],
 
         -- handleEventHook    = myEventHook,
         --handleEventHook    = docksEventHook,
@@ -906,12 +922,12 @@ main = do {
             }
 
         -- } `additionalKeys` myKeys `removeKeys` [(mod4Mask, xK_q)]
-        }-- `additionalKeys` [
+        } -- end xmonad -- `additionalKeys` [
         --    ((mod4Mask .|. shiftMask, xK_l), spawn "xlock -mode forest"),
         --    ((controlMask, xK_Print), spawn "sleep 0.2; scrot"),
         --    ((0, xK_Print), spawn "scrot")
         --    ]
-    }--end main
+    } -- end main = do {
 
 -------------------------------------------------------------------------------
 -- A structure containing your configuration settings, overriding

@@ -157,7 +157,7 @@ sleep 2
 volumeicon &
 #pasystray &
 #~/.fehbg &
-fbsetroot -solid black &
+#fbsetroot -solid black &
 nm-applet & # Not really needed, just use nmtui.
 
 #xmobar ~/.xmonad/xmobarrc-top.hs &
