@@ -43,6 +43,15 @@ case $HOSTNAME in
     sleep 1
     setxkbmap dvorak
     ;;
+  # NOTE:
+  #   DELL monitor, DVI port  <---------------->  DELL Precision M4800, DisplayPort
+  #   Both of this device fail to detech each other.
+  #   The monitor not detect the laptop, and quickly will sleep in only a couple of seconds.
+  #   The laptop (include ~/.xmonad/bin/screenlayout-khadijah.sh) not detech the monitor because the monitor in sleeping while the laptop/script try to detecting.
+  #   Need to make it detect both each other in the same time.
+  #   Try use this to monitor when the laptop detect the monitor:
+  #     while true; do xrandr  | grep -C 3 'DP-'; sleep 2; clear; done
+  #   and while the laptop it still detected the monitor, run the script (~/.xmonad/bin/screenlayout-khadijah.sh).
   khadijah)
     echo "Running some customization for $HOSTNAME"
     $HOME/.xmonad/bin/screenlayout-khadijah.sh
