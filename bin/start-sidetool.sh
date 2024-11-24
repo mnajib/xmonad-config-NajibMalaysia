@@ -1,39 +1,15 @@
 #!/usr/bin/env bash
 
-echo "XXX: test test test"
-
-echo $DISPLAY
-#export DISPLAY=":0"
-#umask 0002
-
-# Recompile xmonad
-#xmonad --recompile
-
 # Reset the log file
 cat /dev/null > /tmp/${USER}-wsp.log
 
-# If not already created
-#rm -f /tmp/${USER}-zikirpipe # xmobar need this file before xmobar start
+# If not already created, xmobar need this file before xmobar start
 if [ ! -f /tmp/${USER}-zikirpipe ]; then
-  #echo "File does not exist"
   mkfifo /tmp/${USER}-zikirpipe
 fi
 sleep 1
 ~/.xmonad/bin/zikir &
 sleep 1
-
-# Killing
-#ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"
-#~/.xmonad/bin/list-running-process.sh
-#killall -9 trayer
-#killall -9 zikir
-#killall -9 pasystray
-#killall -9 volumeicon
-#~/.xmonad/bin/kill2restart.sh
-#~/.xmonad/bin/kill2restartSidetool.sh
-#sleep 1
-
-# Starting
 
 trayerIsAlive(){
   local processName="trayer"
@@ -154,10 +130,16 @@ esac
 #sleep 1
 #~/.xmonad/bin/zikir &
 sleep 2
+
+# Volume Control
 volumeicon &
 #pasystray &
+
+# Set wallpaper
 #~/.fehbg &
-#fbsetroot -solid black &
+fbsetroot -solid black &
+
+# Newwork Manager
 nm-applet & # Not really needed, just use nmtui.
 
 #xmobar ~/.xmonad/xmobarrc-top.hs &
