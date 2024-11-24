@@ -23,7 +23,6 @@ case $HOSTNAME in
     ;;
   sakinah)
     echo "Running some customization for $HOSTNAME"
-    #$HOME/.xmonad/bin/sakinah-dual-screen-dell-monitor.sh dual
     sleep 1
     setxkbmap dvorak
     ;;
@@ -41,7 +40,6 @@ case $HOSTNAME in
     ;;
   delldesktop)
     echo "Running some customization for $HOSTNAME"
-    #$HOME/.xmonad/bin/delldesktop-dualMonitor-ThinkVision1280x1024-PanasonicTV1920x1080.sh
     sleep 1
     setxkbmap dvorak
     ;;
