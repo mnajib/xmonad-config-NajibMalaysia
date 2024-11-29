@@ -6,7 +6,15 @@ Config {
     --, font =         "-*-monospace-*-*-*-*-10-*-*-*-*-*-*-*"
     --, font =         "xft:Bitstream Vera Sans Mono:size=9:bold:antialias=true"
     --, font = "Monospace Extra-Light Extra-Light 8"
-    , font = "Monospace Thin Thin 8" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+    --, font = "Monospace Thin Thin 8" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+    --, font = "Monospace Regular 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+    --, font = "Ubuntu Mono Regular 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+    --, font = "xft:JetBrainsMono Nerd Font Mono-10"
+    --, font = "xft:Fira Mono for Powerline:style=Bold-10"
+    --, font = "xft:Fira Mono for Powerline:style=Bold:size=9"
+    --, font = "xft:Fira Mono for Powerline:style=Bold-9"
+    --, font = "xft:Fira Mono for Powerline:style=Bold-9"
+    , font = "Fira Mono for Powerline Bold 10"
                                             -- Need this changes because xmobar now use pango instead of xft as before
     , position =     Top
     --, textOffset =   13

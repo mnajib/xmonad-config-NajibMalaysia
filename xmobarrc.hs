@@ -6,7 +6,14 @@ Config {
     -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
     -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     --, font = "Monospace Extra-Light Thin 8" -- Need this change because xmobar now use pango insteed of xft
-    , font = "Monospace Thin Thin 8" -- Need this change because xmobar now use pango insteed of xft
+    --, font = "Monospace Thin Thin 8" -- Need this change because xmobar now use pango insteed of xft
+    --, font = "Monospace Regular 9" -- Need this change because xmobar now use pango insteed of xft
+    --, font = "Ubuntu Mono derivative Powerline 10" -- Need this change because xmobar now use pango insteed of xft
+    --, font = "xft:JetBrainsMono Nerd Font Mono-10"
+    --, font = "xft:Fira Mono for Powerline:style=Bold-10"
+    --, font = "xft:Fira Mono for Powerline:style=Bold:size=9"
+    --, font = "xft:Fira Mono for Powerline:style=Bold-9"
+    , font = "Fira Mono for Powerline Bold 10"
     --, textOffset =   13
     , border =       TopB
     , borderColor =  "#181715"

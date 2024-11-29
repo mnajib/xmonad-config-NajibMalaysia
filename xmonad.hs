@@ -476,7 +476,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 -- tabConfig = defaultTheme {
 tabConfig = def {
-    fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
+    --fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
     --fontName = "xft:Source Code Pro:pixelsize=12:antialias=false:hinting=true",
 
@@ -484,6 +484,13 @@ tabConfig = def {
     --fontName = "xft:terminus:size=8:antialias=false:hinting=true",
     --fontName = "xft:arial:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:Ubuntu Mono:pixelsize=10:antialias=false:hinting=true",
+    --fontName = "xft:Ubuntu Mono derivative Powerline:pixelsize=10:antialias=true:hinting=true",
+    --fontName = "xft:JetBrainsMono Nerd Font Mono-10",
+    --fontName = "xft:Fira Mono for Powerline:style=Bold-10",
+    --fontName = "xft:Ubuntu Mono:pixelsize=12:antialias=true:hinting=true",
+    fontName = "xft:Fira Mono for Powerline:style=Bold:size=9",
+    --fontName = "xft:Fira Mono for Powerline:style=Bold:size=8",
+    --fontName = "xft:Fira Mono for Powerline:style=Regular:size=9",
     activeBorderColor = "#FF0000",-- "#7C7C7C",
     activeTextColor = "#00FF00",--"#CEFFAC",
     activeColor = "#000000",
