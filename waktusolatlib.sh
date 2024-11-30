@@ -922,7 +922,116 @@ printWaktuSolatForCliType3() {
     log DEBUG "End qqfy665gg..."
     }
 
+formatWaktuSolatForXmobar_NEW_DEV_2024-11-29() {
+#formatWaktuSolatForXmobar() {
+    log DEBUG "Start formatWaktuSolatForXmobar()"
+
+    local out=""
+    local mDate=""
+    local mTime=""
+
+    #local cPre="<fc=#"
+    #local cPost="\e[0m"
+
+    local cBOLD="1"
+    local cFGBLACK="30"
+    local cFGGREY="90"
+    local cFGRED="91"
+    local cFGGREEN="32"
+    local cFGBLUE="94"
+    local cFGPURPLE="95"
+    local cFGYELLOW="93"
+    local cFGCYAN="36"
+    local cFGWHITE="97"
+    # Do not use bright color for background!
+    local cBGWHITE="47"
+    local cBGBLACK="40"
+    local cBGGREEN="42"
+    local cBGRED="41"
+
+    local cRESET="\033[0m"
+    local cDEFAULT="${cRESET}\033[${BOLD},${BGBLACK},${FGWHITE}m"
+    local cKODZON="${cRESET}\033[${BOLD},${BGBLACK},${FGPURPLE}m"
+    local cBULANHIJRAH="${cRESET}\033[${BOLD},${BGBLACK},${FGYELLOW}m"
+    local cBULANMASIHI="${cRESET}\033[${BOLD},${BGBLACK},${FGYELLOW}m"
+    local cTARIKHHIJRAH="${cRESET}\033[${BOLD},${BGBLACK},${FGBLUE}m"
+    local cTARIKHMASIHI="${cRESET}\033[${BOLD},${BGBLACK},${FGBLUE}m"
+    local cHARIMASIHI="${cRESET}\033[${BOLD},${BGBLACK},${FGYELLOW}m"
+    local cHARIHIJRAH="${cRESET}\033[${BOLD},${BGBLACK},${FGYELLOW}m"
+    local cNAMASOLAT="${cRESET}\033[${BOLD},${BGWHITE},${FGBLACK}m"
+    local cWAKTUSOLAT="${cRESET}\033[${BOLD},${BGGREEN},${FGBLACK}m"
+    local cKURUNGANHIJRAH="${cRESET}\033[${BOLD},${BGBLACK},${FGGREEN}m"
+    local cKURUNGANMASIHI="${cRESET}\033[${BOLD},${BGBLACK},${FGBLUE}m"
+
+    mDate=`echo "${MDATETIME}" | sed 's/\ .*$//g'`
+    mTime=`echo "${MDATETIME}" | sed 's/^.*\ //g'`
+    MMONTHNUMBER=`echo "${mDate}" | awk -F- '{print $2}'`
+    MMONTHFULLNAME=`namaBulanM ${MMONTHNUMBER}`
+    HMONTHNUMBER=`echo "${HDATE}" | awk -F- '{print $2}'`
+    HMONTHFULLNAME=`namaBulanH ${HMONTHNUMBER}`
+
+    local nomborHari=`nomHari $DAY`
+    #local nomborNextHari=$(( $nomborHari + 1 ))
+    local nomborNextHari=`nomNextHari $nomborHari`
+    local hariInBM=`namaHariBM $nomborHari`
+    local nextHariInBM=`namaHariBM $nomborNextHari`
+    log DEBUG "nomborNexHari=${nomborNextHari}"
+    log DEBUG "nextHariInBM=${nextHariInBM}"
+
+    #out+="Downloaded from www.e-solat.gov.my on"
+    #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+="${cDEFAULT}On"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+=" ${mDate}"                                        # Masihi date
+    out+=" ${mTime};"                                       # Time
+    #------------------
+    out+=" "
+    if $ERROR; then
+        out+="${cRESET}\033[${cBOLD},${cBGRED},${cFGWHITE}mOLD"                                   # Mark old data
+    else
+        out+="   "
+    fi
+    out+=" "
+    #------------------
+    out+="${cDEFAULT}("
+    out+="${cKODZONE}{zone}"                                           # Area/Zone
+    out+=" ${cKURUNGANMASIHI}(${cBULANMASIHI}${MMONTHFULLNAME:0:3}"                         # Masihi month
+    out+=" ${cTARIKHMASIHI}${mDate}"                                         # Masihi date
+    out+=" ${cHARIMASIHI}${DAY:0:3}"                                     # Day in English
+
+    out+=" ${cKURUNGANHIJRAH}("
+    out+="${cBULANHIJRAH}${HMONTHFULLNAME}"
+    out+=" ${cTARIKHHIJRAH}${HDATE}"                                         # Hijrah date
+    out+=" ${cHARIHIJRAH}${hariInBM:0:3}"
+    out+=" "
+
+    #for i in "${!NAMASOLAT[@]}"; do
+    #    #out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff> ${MASASOLAT[$i]} </fc> "
+    #    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
+    #done
+    i=0
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]} "
+    i=1
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]} "
+    i=2
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]} "
+    i=3
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]} "
+    i=4
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]}${cKURUNGANHIJRAH}) "
+    out+="${cKURUNGANHIJRAH}(${cHARIHIJRAH}${nextHariInBM:0:3} "
+    i=5
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]} "
+    i=6
+    out+="${cNAMASOLAT}${NAMASOLAT[$i]:0:3}${cWAKTUSOLAT}${MASASOLAT[$i]}${cKURUNGANHIJRAH})${cKURUNGANMASIHI})${cDEFAULT})"
+
+    #echo -en "${out}\n"
+    ONELINE="${out}"
+
+    log DEBUG "End formatWaktuSolatForXmobar()"
+    }
+
 formatWaktuSolatForXmobar() {
+#formatWaktuSolatForXmobar_with_HTML_color() {
     log DEBUG "Start formatWaktuSolatForXmobar()"
 
     local out=""
@@ -955,6 +1064,7 @@ formatWaktuSolatForXmobar() {
 
     #out+="Downloaded from www.e-solat.gov.my on"
     #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+=""                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
     out+="On"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
     out+=" <fc=#${cWhite}>${mDate}</fc>"                                        # Masihi date
     out+=" <fc=#${cWhite}>T${mTime}</fc>;"                                       # Time
@@ -1004,6 +1114,7 @@ formatWaktuSolatForXmobar() {
 
     log DEBUG "End formatWaktuSolatForXmobar()"
     }
+
 
 formatWaktuSolatForXmobar2() {
     log DEBUG "Start formatWaktuSolatForXmobar()"

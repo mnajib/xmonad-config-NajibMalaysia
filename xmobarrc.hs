@@ -7,13 +7,16 @@ Config {
     -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     --, font = "Monospace Extra-Light Thin 8" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Monospace Thin Thin 8" -- Need this change because xmobar now use pango insteed of xft
+    , font = "Monospace Bold 10" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Monospace Regular 9" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Ubuntu Mono derivative Powerline 10" -- Need this change because xmobar now use pango insteed of xft
     --, font = "xft:JetBrainsMono Nerd Font Mono-10"
     --, font = "xft:Fira Mono for Powerline:style=Bold-10"
     --, font = "xft:Fira Mono for Powerline:style=Bold:size=9"
     --, font = "xft:Fira Mono for Powerline:style=Bold-9"
-    , font = "Fira Mono for Powerline Bold 10"
+    --, font = "Fira Mono for Powerline Bold 10" -- this format is working great
+    --, font = "JetBrainsMono Nerd Font Mono 9"
+    --, font = "JetBrainsMono Nerd Font Mono Bold 9"
     --, textOffset =   13
     , border =       TopB
     , borderColor =  "#181715"
@@ -40,6 +43,9 @@ Config {
     , overrideRedirect = True    -- set the Override Redirect flag (Xlib)
     , pickBroadest =     False   -- choose widest display (multi-monitor)
     , persistent =       True    -- enable/disable hiding (True = disabled)
+
+    --, useAnsi = False -- Disable ANSI escape code rendering. This is the default.
+    --, useAnsi = True -- enable ANSI escape code rendering
 
     -- plugins
     --   Numbers can be automatically colored according to their value. xmobar

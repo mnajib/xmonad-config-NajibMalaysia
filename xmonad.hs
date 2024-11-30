@@ -477,6 +477,10 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
 -- tabConfig = defaultTheme {
 tabConfig = def {
     --fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
+    --fontName = "xft:monospace:pixelsize=10:style=bold:antialias=false:hinting=true",
+    --fontName = "xft:monospace:pixelsize=10:style=bold:hinting=true",
+    --fontName = "xft:monospace:pixelsize=10:style=bold",
+    fontName = "xft:monospace:size=10:style=bold",
     --fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
     --fontName = "xft:Source Code Pro:pixelsize=12:antialias=false:hinting=true",
 
@@ -485,10 +489,11 @@ tabConfig = def {
     --fontName = "xft:arial:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:Ubuntu Mono:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:Ubuntu Mono derivative Powerline:pixelsize=10:antialias=true:hinting=true",
-    --fontName = "xft:JetBrainsMono Nerd Font Mono-10",
+    --fontName = "xft:JetBrainsMono Nerd Font Mono:size=9", -- working, but the font seam to tall
+    --fontName = "xft:JetBrainsMono Nerd Font Mono:style=Bold:size=9:antialias=true:hinting=true",
     --fontName = "xft:Fira Mono for Powerline:style=Bold-10",
     --fontName = "xft:Ubuntu Mono:pixelsize=12:antialias=true:hinting=true",
-    fontName = "xft:Fira Mono for Powerline:style=Bold:size=9",
+    --fontName = "xft:Fira Mono for Powerline:style=Bold:size=9", -- working good, but the font problem when zoom
     --fontName = "xft:Fira Mono for Powerline:style=Bold:size=8",
     --fontName = "xft:Fira Mono for Powerline:style=Regular:size=9",
     activeBorderColor = "#FF0000",-- "#7C7C7C",
@@ -842,8 +847,15 @@ myStartupHook = do {
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
 main = do {
+    --spawnOnce "~/.xmonad/bin/autostart.sh";
+    --spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh";
+    --spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh";
+    --threadDelay 5000000; -- in miliseconds;
+    --spawnOnce "~/.xmonad/bin/start-sidetool.sh";
+
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
-    xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
+    --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
+    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";      -- buttom bar
     --xmonad $ defaults {
     --xmonad $ def {
     --xmonad $ defaults
