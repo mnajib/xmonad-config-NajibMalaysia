@@ -7,7 +7,7 @@ Config {
     -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     --, font = "Monospace Extra-Light Thin 8" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Monospace Thin Thin 8" -- Need this change because xmobar now use pango insteed of xft
-    , font = "Monospace Bold 10" -- Need this change because xmobar now use pango insteed of xft
+    , font = "Monospace Bold 9" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Monospace Regular 9" -- Need this change because xmobar now use pango insteed of xft
     --, font = "Ubuntu Mono derivative Powerline 10" -- Need this change because xmobar now use pango insteed of xft
     --, font = "xft:JetBrainsMono Nerd Font Mono-10"

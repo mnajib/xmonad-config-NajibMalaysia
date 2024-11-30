@@ -7,7 +7,7 @@ Config {
     --, font =         "xft:Bitstream Vera Sans Mono:size=9:bold:antialias=true"
     --, font = "Monospace Extra-Light Extra-Light 8"
     --, font = "Monospace Thin Thin 8" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
-    , font = "Monospace Bold 10" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
+    , font = "Monospace Bold 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
     --, font = "Monospace Regular 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
     --, font = "Ubuntu Mono Regular 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
     --, font = "xft:Fira Mono for Powerline:style=Bold-10"
