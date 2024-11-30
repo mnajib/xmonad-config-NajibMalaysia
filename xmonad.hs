@@ -474,6 +474,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
 -- Layouts:
 
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
+-- NOTE: https://sourcefoundry.org/hack/playground.html
 -- tabConfig = defaultTheme {
 tabConfig = def {
     --fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
