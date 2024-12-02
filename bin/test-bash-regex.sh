@@ -1,5 +1,25 @@
 #!/usr/bin/env bash
 
+# Helper function to determine if a time is within proximity
+is_near_time() {
+    local target_time="$1"
+    local current_time="$2"
+    local threshold_minutes="$3"
+
+    # Convert HH:MM to minutes since midnight
+    local target_minutes=$(( 10#${target_time%%:*} * 60 + 10#${target_time##*:} ))
+    local current_minutes=$(( 10#${current_time%%:*} * 60 + 10#${current_time##*:} ))
+
+    # Calculate absolute difference
+    local diff=$((target_minutes - current_minutes))
+    if (( diff < 0 )); then
+        diff=$(( -diff ))
+    fi
+
+    # Return true if within threshold
+    (( diff <= threshold_minutes ))
+}
+
 #url="https://example.com"
 #if [[ "$url" =~ ^(https?)://([^/]+) ]]; then
 #    protocol="${BASH_REMATCH[1]}"
@@ -47,14 +67,33 @@ while [[ $updated_line =~ $pattern ]]; do
     #echo "Prayer Name: ${BASH_REMATCH[1]}"
     #echo "Prayer Time Background Color: ${BASH_REMATCH[2]}"
     #echo "Prayer Time: ${BASH_REMATCH[3]}"
+    background="${BASH_REMATCH[2]}"
+    prayer_time="${BASH_REMATCH[3]}"
+    current_time="12:59"
 
     # Remove the matched part from updated_line to continue searching
     #pattern2="${BASH_REMATCH[1]}\</fc\>\<fc=#000000,#${BASH_REMATCH[2]}\>${BASH_REMATCH[3]}"
     pattern2="${BASH_REMATCH[1]}</fc><fc=#000000,#${BASH_REMATCH[2]}>${BASH_REMATCH[3]}"
     updated_line="${updated_line/${pattern2}//}"
 
-    newColor="ff0000"
-    pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${newColor}>${BASH_REMATCH[3]}"
+    #newColor="ff0000"
+    #pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${newColor}>${BASH_REMATCH[3]}"
+    #result_line="${result_line/${pattern2}/${pattern3}}"
+    #
+    # Calculate proximity and determine new background color
+    new_background=""
+    #local current_time=$(date +"%H:%M")
+    if is_near_time "$prayer_time" "$current_time" 5; then
+        new_background="ff4d4d"  # Example: red for very near
+    elif is_near_time "$prayer_time" "$current_time" 15; then
+        new_background="ffff00"  # Example: yellow for near
+    else
+        new_background="$background"  # Keep the original background
+    fi
+    #
+    # Replace the old match with updated background color
+    pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${new_background}>${BASH_REMATCH[3]}"
     result_line="${result_line/${pattern2}/${pattern3}}"
 done
 echo "${result_line}"
+
