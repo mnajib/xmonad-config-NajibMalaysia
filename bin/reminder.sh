@@ -58,36 +58,52 @@ process_prayer_times() {
     local line="$1"
     local current_time=$(date +"%H:%M")
     local updated_line="$line"
+    local result_line="$line"
 
     # Regex to match prayer times in the format '<fc=#foreground,#background>HH:MM</fc>'
     #local regex="<fc=([^,>]*),([^>]+)>([0-9]{2}:[0-9]{2})</fc>"
-    local regex='<fc=([^,>]*),([^>]+)>([0-9]{2}:[0-9]{2})</fc>'
+    #local regex='<fc=([^,>]*),([^>]+)>([0-9]{2}:[0-9]{2})</fc>'
+    local pattern='([A-Za-z]{3})</fc><fc=#000000,#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
 
     # Iterate over each match and process the time
     #while [[ "$updated_line" =~ "$regex" ]]; do
-    while [[ "$updated_line" =~ $regex ]]; do
-        local foreground="${BASH_REMATCH[1]}"
-        local background="${BASH_REMATCH[2]}"
-        local prayer_time="${BASH_REMATCH[3]}"
+    while [[ $updated_line =~ $pattern ]]; do
+      #local foreground="${BASH_REMATCH[1]}"
+      #local background="${BASH_REMATCH[2]}"
+      #local prayer_time="${BASH_REMATCH[3]}"
+      #
+      #echo "Prayer Name: ${BASH_REMATCH[1]}"
+      #echo "Prayer Time Background Color: ${BASH_REMATCH[2]}"
+      #echo "Prayer Time: ${BASH_REMATCH[3]}"
+      #
+      #echo "Prayer Time: ${BASH_REMATCH[3]}" >> "$LOG_FILE"
 
-        echo -n "$prayer_time" >> "$LOG_FILE"
+      # Remove the matched part from updated_line to continue searching
+      #pattern2="${BASH_REMATCH[1]}\</fc\>\<fc=#000000,#${BASH_REMATCH[2]}\>${BASH_REMATCH[3]}"
+      pattern2="${BASH_REMATCH[1]}</fc><fc=#000000,#${BASH_REMATCH[2]}>${BASH_REMATCH[3]}"
+      updated_line="${updated_line/${pattern2}//}"
 
-        # Calculate proximity and determine new background color
-        local new_background
-        if is_near_time "$prayer_time" "$current_time" 5; then
-            new_background="#ff4d4d"  # Example: red for very near
-        elif is_near_time "$prayer_time" "$current_time" 15; then
-            new_background="#ffff00"  # Example: yellow for near
-        else
-            new_background="$background"  # Keep the original background
-        fi
+      #newColor="ff0000" # red
+      newColor="00ff00" # green
+      pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${newColor}>${BASH_REMATCH[3]}"
+      result_line="${result_line/${pattern2}/${pattern3}}"
 
-        # Replace the old match with updated background color
-        updated_line="${updated_line/<fc=$foreground,$background>$prayer_time<\/fc>/<fc=$foreground,$new_background>$prayer_time<\/fc>}"
+      # Calculate proximity and determine new background color
+      #local new_background
+      #if is_near_time "$prayer_time" "$current_time" 5; then
+      #    new_background="#ff4d4d"  # Example: red for very near
+      #elif is_near_time "$prayer_time" "$current_time" 15; then
+      #    new_background="#ffff00"  # Example: yellow for near
+      #else
+      #    new_background="$background"  # Keep the original background
+      #fi
+      #
+      # Replace the old match with updated background color
+      #updated_line="${updated_line/<fc=$foreground,$background>$prayer_time<\/fc>/<fc=$foreground,$new_background>$prayer_time<\/fc>}"
     done
-    echo -n "\n" >> "$LOG_FILE"
 
-    echo "$updated_line"
+    #echo -n "\n" >> "$LOG_FILE"
+    echo "$result_line"
 }
 
 # Helper function to determine if a time is within proximity
