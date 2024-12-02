@@ -17,6 +17,9 @@ i=2
 #i=21600
 #c=1
 
+# Ensure the reminder FIFO exists
+[ ! -p "$PIPE" ] && mkfifo "$PIPE"
+
 # XXX:
 dateTime(){
     echo `date "+%F %T"`

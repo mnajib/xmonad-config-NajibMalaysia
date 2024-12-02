@@ -9,6 +9,9 @@ if [ ! -f /tmp/${USER}-zikirpipe ]; then
 fi
 sleep 1
 ~/.xmonad/bin/zikir &
+~/.xmonad/waktusolat-hbar SGR01 &
+sleep 1
+~/.xmonad/bin/reminder.sh &
 sleep 1
 
 trayerIsAlive(){

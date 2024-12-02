@@ -19,6 +19,8 @@ FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
 LOG=/tmp/${USER}-wsp.log        # for logging
+FIFO=/tmp/prayer_times_fifo
+SOCKET=/tmp/prayer_times_socket
 
 ONELINE=""
 NAMASOLAT=()
@@ -40,6 +42,90 @@ MMONTHFULLNAME=""
 LOGMODE="NORMAL"
 #LOGMODE="DEBUG"
 
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+log () {
+    local logmode=$1
+    local logstring=$2
+    #local logfile=$3
+
+    # Will use global var: LOG, LOGMODE
+    if [ "$LOGMODE" = "DEBUG" ]; then
+        # For debugging purpose, log all information
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+        # Normally, just log general information
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+    fi
+}
+
+createFifo(){
+    mkfifo $PIPE
+    mkfifo $LOGFILE
+}
+
+cleanup-socket(){
+    local SOCKET=$1
+    [[ -e "$SOCKET" ]] && rm "$SOCKET"
+    sleep 2
+}
+
+# Start a socket listener in the background
+start-socket() {
+    local SOCKET=$1
+    socat -u UNIX-LISTEN:"$SOCKET" - &
+}
+
+sleepLengthInSeconds() {
+    local s="$1" # string
+    log DEBUG "String: ${s}"
+    local size=${#s}
+    log DEBUG "String size: ${size}"
+
+    #i=$(( ($size / 5) * 60 ))
+    i=$(( ($size / 10) * 60 ))
+    #echo "$(( ($size / 5) * 60 ))"
+}
+
+dreamInSleep() {
+    local DIRATION=$1  # Total duration in seconds
+    local FIFO=$2
+    local TEXT=$3
+
+    #local duration=10  # Total duration in seconds
+    local interval=1   # Update interval
+
+    #echo -n "Progress: "
+    for (( i = 0; i < $DURATION; i += $interval )); do
+        #echo -n "#"
+        #cat "$FIFO" &> /dev/null
+        pushStringToPipe "${TEXT}" "${FIFO}"
+        sleep $interval
+    done
+
+    #echo " Done!"
+}
+
+# Usage: pushStringToPipe <string> <pipefile>
+# Example: pushStringToPipe "string" "/tmp/thepipefile"
+pushStringToPipe() {
+    local STRING=$1
+    local PIPE=$2
+    log DEBUG "${STRING}"
+    echo "${STRING}" > $PIPE
+    #echo -en "${STRING}\n" > $PIPE
+}
+
+pushStringToSocket() {
+    local STRING=$1
+    local SOCKET=$2
+    #echo "Maghrib: 19:02, Isyak: 20:16, Subuh: 05:52" | socat -u - UNIX-CONNECT:"$SOCKET"
+    echo "$1" | socat -u - UNIX-CONNECT:"$SOCKET"
+}
+
 #----------------------------------------------------------------------
 
 log INFO "==============================="
@@ -48,6 +134,13 @@ log INFO "Start waktusolat-putrajaya-hbar"
 timeInterval1=`echo "60 * 60 * 3" | bc`       # every 3 hours
 timeInterval2=`echo "60 * 1" | bc`            # every 1 minutes; used this if last fetch was failed
 timeInterval=${timeInterval1}
+
+# Clean up previous socket
+cleanup-socket "$SOCKET"
+sleep 3
+# Start a socket listener
+start-socket "$SOCKET"
+sleep 3
 
 while true; do
     log DEBUG "-------------------------------"
@@ -98,11 +191,20 @@ while true; do
     formatWaktuSolatForXmobar
     printNewWaktuSolat
 
-    # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
+
+    #---------------------------------------------------------
+    pushStringToPipe "$(printNewWaktuSolat)" "${FIFO}"
+    #pushStringToSocket "$(printNewWaktuSolat)" "${SOCKET}"
+    #---------------------------------------------------------
+
+
+    # TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then
     # ...
+    #
     log DEBUG "Do sleep for ${timeInterval}"
     sleep ${timeInterval}
+    #dreamInSleep ${timeInterval} ${FIFO} "$(printNewWaktuSolat)" # Try to keep the FIFO alive
 
     log DEBUG "End main loop"
 done

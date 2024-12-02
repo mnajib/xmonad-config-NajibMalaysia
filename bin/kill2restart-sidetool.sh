@@ -25,6 +25,9 @@ pgrep -a bash | grep 'NetConnStatus' | awk '{print $1}' | tr '\n' ' ' | sed 's/$
 pgrep -a xscreensaver | grep 'xscreensaver' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a zikir | grep 'xscreensaver' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
+pgrep -a bash | grep 'waktusolat-hbar' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep 'reminder.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+
 sleep 2
 #echo "--------------------"
 #ps auxwww | egrep -i "zikir|xmobar|solat|trayer|LED|pasystray|volumeicon"

@@ -850,11 +850,12 @@ myStartupHook = do {
 -- main = xmonad defaults
 main = do {
     --spawnOnce "~/.xmonad/bin/autostart.sh";
-    --spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh";
-    --spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh";
-    --threadDelay 5000000; -- in miliseconds;
-    --spawnOnce "~/.xmonad/bin/start-sidetool.sh";
-
+    spawn "~/.xmonad/bin/kill2restart-xmobar.sh";
+    spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
+    spawn "killall xmobar";
+    spawn "pkill xmobar";
+    threadDelay 5000000; -- in miliseconds;
+    spawn "~/.xmonad/bin/start-sidetool.sh";
     spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
     --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
     xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";      -- buttom bar
