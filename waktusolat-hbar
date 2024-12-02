@@ -18,8 +18,12 @@
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
+PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 LOG=/tmp/${USER}-wsp.log        # for logging
 FIFO=/tmp/prayer_times_fifo
+PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
+PRAYER_REMINDER_FIFO="/tmp/prayer_reminder_fifo"
 SOCKET=/tmp/prayer_times_socket
 
 ONELINE=""
@@ -109,12 +113,20 @@ dreamInSleep() {
     #echo " Done!"
 }
 
+pushStringToFile() {
+    local STRING=$1
+    local FILE=$2
+    log DEBUG "pushStringToFile: ${STRING}"
+    echo "$STRING" > "$FILE"
+    #echo -en "${STRING}\n" > "$FILE"
+}
+
 # Usage: pushStringToPipe <string> <pipefile>
 # Example: pushStringToPipe "string" "/tmp/thepipefile"
 pushStringToPipe() {
     local STRING=$1
     local PIPE=$2
-    log DEBUG "${STRING}"
+    log DEBUG "pushStringToPipe: ${STRING}"
     echo "${STRING}" > $PIPE
     #echo -en "${STRING}\n" > $PIPE
 }
@@ -122,6 +134,7 @@ pushStringToPipe() {
 pushStringToSocket() {
     local STRING=$1
     local SOCKET=$2
+    log DEBUG "pushStringToSocket: ${STRING}"
     #echo "Maghrib: 19:02, Isyak: 20:16, Subuh: 05:52" | socat -u - UNIX-CONNECT:"$SOCKET"
     echo "$1" | socat -u - UNIX-CONNECT:"$SOCKET"
 }
@@ -189,14 +202,13 @@ while true; do
     #     waktusolat-putrajaya-hbar xmobar
     #
     formatWaktuSolatForXmobar
-    printNewWaktuSolat
-
 
     #---------------------------------------------------------
-    pushStringToPipe "$(printNewWaktuSolat)" "${FIFO}"
+    #printNewWaktuSolat
+    pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
+    #pushStringToPipe "$(printNewWaktuSolat)" "${FIFO}"
     #pushStringToSocket "$(printNewWaktuSolat)" "${SOCKET}"
     #---------------------------------------------------------
-
 
     # TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then

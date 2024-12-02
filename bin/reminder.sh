@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
+PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
 PRAYER_REMINDER_FIFO="/tmp/prayer_reminder_fifo"
 FIFO_INPUT="$PRAYER_TIMES_FIFO"
@@ -8,6 +10,8 @@ SOCKET="/tmp/prayer_times_socket"
 LOG_FILE="/tmp/prayer_reminder_log"
 
 # Ensure the reminder FIFO exists
+[ ! -p "$PRAYER_TIMES_FILE" ] && touch "$PRAYER_TIMES_FILE"
+[ ! -p "$PRAYER_REMINDER_FILE" ] && touch "$PRAYER_REMINDER_FILE"
 [ ! -p "$PRAYER_TIMES_FIFO" ] && mkfifo "$PRAYER_TIMES_FIFO"
 [ ! -p "$PRAYER_REMINDER_FIFO" ] && mkfifo "$PRAYER_REMINDER_FIFO"
 
@@ -59,11 +63,16 @@ process_prayer_times() {
     local current_time=$(date +"%H:%M")
     local updated_line="$line"
     local result_line="$line"
+    local background
+    local new_background
+    local prayer_time
 
     # Regex to match prayer times in the format '<fc=#foreground,#background>HH:MM</fc>'
     #local regex="<fc=([^,>]*),([^>]+)>([0-9]{2}:[0-9]{2})</fc>"
     #local regex='<fc=([^,>]*),([^>]+)>([0-9]{2}:[0-9]{2})</fc>'
     local pattern='([A-Za-z]{3})</fc><fc=#000000,#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
+    local pattern2
+    local pattern3
 
     # Iterate over each match and process the time
     #while [[ "$updated_line" =~ "$regex" ]]; do
@@ -77,6 +86,9 @@ process_prayer_times() {
       #echo "Prayer Time: ${BASH_REMATCH[3]}"
       #
       #echo "Prayer Time: ${BASH_REMATCH[3]}" >> "$LOG_FILE"
+      background="${BASH_REMATCH[2]}"
+      prayer_name="${BASH_REMATCH[1]}"
+      prayer_time="${BASH_REMATCH[3]}"
 
       # Remove the matched part from updated_line to continue searching
       #pattern2="${BASH_REMATCH[1]}\</fc\>\<fc=#000000,#${BASH_REMATCH[2]}\>${BASH_REMATCH[3]}"
@@ -84,25 +96,32 @@ process_prayer_times() {
       updated_line="${updated_line/${pattern2}//}"
 
       #newColor="ff0000" # red
-      newColor="00ff00" # green
-      pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${newColor}>${BASH_REMATCH[3]}"
-      result_line="${result_line/${pattern2}/${pattern3}}"
-
+      #newColor="00ff00" # green
+      #pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${newColor}>${BASH_REMATCH[3]}"
+      #result_line="${result_line/${pattern2}/${pattern3}}"
+      #
       # Calculate proximity and determine new background color
-      #local new_background
+      new_background=""
+      #local current_time=$(date +"%H:%M")
       #if is_near_time "$prayer_time" "$current_time" 5; then
-      #    new_background="#ff4d4d"  # Example: red for very near
+      if is_near_time "$prayer_time" "$current_time" 15; then
+          #new_background="ff4d4d"  # Example: red for very near
+          new_background="fc6c85"  # Example: red for very near
       #elif is_near_time "$prayer_time" "$current_time" 15; then
-      #    new_background="#ffff00"  # Example: yellow for near
-      #else
-      #    new_background="$background"  # Keep the original background
-      #fi
+      elif is_near_time "$prayer_time" "$current_time" 30; then
+          #new_background="ffff00"  # Example: yellow for near
+          #new_background="ffe5b4"  # Example: yellow for near
+          new_background="ffbf00"  # Example: yellow for near
+      else
+          #new_background="$background"  # Keep the original background
+          new_background="00ff77"  # Example: yellow for near
+      fi
       #
       # Replace the old match with updated background color
-      #updated_line="${updated_line/<fc=$foreground,$background>$prayer_time<\/fc>/<fc=$foreground,$new_background>$prayer_time<\/fc>}"
+      pattern3="${BASH_REMATCH[1]}</fc><fc=#000000,#${new_background}>${BASH_REMATCH[3]}"
+      result_line="${result_line/${pattern2}/${pattern3}}"
     done
 
-    #echo -n "\n" >> "$LOG_FILE"
     echo "$result_line"
 }
 
@@ -224,13 +243,26 @@ process_prayer_times_3() {
 #    sleep 5
 #done
 
-# Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
 while true; do
-  if read -r line < "$PRAYER_TIMES_FIFO"; then
-    #echo "$line" | process_prayer_times_2 > "$PRAYER_REMINDER_FIFO"
-    process_prayer_times "$line" > "$PRAYER_REMINDER_FIFO"
-    #process_prayer_times "$line" | tee -a "$LOG_FILE" > "$PRAYER_REMINDER_FIFO"
-  fi
+  input_string="$( cat ${PRAYER_TIMES_FILE} )"
+
+  #...
+  output_string="$input_string"
+
+  #echo "$output_string" > "$PRAYER_REMINDER_FILE"
+  #echo "$output_string" > "$PRAYER_REMINDER_FIFO"
+  #
+  process_prayer_times "$input_string" > "$PRAYER_REMINDER_FIFO"
+
+  sleep 1
+done
+
+# Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
+#while true; do
+  #if read -r line < "$PRAYER_TIMES_FIFO"; then
+  #  process_prayer_times "$line" > "$PRAYER_REMINDER_FIFO"
+  #  #process_prayer_times "$line" | tee -a "$LOG_FILE" > "$PRAYER_REMINDER_FIFO"
+  #fi
 
   # Try to keep $PRAYER_REMINDER_FIFO alive
   #if read -r line < "$PRAYER_REMINDER_FIFO"; then
@@ -238,8 +270,8 @@ while true; do
   #fi
   #cat "$PRAYER_REMINDER_FIFO" &> /dev/null
 
-  sleep 1  # Adjust sleep to prevent busy-waiting
-done
+#  sleep 1  # Adjust sleep to prevent busy-waiting
+#done
 
 # Main monitoring loop
 #tail -f "$FIFO_INPUT" | while read -r line; do
