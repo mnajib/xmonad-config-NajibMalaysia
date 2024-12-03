@@ -1080,13 +1080,13 @@ formatWaktuSolatForXmobar() {
     #------------------
     out+="("
     out+="<fc=#${cPink}>${zone}</fc>"                                           # Area/Zone
-    out+=" (<fc=#${cYellow}>${MMONTHFULLNAME:0:3}</fc>"                         # Masihi month
+    out+=" <fc=#${cBlue}>(${MMONTHFULLNAME:0:3}</fc>"                         # Masihi month
     out+=" <fc=#${cBlue}>${mDate}</fc>"                                         # Masihi date
-    out+=" <fc=#${cYellow}>${DAY:0:3}</fc>"                                     # Day in English
+    out+=" <fc=#${cBlue}>${DAY:0:3}</fc>"                                     # Day in English
 
-    out+=" ("
-    out+="<fc=#${cYellow}>${HMONTHFULLNAME}</fc>"
-    out+=" <fc=#${cBlue}>${HDATE}</fc>"                                         # Hijrah date
+    out+=" "
+    out+="<fc=#${cYellow}>(${HMONTHFULLNAME}</fc>"
+    out+=" <fc=#${cYellow}>${HDATE}</fc>"                                         # Hijrah date
     out+=" <fc=#${cYellow}>${hariInBM:0:3}</fc>"
     out+=" "
 
@@ -1103,12 +1103,12 @@ formatWaktuSolatForXmobar() {
     i=3
     out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=4
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc>) "
-    out+="(<fc=#${cYellow}>${nextHariInBM:0:3}</fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]})</fc> "
+    out+="<fc=#${cYellow}>(${nextHariInBM:0:3}</fc> "
     i=5
     out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=6
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc>)))"
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]})</fc><fc=#${cBlue}>)</fc>)"
 
     #echo -en "${out}\n"
     ONELINE="${out}"
