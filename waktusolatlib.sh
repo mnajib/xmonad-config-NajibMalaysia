@@ -1087,7 +1087,7 @@ formatWaktuSolatForXmobar() {
     out+=" "
     out+="<fc=#${cYellow}>(${HMONTHFULLNAME}</fc>"
     out+=" <fc=#${cYellow}>${HDATE}</fc>"                                         # Hijrah date
-    out+=" <fc=#${cYellow}>{(${hariInBM:0:3}</fc>"
+    out+=" <fc=#${cYellow}>{[${hariInBM:0:3}</fc>"
     out+=" "
 
     #for i in "${!NAMASOLAT[@]}"; do
@@ -1103,12 +1103,12 @@ formatWaktuSolatForXmobar() {
     i=3
     out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=4
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc><fc=#${cYellow}>)</fc> "
-    out+="<fc=#${cYellow}>(${nextHariInBM:0:3}</fc> "
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc><fc=#${cYellow}>]</fc> "
+    out+="<fc=#${cYellow}>[${nextHariInBM:0:3}</fc> "
     i=5
     out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> "
     i=6
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc><fc=#${cYellow}>)}</fc><fc=#${cBlue}>)</fc><fc=#${cPink}>)</fc>"
+    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc><fc=#${cYellow}>]})</fc><fc=#${cBlue}>)</fc><fc=#${cPink}>)</fc>"
 
     #echo -en "${out}\n"
     ONELINE="${out}"
