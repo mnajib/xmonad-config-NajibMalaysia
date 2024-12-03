@@ -70,7 +70,8 @@ process_prayer_times() {
 
     # Regex
     #local pattern='([A-Za-z]{3})</fc><fc=#000000,#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
-    local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
+    #local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
+    local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})> ([0-9]{2}:[0-9]{2})'
     local pattern2
     local pattern3
 
@@ -82,7 +83,8 @@ process_prayer_times() {
       prayer_time="${BASH_REMATCH[4]}"
 
       # Remove the matched part from updated_line to continue searching
-      pattern2="${prayer_name}</fc><fc=#${foreground},#${background}>${prayer_time}"
+      #pattern2="${prayer_name}</fc><fc=#${foreground},#${background}>${prayer_time}"
+      pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
       updated_line="${updated_line/${pattern2}//}"
 
       # Calculate proximity and determine new background color
@@ -110,7 +112,8 @@ process_prayer_times() {
       fi
       #
       # Replace the old match with updated background color
-      pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}>${prayer_time}"
+      #pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}>${prayer_time}"
+      pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
       result_line="${result_line/${pattern2}/${pattern3}}"
     done
 
