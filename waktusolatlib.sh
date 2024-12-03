@@ -1066,9 +1066,9 @@ formatWaktuSolatForXmobar() {
     #out+="Downloaded from www.e-solat.gov.my on"
     #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
     out+=""                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
-    out+="<fc=#${cGrey}>On</fc>"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
-    out+=" <fc=#${cGrey}>${mDate}</fc>"                                        # Masihi date
-    out+=" <fc=#${cGrey}>T${mTime};</fc>"                                       # Time
+    out+="<fc=#${cGrey}>On"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
+    out+=" ${mDate}"                                        # Masihi date
+    out+=" ${mTime};</fc>"                                       # Time
     #------------------
     out+=" "
     if $ERROR; then
