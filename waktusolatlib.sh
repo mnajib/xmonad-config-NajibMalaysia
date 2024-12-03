@@ -1095,23 +1095,28 @@ formatWaktuSolatForXmobar() {
     #    out+="<fc=#00ff00>${NAMASOLAT[$i]}</fc><fc=#ffffff>${MASASOLAT[$i]}</fc> "
     #done
     i=0
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Imsak
+    #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Imsak
+    out+="<fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Imsak
     i=1
     #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]}</fc> " # Fajr (Subuh)
     out+="<fc=#000000,#ffffff>Fjr</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Fajr (Subuh)
     i=2
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Syuruk
+    #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Syuruk
+    out+="<fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Syuruk
     i=3
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Zohr
+    #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Zohr
+    out+="<fc=#000000,#ffffff>Zhr</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Zohr
     i=4
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Asr
+    #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Asr
+    out+="<fc=#000000,#ffffff>Asr</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Asr
     out+="<fc=#${cYellow}>)</fc> "
     out+="<fc=#${cYellow}>(${nextHariInBM:0:3}</fc> "
     i=5
     #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00>${MASASOLAT[$i]} </fc> " # Maghrib
     out+="<fc=#000000,#ffffff>Mgh</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc> " # Maghrib
     i=6
-    out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Isyak
+    #out+="<fc=#000000,#ffffff>${NAMASOLAT[$i]:0:3}</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Isyak
+    out+="<fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00> ${MASASOLAT[$i]} </fc>" # Isyak
     out+="<fc=#${cYellow}>)</fc><fc=#${cBlue}>)</fc><fc=#${cPink}>)</fc>"
 
     #echo -en "${out}\n"
