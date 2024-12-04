@@ -29,6 +29,20 @@ toggle_color() {
     [[ "$current_toggle" -eq 0 ]] && echo "$color1" || echo "$color2"
 }
 
+# input:  fg1 bg1 fg2 bg2
+# output: fg2 bg2 fg1 bg1
+toggle_colors() {
+    local toggle="$1"
+    local fg1="$2" bg1="$3"
+    local fg2="$4" bg2="$5"
+
+    if [[ "$toggle" -eq 0 ]]; then
+        echo "$fg1,$bg1"
+    else
+        echo "$fg2,$bg2"
+    fi
+}
+
 # Function to colorize the prayer time based on proximity to current time
 function colorize_time {
   local prayer_time="$1"
@@ -66,132 +80,67 @@ testdata() {
   echo "On <fc=#ffffff>2024-12-01</fc> <fc=#ffffff>T13:30:30</fc>; <fc=#ffffff,#ff4d4d>OLD</fc> (<fc=#ff66ff>SGR01</fc> (<fc=#ffff00>Dec</fc> <fc=#00ffff>2024-12-01</fc> <fc=#ffff00>Sun</fc> (<fc=#ffff00>Jmawl</fc> <fc=#00ffff>1446-05-29</fc> <fc=#ffff00>Aha</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00>05:42</fc> <fc=#000000,#ffffff>Sub</fc><fc=#000000,#00ff00>05:52</fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00>07:02</fc> <fc=#000000,#ffffff>Zoh</fc><fc=#000000,#00ff00>13:05</fc> <fc=#000000,#ffffff>Asa</fc><fc=#000000,#00ff00>16:28</fc>) (<fc=#ffff00>Isn</fc> <fc=#000000,#ffffff>Mag</fc><fc=#000000,#00ff00>19:02</fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00>20:17</fc>)))"
 }
 
-process_prayer_times() {
-    local line="$1"
-    local current_time=$(date +"%H:%M")
-    local updated_line="$line"
-    local result_line="$line"
-    local background
-    local new_background
-    local new_foreground
-    local prayer_time
-
-    # Regex
-    #local pattern='([A-Za-z]{3})</fc><fc=#000000,#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
-    #local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
-    local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})> ([0-9]{2}:[0-9]{2})'
-    local pattern2
-    local pattern3
-
-    # Iterate over each match and process the time
-    while [[ $updated_line =~ $pattern ]]; do
-      background="${BASH_REMATCH[3]}"
-      foreground="${BASH_REMATCH[2]}"
-      prayer_name="${BASH_REMATCH[1]}"
-      prayer_time="${BASH_REMATCH[4]}"
-
-      # Remove the matched part from updated_line to continue searching
-      #pattern2="${prayer_name}</fc><fc=#${foreground},#${background}>${prayer_time}"
-      pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
-      updated_line="${updated_line/${pattern2}//}"
-
-      # Calculate proximity and determine new background color
-      new_background="$background"
-      new_foreground="$foreground"
-      #local current_time=$(date +"%H:%M")
-      if is_near_time "$prayer_time" "$current_time" 15; then
-          # Example: red for very near
-          #new_background="ff4d4d"
-          #new_background="fc6c85"
-          #new_background="ff0000"
-          new_background="ff3333"
-          new_foreground="ffffff"
-      #elif is_near_time "$prayer_time" "$current_time" 15; then
-      elif is_near_time "$prayer_time" "$current_time" 30; then
-          # Example: yellow for near
-          new_background="ffbf00"
-          #new_background="f9ccac"
-      else
-          # Keep the original background
-          #new_background="$background"
-          # Example: lightgreen for far
-          #new_background="00ff77"
-          new_background="7fffd4"  # Example: lightgreen for far
-      fi
-      #
-      # Replace the old match with updated background color
-      #pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}>${prayer_time}"
-      pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
-      result_line="${result_line/${pattern2}/${pattern3}}"
-    done
-
-    echo "$result_line"
-}
-
 process_prayer_entry_impure() {
     local line="$1"
-    #local current_time=$(date +"%H:%M")
-    local current_time="$2"
     local updated_line="$line"
     local result_line="$line"
-    local background
-    local new_background
-    local new_foreground
-    local prayer_time
+
+    local current_time="$2"
+
     local toggle="$3"
 
+    local foreground
+    local background
+    local new_foreground
+    local new_background
+    local new_colors
+
+    local prayer_name
+    local prayer_time
+
     # Regex
-    #local pattern='([A-Za-z]{3})</fc><fc=#000000,#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
-    #local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})>([0-9]{2}:[0-9]{2})'
     local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})> ([0-9]{2}:[0-9]{2})'
     local pattern2
     local pattern3
 
     # Iterate over each match and process the time
     while [[ $updated_line =~ $pattern ]]; do
-      background="${BASH_REMATCH[3]}"
       foreground="${BASH_REMATCH[2]}"
+      background="${BASH_REMATCH[3]}"
       prayer_name="${BASH_REMATCH[1]}"
       prayer_time="${BASH_REMATCH[4]}"
 
       # Remove the matched part from updated_line to continue searching
-      #pattern2="${prayer_name}</fc><fc=#${foreground},#${background}>${prayer_time}"
       pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
       updated_line="${updated_line/${pattern2}//}"
 
       # Calculate proximity and determine new background color
-      #new_background="$background"
-      #new_foreground="$foreground"
-      local new_background
-      local new_foreground
-      #local current_time=$(date +"%H:%M")
       if is_near_time "$prayer_time" "$current_time" 15; then
-          # Example: red for very near
-          #new_background="ff4d4d"
-          #new_background="fc6c85"
-          #new_background="ff0000"
-          #new_background="ff3333"
-          #new_background=$(toggle_color "$toggle" "ff3333" "$background")
-          new_background=$(toggle_color "$toggle" "ff3333" "7fffd4")
-          new_foreground="ffffff" # white
-      #elif is_near_time "$prayer_time" "$current_time" 15; then
+        new_colors=$(toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+        # ---------------------------------------------------------------
+        # NOTE:
+        #   value="abc,def,ghi"
+        #   result="${value#*,}"
+        #   #: The # operator works on the beginning of the string.
+        #   *: Matches everything (any sequence of characters).
+        #   ,: Ensures the match stops at the first comma it encounters.
+        #   "Including the first comma": The pattern *, explicitly includes the comma in the match, so it's removed as well.
+        #
+        #   #*,: Remove the match regex patern '#*,' meaning remove from start, and then anythings until and including comma.
+        #   %,*: Remove the match regex patern '%,*' meaning remove until the end, start with comma, and then anytings.
+        # ---------------------------------------------------------------
+        new_foreground="${new_colors%,*}"
+        new_background="${new_colors#*,}"
       elif is_near_time "$prayer_time" "$current_time" 30; then
-          # Example: yellow for near
-          #new_background="ffbf00"
-          #new_background="f9ccac"
-          #new_background=$(toggle_color "$toggle" "ffbf00" "$background")
-          new_background=$(toggle_color "$toggle" "ffbf00" "7fffd4")
-          new_foreground="$foreground" # black
+        new_colors=$(toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+        new_foreground="${new_colors%,*}"
+        new_background="${new_colors#*,}"
       else
-          # Example: lightgreen for far
-          #new_background="00ff77"
-          #new_background=$(toggle_color "$toggle" "7fffd4" "ffffff")  # Test
-          new_background="7fffd4"  # Example: lightgreen for far
-          new_foreground="$foreground" # black
+        new_foreground="000000"
+        new_background="7fffd4"  # Example: lightgreen for far
       fi
       #
       # Replace the old match with updated background color
-      #pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}>${prayer_time}"
       pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
       result_line="${result_line/${pattern2}/${pattern3}}"
     done
@@ -203,24 +152,27 @@ main_loop_impure() {
     local line="$1"
     local fifo="$2"
     local debug_log="$3"
-    local toggle="$4"  # Current toggle state
-
+    local toggle=0  # Initial toggle state
     local current_time
-    current_time=$(date +"%H:%M")
-
-    # Process the prayer times using the current toggle state
     local processed_line
-    processed_line=$(process_prayer_entry_impure "$line" "$current_time" "$toggle")
 
-    # Write the processed line to FIFO and log
-    echo "$processed_line" | tee -a "$debug_log" > "$fifo"
+    while true; do
+      current_time=$(date +"%H:%M")
 
-    # Calculate the next toggle state (alternate between 0 and 1)
-    local next_toggle=$((1 - toggle))
+      # Process the prayer times using the current toggle state
+      #processed_line=$(process_prayer_entry_impure "$line" "$current_time" "$toggle")
+      #
+      # Write the processed line to FIFO and log
+      #echo "$processed_line" | tee -a "$debug_log" > "$fifo"
+      #
+      process_prayer_entry_impure "$line" "$current_time" "$toggle" > "$fifo"
 
-    # Recursive call with updated toggle state
-    sleep 1
-    main_loop_impure "$line" "$fifo" "$debug_log" "$next_toggle"
+      # Alternate the toggle state (alternate between 0 and 1)
+      toggle=$((1 - $toggle))
+
+      # Wait for 1 second before next loop iteration
+      sleep 1
+    done
 }
 
 # Helper function to determine if a time is within proximity
@@ -247,6 +199,17 @@ is_near_time() {
     # Absolute difference, within proximity
     [[ ${diff#-} -le "$proximity" ]]
 }
+
+get_input_string() {
+    local file="$1"
+    if [[ ! -f "$file" ]]; then
+        echo "Error: File $file not found." >&2
+        return 1
+    fi
+    cat "$file"
+}
+
+# #############################################################################
 
 # Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
 #while true; do
@@ -281,10 +244,12 @@ is_near_time() {
 #done
 #--------------------------------------------
 #line="Your formatted prayer times line here"
-input_string="$( cat ${PRAYER_TIMES_FILE} )"
+#input_string="$( cat ${PRAYER_TIMES_FILE} )"
 #main_loop "$line" "$PRAYER_REMINDER_FIFO" "$DEBUG_LOG" 0
-main_loop_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE" 0
+#main_loop_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE" 0
+#main_loop_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
 #--------------------------------------------
+main_loop_impure "$(get_input_string "${PRAYER_TIMES_FILE}")" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
 
 # Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
 #while true; do
