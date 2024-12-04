@@ -171,21 +171,23 @@ process_prayer_entry_impure() {
           #new_background="fc6c85"
           #new_background="ff0000"
           #new_background="ff3333"
-          new_background=$(toggle_color "$toggle" "ff3333" "$background")
-          new_foreground="ffffff"
+          #new_background=$(toggle_color "$toggle" "ff3333" "$background")
+          new_background=$(toggle_color "$toggle" "ff3333" "7fffd4")
+          new_foreground="ffffff" # white
       #elif is_near_time "$prayer_time" "$current_time" 15; then
       elif is_near_time "$prayer_time" "$current_time" 30; then
           # Example: yellow for near
           #new_background="ffbf00"
           #new_background="f9ccac"
-          new_background=$(toggle_color "$toggle" "ffbf00" "$background")
-          new_foreground="$foreground"
+          #new_background=$(toggle_color "$toggle" "ffbf00" "$background")
+          new_background=$(toggle_color "$toggle" "ffbf00" "7fffd4")
+          new_foreground="$foreground" # black
       else
           # Example: lightgreen for far
           #new_background="00ff77"
           #new_background=$(toggle_color "$toggle" "7fffd4" "ffffff")  # Test
           new_background="7fffd4"  # Example: lightgreen for far
-          new_foreground="$foreground"
+          new_foreground="$foreground" # black
       fi
       #
       # Replace the old match with updated background color
