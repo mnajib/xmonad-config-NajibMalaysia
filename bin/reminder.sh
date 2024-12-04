@@ -21,6 +21,14 @@ RED="\033[31m"
 GREEN="\033[32m"
 YELLOW="\033[33m"
 
+# Pure function to toggle colors
+toggle_color() {
+    local current_toggle="$1"
+    local color1="$2"
+    local color2="$3"
+    [[ "$current_toggle" -eq 0 ]] && echo "$color1" || echo "$color2"
+}
+
 # Function to colorize the prayer time based on proximity to current time
 function colorize_time {
   local prayer_time="$1"
@@ -121,23 +129,28 @@ process_prayer_times() {
 }
 
 # Helper function to determine if a time is within proximity
+# Pure function to determine if a prayer time is near
 is_near_time() {
     local target_time="$1"
     local current_time="$2"
-    local threshold_minutes="$3"
+    #local threshold_minutes="$3"
+    local proximity="$3"
 
     # Convert HH:MM to minutes since midnight
     local target_minutes=$((10#${target_time%%:*} * 60 + 10#${target_time##*:}))
     local current_minutes=$((10#${current_time%%:*} * 60 + 10#${current_time##*:}))
 
-    # Calculate absolute difference
     local diff=$((target_minutes - current_minutes))
-    if (( diff < 0 )); then
-        diff=$(( -diff ))
-    fi
-
+    #
+    # Calculate absolute difference
+    #if (( diff < 0 )); then
+    #    diff=$(( -diff ))
+    #fi
     # Return true if within threshold
-    (( diff <= threshold_minutes ))
+    #(( diff <= threshold_minutes ))
+    #
+    # Absolute difference, within proximity
+    [[ ${diff#-} -le "$proximity" ]]
 }
 
 # Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
