@@ -23,6 +23,8 @@ import XMonad.Util.EZConfig(additionalKeys, removeKeys)
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO
+import System.Process (readProcess)
+import System.Posix.Unistd
 import XMonad.Util.ExtensibleState as XS
 
 import XMonad.Hooks.ManageHelpers
@@ -845,6 +847,29 @@ myStartupHook = do {
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
 
+-- Helper function to remove trailing newlines
+trim :: String -> String
+trim = reverse . dropWhile (`elem` "\n\r") . reverse
+
+-- Helper function to select Xmobar configurations based on the hostname
+getXmobarConfig :: String -> (String, String)
+getXmobarConfig hostname = case hostname of
+    "khadijah" ->
+        ( "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
+        , "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
+        )
+    _ ->
+        ( "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
+        , "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
+        )
+
+-- Helper function to spawn Xmobar
+startXmobar :: (String, String) -> IO (Handle, Handle)
+startXmobar (mainConfig, prayerConfig) = do
+    xmproc1 <- spawnPipe mainConfig
+    xmproc2 <- spawnPipe prayerConfig
+    return (xmproc1, xmproc2)
+
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
@@ -856,9 +881,20 @@ main = do {
     spawn "pkill xmobar";
     threadDelay 5000000; -- in miliseconds;
     spawn "~/.xmonad/bin/start-sidetool.sh";
-    spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";       -- top bar
-    --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);      -- buttom bar
-    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";      -- buttom bar
+
+    -- Get the current hostname dynamically
+    -- hostname <- getHostName
+    -- hostname <- readProcess "hostname" [] [];
+    hostname <- fmap nodeName getSystemID;
+
+    -- Select configurations and start Xmobar instances
+    (xmproc1, xmproc2) <- startXmobar $ getXmobarConfig hostname;
+
+    -- -- xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
+    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
+    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
+
+
     --xmonad $ defaults {
     --xmonad $ def {
     --xmonad $ defaults
@@ -934,7 +970,8 @@ main = do {
         --logHook            = myLogHook,
         --logHook = dynamicLogWithPP  $ xmobarPP {
         logHook = myLogHook <+> dynamicLogWithPP $ xmobarPP {
-            ppOutput = hPutStrLn xmproc,
+            -- ppOutput = hPutStrLn xmproc,
+            ppOutput = \x -> hPutStrLn xmproc1 x >> hPutStrLn xmproc2 x,
             ppTitle = xmobarColor "#14FF08" "" . shorten 50, -- 50, 60
             ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]",
             ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")",
