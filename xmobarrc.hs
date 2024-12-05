@@ -30,7 +30,8 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio%%memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
-    , template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
+    --, template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% " -- 2024-12-05 backup before test MultiCoreTemp
+    , template = " %StdinReader% }{ %NetConnStatus% %multicpu%,%multicoretemp% %memory% %default:Master%%battery% %keylock% %kbd% %date% " -- 2024-12-05 backup before test MultiCoreTemp
     --, template = " %StdinReader% }{ %NetConnStatus% %memory% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %dynnetwork% %memory% %multicpu% %coretemp% %battery% %keylock% %date% "
@@ -127,13 +128,20 @@ Config {
         , Run MultiCpu [ "--template" , "Cpu:<total>%" ] 25
 
         -- cpu core temperature monitor
-        , Run CoreTemp       [ "--template" , "Temp:<core0>°C,<core1>°C"
-                             , "--Low"      , "70"        -- units: °C
-                             , "--High"     , "80"        -- units: °C
-                             , "--low"      , "darkgreen"
-                             , "--normal"   , "darkorange"
-                             , "--high"     , "darkred"
-                             ] 50
+        --, Run CoreTemp       [ "--template" , "Temp:<core0>°C,<core1>°C"
+        --                     , "--Low"      , "70"        -- units: °C
+        --                     , "--High"     , "80"        -- units: °C
+        --                     , "--low"      , "darkgreen"
+        --                     , "--normal"   , "darkorange"
+        --                     , "--high"     , "darkred"
+        --                     ] 50
+
+        --, Run MultiCoreTemp ["-t", "Temp: <avg>°C | <avgpc>%",
+        , Run MultiCoreTemp [ "-t", "<avg>°C"
+                            , "-L", "60", "-H", "80"
+                            , "-l", "green", "-n", "yellow", "-h", "red"
+                            --, "--", "--mintemp", "20", "--maxtemp", "100"
+                            ] 50
 
         -- time and date indicator
         , Run Date "<fc=#ffff00>%A</fc> <fc=#00ff00>%F</fc> <fc=#00ffff>%T</fc>" "date" 10
