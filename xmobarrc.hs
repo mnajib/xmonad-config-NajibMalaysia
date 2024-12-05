@@ -2,7 +2,7 @@ Config {
     -- appearance
     bgColor =      "#181715"
     , fgColor =      "#646464"
-    , position =     Bottom
+    --, position =     Bottom
     -- font =         "-*-terminus-*-*-*-*-12-*-*-*-*-*-*-*"
     -- font =         "-*-*-*-*-*-*-12-*-*-*-*-*-*-*"
     --, font = "Monospace Extra-Light Thin 8" -- Need this change because xmobar now use pango insteed of xft

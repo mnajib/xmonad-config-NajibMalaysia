@@ -870,22 +870,24 @@ startXmobar (mainConfig, prayerConfig) = do
     xmproc2 <- spawnPipe prayerConfig
     return (xmproc1, xmproc2)
 
+-- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
+
 -- Helper function to spawn Xmobar
 startXmobarMain :: String -> IO (Handle)
 startXmobarMain hostname = case hostname of
     "khadijah" -> do
-        xmproc <- spawnPipe "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs"
         return xmproc
     _ -> do
-        xmproc <- spawnPipe "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=0 --position=bottom ~/.xmonad/xmobarrc.hs"
         return xmproc
 
 -- startXmobarPrayerTimes :: String -> IO
 startXmobarPrayerTimes hostname = case hostname of
     "khadijah" ->
-         spawnPipe "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs"
     _ ->
-         spawnPipe "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs"
 
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
@@ -910,7 +912,7 @@ main = do {
     startXmobarPrayerTimes hostname;
 
     -- -- xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
-    xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
+    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
     --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
 
 
@@ -991,7 +993,7 @@ main = do {
         logHook = myLogHook <+> dynamicLogWithPP $ xmobarPP {
             ppOutput = hPutStrLn xmproc,
             -- ppOutput = \x -> hPutStrLn xmproc1 x >> hPutStrLn xmproc2 x,
-            ppTitle = xmobarColor "#14FF08" "" . shorten 50, -- 50, 60
+            ppTitle = xmobarColor "#14FF08" "" . shorten 38, -- 50, 60
             ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]",
             ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")",
             ppUrgent = xmobarColor "#181715" "#D81816",
