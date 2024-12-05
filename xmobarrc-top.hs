@@ -2,7 +2,7 @@ Config {
     bgColor =      "#181715"
     , fgColor =    "#f3f3f1"
     , font = "Monospace Bold 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
-    , position =     Top
+    --, position =     Top
     --, textOffset =   13
     , border =       TopB
     , borderColor =  "#181715"
