@@ -876,18 +876,18 @@ startXmobar (mainConfig, prayerConfig) = do
 startXmobarMain :: String -> IO (Handle)
 startXmobarMain hostname = case hostname of
     "khadijah" -> do
-        xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
         return xmproc
     _ -> do
-        xmproc <- spawnPipe "xmobar --screen=0 --position=bottom ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs"
         return xmproc
 
 -- startXmobarPrayerTimes :: String -> IO
 startXmobarPrayerTimes hostname = case hostname of
     "khadijah" ->
-         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
     _ ->
-         spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs"
 
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
