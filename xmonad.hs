@@ -872,6 +872,20 @@ startXmobar (mainConfig, prayerConfig) = do
 
 -- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
 -- -----------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------------
+
+-- startXmobarPrayerTimes :: String -> IO
+startXmobarPrayerTimes hostname = case hostname of
+    "khadijah" ->
+         -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
+    "zahrah" ->
+         -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
+         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
+         --spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top-zahrah.hs" -- XXX: ???
+    _ ->
+         spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs"
+
 -- Helper function to spawn Xmobar
 startXmobarMain :: String -> IO (Handle)
 startXmobarMain hostname = case hostname of
@@ -879,17 +893,15 @@ startXmobarMain hostname = case hostname of
         -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
         xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
         return xmproc
+    "zahrah" -> do
+        -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs"
+        return xmproc
     _ -> do
         xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs"
         return xmproc
 
--- startXmobarPrayerTimes :: String -> IO
-startXmobarPrayerTimes hostname = case hostname of
-    "khadijah" ->
-         -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
-         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
-    _ ->
-         spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs"
+-- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
 
 -- Run xmonad with the settings you specify. No need to modify this.
