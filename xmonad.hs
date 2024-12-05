@@ -898,7 +898,8 @@ startXmobarMain hostname = case hostname of
         xmproc <- spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs"
         return xmproc
     _ -> do
-        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs"
+        -- xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs"
+        xmproc <- spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs"
         return xmproc
 
 -- -----------------------------------------------------------------------------------
