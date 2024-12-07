@@ -150,10 +150,10 @@ timeInterval=${timeInterval1}
 
 # Clean up previous socket
 cleanup-socket "$SOCKET"
-sleep 3
+#sleep 3
 # Start a socket listener
-start-socket "$SOCKET"
-sleep 3
+#start-socket "$SOCKET"
+#sleep 3
 
 while true; do
     log DEBUG "-------------------------------"

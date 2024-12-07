@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
-PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
+#PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
 PRAYER_REMINDER_FIFO="/tmp/prayer_reminder_fifo"
 FIFO_INPUT="$PRAYER_TIMES_FIFO"
 FIFO_OUTPUT="$PRAYER_REMINDER_FIFO"
-SOCKET="/tmp/prayer_times_socket"
+#SOCKET="/tmp/prayer_times_socket"
 LOG_FILE="/tmp/prayer_reminder_log"
 
 # Ensure the reminder FIFO exists
 [ ! -p "$PRAYER_TIMES_FILE" ] && touch "$PRAYER_TIMES_FILE"
-[ ! -p "$PRAYER_REMINDER_FILE" ] && touch "$PRAYER_REMINDER_FILE"
+# [ ! -p "$PRAYER_REMINDER_FILE" ] && touch "$PRAYER_REMINDER_FILE"
 [ ! -p "$PRAYER_TIMES_FIFO" ] && mkfifo "$PRAYER_TIMES_FIFO"
 [ ! -p "$PRAYER_REMINDER_FIFO" ] && mkfifo "$PRAYER_REMINDER_FIFO"
 

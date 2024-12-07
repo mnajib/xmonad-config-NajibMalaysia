@@ -878,7 +878,8 @@ startXmobar (mainConfig, prayerConfig) = do
 startXmobarPrayerTimes hostname = case hostname of
     "khadijah" ->
          -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
-         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
+         -- spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
+         spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
     "zahrah" ->
          -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
          spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
@@ -891,7 +892,8 @@ startXmobarMain :: String -> IO (Handle)
 startXmobarMain hostname = case hostname of
     "khadijah" -> do
         -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
-        xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
+        -- xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
+        xmproc <- spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
         return xmproc
     "zahrah" -> do
         -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
