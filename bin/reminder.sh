@@ -72,6 +72,19 @@ process_prayer_entry_impure() {
     local pattern2
     local pattern3
 
+    # ---------------------------------------------------------------
+    # NOTE:
+    #   value="abc,def,ghi"
+    #   result="${value#*,}"
+    #   #: The # operator works on the beginning of the string.
+    #   *: Matches everything (any sequence of characters).
+    #   ,: Ensures the match stops at the first comma it encounters.
+    #   "Including the first comma": The pattern *, explicitly includes the comma in the match, so it's removed as well.
+    #
+    #   #*,: Remove the match regex patern '#*,' meaning remove from start, and then anythings until and including comma.
+    #   %,*: Remove the match regex patern '%,*' meaning remove until the end, start with comma, and then anytings.
+    # ---------------------------------------------------------------
+
     # Iterate over each match and process the time
     while [[ $updated_line =~ $pattern ]]; do
       foreground="${BASH_REMATCH[2]}"
@@ -91,30 +104,11 @@ process_prayer_entry_impure() {
         new_colors="ffffff,ff3333"
       elif is_near_time "$prayer_time" "$current_time" 15; then
         new_colors=$(toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
-        # ---------------------------------------------------------------
-        # NOTE:
-        #   value="abc,def,ghi"
-        #   result="${value#*,}"
-        #   #: The # operator works on the beginning of the string.
-        #   *: Matches everything (any sequence of characters).
-        #   ,: Ensures the match stops at the first comma it encounters.
-        #   "Including the first comma": The pattern *, explicitly includes the comma in the match, so it's removed as well.
-        #
-        #   #*,: Remove the match regex patern '#*,' meaning remove from start, and then anythings until and including comma.
-        #   %,*: Remove the match regex patern '%,*' meaning remove until the end, start with comma, and then anytings.
-        # ---------------------------------------------------------------
-        #new_foreground="${new_colors%,*}"
-        #new_background="${new_colors#*,}"
       elif is_near_time "$prayer_time" "$current_time" 30 && is_started "$current_time" "$prayer_time"; then
         new_colors="000000,ffbf00"
       elif is_near_time "$prayer_time" "$current_time" 30; then
         new_colors=$(toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
-        #new_foreground="${new_colors%,*}"
-        #new_background="${new_colors#*,}"
       else
-        #new_foreground="000000"
-        #new_background="7fffd4"  # Example: lightgreen for far
-        #new_colors="000000,7fffd4"
         new_colors="${foreground},${background}"
       fi
 
