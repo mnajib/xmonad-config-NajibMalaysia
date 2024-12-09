@@ -56,11 +56,17 @@ log() {
         debug) level_value=$LOG_LEVEL_DEBUG ;;
     esac
 
+    # to log file
     if (( LOG_LEVEL >= level_value )); then
+        #echo "[$level] $message" >&2
+        echo "[$level] $message" >> "$LOG_FILE"
+    #else
+    #    echo "[$level] $message" >> /dev/null #"$LOG_FILE"
+    fi
+
+    # to screen/display
+    if (( LOG_LEVEL == $LOG_LEVEL_INFO )); then
         echo "[$level] $message" >&2
-        echo "[$level] $message" >> "$LOG_FILE"
-    else
-        echo "[$level] $message" >> "$LOG_FILE"
     fi
 }
 
