@@ -38,7 +38,24 @@ process_prayer_entry_impure() {
 
     local current_time="$2"
 
-    local toggle="$3"
+    #local toggle="$3"
+    #
+    #local toggle
+    #case "$3" in
+    #  '')
+    #   toggle="0"
+    #   ;;
+    #  *)
+    #   toggle="$3"
+    #   ;;
+    #esac
+    #
+    # NOTE: To ensure $3 has a default value:
+    # default="0"
+    # ${parameter:-${default}}
+    # ${parameter-${default}}
+    # ${parameter:=${default}}
+    local toggle="${3:-0}"
 
     local foreground
     local background
@@ -61,12 +78,17 @@ process_prayer_entry_impure() {
       prayer_name="${BASH_REMATCH[1]}"
       prayer_time="${BASH_REMATCH[4]}"
 
+      foreground="000000"
+      background="7fffd4"
+
       # Remove the matched part from updated_line to continue searching
       pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
       updated_line="${updated_line/${pattern2}//}"
 
       # Calculate proximity and determine new background color
-      if is_near_time "$prayer_time" "$current_time" 15; then
+      if is_near_time "$prayer_time" "$current_time" 15 && is_started "$current_time" "$prayer_time"; then
+        new_colors="ffffff,ff3333"
+      elif is_near_time "$prayer_time" "$current_time" 15; then
         new_colors=$(toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
         # ---------------------------------------------------------------
         # NOTE:
@@ -82,6 +104,8 @@ process_prayer_entry_impure() {
         # ---------------------------------------------------------------
         #new_foreground="${new_colors%,*}"
         #new_background="${new_colors#*,}"
+      elif is_near_time "$prayer_time" "$current_time" 30 && is_started "$current_time" "$prayer_time"; then
+        new_colors="000000,ffbf00"
       elif is_near_time "$prayer_time" "$current_time" 30; then
         new_colors=$(toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
         #new_foreground="${new_colors%,*}"
@@ -89,7 +113,8 @@ process_prayer_entry_impure() {
       else
         #new_foreground="000000"
         #new_background="7fffd4"  # Example: lightgreen for far
-        new_colors="000000,7fffd4"
+        #new_colors="000000,7fffd4"
+        new_colors="${foreground},${background}"
       fi
 
       # Extract the foreground and background colors

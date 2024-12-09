@@ -97,6 +97,29 @@ is_near_time() {
     [[ ${diff#-} -le "$proximity" ]]
 }
 
+is_near_start() {
+    local current_time="$1"
+    local start_time="$2"
+    local range_minutes="$3"
+
+    local current_minutes=$((10#${current_time%%:*} * 60 + 10#${current_time##*:}))
+    local start_minutes=$((10#${start_time%%:*} * 60 + 10#${start_time##*:}))
+
+    (( start_minutes - current_minutes <= range_minutes && current_minutes < start_minutes ))
+}
+
+is_within_range() {
+    local current_time="$1"
+    local start_time="$2"
+    local end_time="$3"
+
+    local current_minutes=$((10#${current_time%%:*} * 60 + 10#${current_time##*:}))
+    local start_minutes=$((10#${start_time%%:*} * 60 + 10#${start_time##*:}))
+    local end_minutes=$((10#${end_time%%:*} * 60 + 10#${end_time##*:}))
+
+    [[ "$current_minutes" -ge "$start_minutes" && "$current_minutes" -le "$end_minutes" ]]
+}
+
 # is_started "17:06" "19:04"
 # Returns true (0) if current_time is greater than or equal to start_time
 is_started() {
