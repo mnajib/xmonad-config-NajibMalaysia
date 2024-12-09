@@ -3,7 +3,8 @@
 source "$(dirname ${0})/../lib/logger.sh"
 LOG_FILE="/tmp/prayer_reminder_log"
 set_log_file "$LOG_FILE"
-#set_log_level "debug" # "silent", "error", "warn", "info", "debug"
+
+#set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
 
@@ -78,12 +79,12 @@ process_prayer_entry_impure() {
       prayer_name="${BASH_REMATCH[1]}"
       prayer_time="${BASH_REMATCH[4]}"
 
-      foreground="000000"
-      background="7fffd4"
-
       # Remove the matched part from updated_line to continue searching
       pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
       updated_line="${updated_line/${pattern2}//}"
+
+      foreground="000000"
+      background="7fffd4"
 
       # Calculate proximity and determine new background color
       if is_near_time "$prayer_time" "$current_time" 15 && is_started "$current_time" "$prayer_time"; then
@@ -121,13 +122,20 @@ process_prayer_entry_impure() {
       new_foreground="${new_colors%,*}"
       new_background="${new_colors#*,}"
 
-      #
       # Replace the old match with updated background color
       pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
       result_line="${result_line/${pattern2}/${pattern3}}"
     done
 
-    echo "$result_line"
+    #log_debug "$result_line"
+    #echo "$result_line"
+    #
+    # result_line='<fc=#888888>Data 2024-12-09 21:04:40;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-09</fc> <fc=#00ffff>Mon</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-07</fc> <fc=#ffff00>Isn</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#7fffd4> 05:45 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:55 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:08 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc><fc=#ffff00>(Sel</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:20 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>'
+    # Remove $pattern4 from $result_line
+    local pattern4="<fc=#[afA-F0-9]{6},#[afA-F0-9]{6}>Ims</fc><fc=#[afA-F0-9]{6},#[a-fA-F0-9]{6}> [0-9]{2}:[0-9]{2} </fc> "
+    local final_result_line=$(echo "$result_line" | sed 's/<fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}>Ims<\/fc><fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}> [0-9]\{2\}:[0-9]\{2\} <\/fc>//')
+    echo "$final_result_line"
+    #log_debug "\$final_result_line=$final_result_line"
 }
 
 main_loop_impure() {
