@@ -4,8 +4,9 @@ source "$(dirname ${0})/lib/logger.sh"
 LOG_FILE="/tmp/prayer_reminder_log"
 set_log_file "$LOG_FILE"
 
+set_log_level "silent" # "silent", "error", "warn", "info", or "debug". "info" is the default
 #set_log_level "info" # "silent", "error", "warn", "info", or "debug". "info" is the default
-set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
+#set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
 
