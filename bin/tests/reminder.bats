@@ -2,32 +2,45 @@
 
 load ../lib/logger.sh
 load ../lib/maybe.sh
-load ../lib/helpers.sh  # Include helper functions for testing
+load ../lib/helpers.sh
 
-# Test the `toggle_colors` function
-@test "toggle_colors toggles between colors correctly" {
-  result=$(pure_toggle_colors 0 "ffffff" "000000" "ff3333" "7fffd4")
-  [ "$result" = "ffffff,000000" ]
+# Test the `pure_process_prayer_entry` function
 
-  result=$(pure_toggle_colors 1 "ffffff" "000000" "ff3333" "7fffd4")
-  [ "$result" = "ff3333,7fffd4" ]
+@test "pure_process_prayer_entry when not in any prayer time, toggle_state=0" {
+  #local line="Fajr:05:42-06:00"
+  #local line="$(pure_testdata)"
+  local current_time="10:00"
+  local toggle_state=0
+  local            line="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00> 05:46 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#00ff00> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#00ff00> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#00ff00> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#00ff00> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+                                                               local intended_result="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+  result=$(pure_process_prayer_entry "$line" "$current_time" "$toggle_state")
+  #[ "$result" = "Fajr is near: 05:42-06:00" ]
+  [ "$result" = "$intended_result" ]
 }
 
-# Test the `extract_prayer_times` function
-#@test "extract_prayer_times parses prayer times correctly" {
-#  local input="Fajr:05:42-06:00"
-#  result=$(extract_prayer_times "$input")
-#  [ "$result" = "05:42-06:00" ]
-#}
+@test "pure_process_prayer_entry when not in any prayer time, toggle_state=1" {
+  local current_time="10:00"
+  local toggle_state=1
+  local            line="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00> 05:46 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#00ff00> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#00ff00> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#00ff00> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#00ff00> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+                                                               local intended_result="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+  result=$(pure_process_prayer_entry "$line" "$current_time" "$toggle_state")
+  [ "$result" = "$intended_result" ]
+}
 
-# Test the `is_started` function
-#@test "is_started detects if prayer time has started" {
-#  local current_time="06:00"
-#  local prayer_time="05:42-06:00"
-#  result=$(is_started "$current_time" "$prayer_time")
-#  [ "$result" = "1" ]
-#
-#  local current_time="05:30"
-#  result=$(is_started "$current_time" "$prayer_time")
-#  [ "$result" = "0" ]
-#}
+@test "pure_process_prayer_entry when in 15 minutes before start Zohor, toggle_state=0" {
+  local current_time="13:00"
+  local toggle_state=0
+  local            line="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00> 05:46 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#00ff00> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#00ff00> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#00ff00> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#00ff00> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+                                                               local intended_result="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+  result=$(pure_process_prayer_entry "$line" "$current_time" "$toggle_state")
+  [ "$result" = "$intended_result" ]
+}
+
+@test "pure_process_prayer_entry when in 15 minutes before start Zohor, toggle_state=1" {
+  local current_time="13:00"
+  local toggle_state=1
+  local            line="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00> 05:46 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#00ff00> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#00ff00> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#00ff00> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#00ff00> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+                                                               local intended_result="<fc=#888888>Data 2024-12-10 21:37:43;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-10</fc> <fc=#00ffff>Tue</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-08</fc> <fc=#ffff00>Sel</fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:56 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:09 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc> <fc=#ffff00>(Rab</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:21 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>"
+  result=$(pure_process_prayer_entry "$line" "$current_time" "$toggle_state")
+  [ "$result" = "$intended_result" ]
+}

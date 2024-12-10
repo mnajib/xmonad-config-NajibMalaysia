@@ -133,7 +133,13 @@ pure_is_near_time() {
     #(( diff <= threshold_minutes ))
     #
     # Absolute difference, within proximity
-    [[ ${diff#-} -le "$proximity" ]]
+    #[[ ${diff#-} -le "$proximity" ]]
+    #
+    if [[ ${diff#-} -le "$proximity" ]]; then
+      echo 0
+    else
+      echo 1
+    fi
 }
 
 #is_near_pure() {
@@ -145,7 +151,16 @@ pure_is_near() {
     local current_minutes=$((10#${current_time%%:*} * 60 + 10#${current_time##*:}))
     local start_minutes=$((10#${start_time%%:*} * 60 + 10#${start_time##*:}))
 
-    (( start_minutes - current_minutes <= range_minutes && current_minutes < start_minutes ))
+    # Check if the current time is within the range from the start time
+    #(( start_minutes - current_minutes <= range_minutes && current_minutes < start_minutes ))
+    #if (( start_minutes - current_minutes <= range_minutes && current_minutes < start_minutes )); then
+    if (( start_minutes - current_minutes <= range_minutes && current_minutes <= start_minutes )); then
+        #return 0  # 0 indicates true, meaning the current time is within the range
+        echo 0  # 0 indicates true, meaning the current time is within the range
+    else
+        #return 1  # 1 indicates false, meaning the current time is not within the range
+        echo 1  # 1 indicates false, meaning the current time is not within the range
+    fi
 }
 
 #is_within_range_pure() {
@@ -181,7 +196,120 @@ pure_is_started() {
     local start_minutes=$((10#${start_time%%:*} * 60 + 10#${start_time##*:}))
 
     # Check if the current time is greater than or equal to the start time
-    [[ $current_minutes -ge $start_minutes ]]
+    #[[ $current_minutes -ge $start_minutes ]]
+    #
+    if [[ $current_minutes -ge $start_minutes ]]; then
+        echo 0
+    else
+        echo 1
+    fi
+}
+
+#process_prayer_entry_impure() {
+pure_process_prayer_entry() {
+    local line="$1"
+    local updated_line="$line"
+    local result_line="$line"
+
+    local current_time="$2"
+
+    # Toggle state
+    #
+    #local toggle="$3"
+    #
+    #local toggle
+    #case "$3" in
+    #  '')
+    #   toggle="0"
+    #   ;;
+    #  *)
+    #   toggle="$3"
+    #   ;;
+    #esac
+    #
+    # NOTE: To ensure $3 has a default value:
+    # default="0"
+    # ${parameter:-${default}}
+    # ${parameter-${default}}
+    # ${parameter:=${default}}
+    local toggle="${3:-0}"
+
+    local foreground
+    local background
+    local new_foreground
+    local new_background
+    local new_colors
+
+    local prayer_name
+    local prayer_time
+
+    # Regex
+    local pattern='([A-Za-z]{3})</fc><fc=#([afA-F0-9]{6}),#([a-fA-F0-9]{6})> ([0-9]{2}:[0-9]{2})'
+    local pattern2
+    local pattern3
+
+    log_debug "line=\"$line\""
+
+    # ---------------------------------------------------------------
+    # NOTE:
+    #   value="abc,def,ghi"
+    #   result="${value#*,}"
+    #   #: The # operator works on the beginning of the string.
+    #   *: Matches everything (any sequence of characters).
+    #   ,: Ensures the match stops at the first comma it encounters.
+    #   "Including the first comma": The pattern *, explicitly includes the comma in the match, so it's removed as well.
+    #
+    #   #*,: Remove the match regex patern '#*,' meaning remove from start, and then anythings until and including comma.
+    #   %,*: Remove the match regex patern '%,*' meaning remove until the end, start with comma, and then anytings.
+    # ---------------------------------------------------------------
+
+    # Iterate over each match and process the time
+    while [[ $updated_line =~ $pattern ]]; do
+      foreground="${BASH_REMATCH[2]}"
+      background="${BASH_REMATCH[3]}"
+      prayer_name="${BASH_REMATCH[1]}"
+      prayer_time="${BASH_REMATCH[4]}"
+
+      # Remove the matched part from updated_line to continue searching
+      pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
+      updated_line="${updated_line/${pattern2}//}"
+
+      # Calculate proximity and determine new background color
+      #if pure_is_near_time "$prayer_time" "$current_time" 15 && pure_is_started "$current_time" "$prayer_time"; then
+      #  new_colors="ffffff,ff3333"
+      #elif pure_is_near_time "$prayer_time" "$current_time" 15; then
+      if [ $(pure_is_near_time "$prayer_time" "$current_time" 15) = 0 ]; then
+        #new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "$foreground" "$background") # fg1, bg1, fg2, bg2
+        new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+      #elif pure_is_near_time "$prayer_time" "$current_time" 30 && pure_is_started "$current_time" "$prayer_time"; then
+      #  new_colors="000000,ffbf00"
+      elif [ $(pure_is_near_time "$prayer_time" "$current_time" 30) = 0 ]; then
+        #new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "$foreground" "$background") # fg1, bg1, fg2, bg2
+        new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+      else
+        #new_colors="${foreground},${background}"
+        new_colors="000000,7fffd4"
+      fi
+
+      # Extract the foreground and background colors
+      new_foreground="${new_colors%,*}"
+      new_background="${new_colors#*,}"
+      log_debug "new_foreground=${new_foreground}, new_background=${new_background}"
+
+      # Replace the old match with updated background color
+      pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
+      result_line="${result_line/${pattern2}/${pattern3}}"
+    done
+
+    #log_debug "$result_line"
+    #echo "$result_line"
+    #
+    # result_line='<fc=#888888>Data 2024-12-09 21:04:40;</fc>     <fc=#ff66ff>(SGR01</fc> <fc=#00ffff>(Dec</fc> <fc=#00ffff>2024-12-09</fc> <fc=#00ffff>Mon</fc> <fc=#ffff00>(Jmakh</fc> <fc=#ffff00>1446-06-07</fc> <fc=#ffff00>Isn</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#7fffd4> 05:45 </fc> <fc=#000000,#ffffff>Fjr</fc><fc=#000000,#7fffd4> 05:55 </fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#7fffd4> 07:06 </fc> <fc=#000000,#ffffff>Zhr</fc><fc=#000000,#7fffd4> 13:08 </fc> <fc=#000000,#ffffff>Asr</fc><fc=#000000,#7fffd4> 16:31 </fc><fc=#ffff00>)</fc><fc=#ffff00>(Sel</fc> <fc=#000000,#ffffff>Mgh</fc><fc=#000000,#7fffd4> 19:06 </fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#7fffd4> 20:20 </fc><fc=#ffff00>)</fc><fc=#00ffff>)</fc><fc=#ff66ff>)</fc>'
+    # Remove $pattern4 from $result_line
+    local pattern4="<fc=#[afA-F0-9]{6},#[afA-F0-9]{6}>Ims</fc><fc=#[afA-F0-9]{6},#[a-fA-F0-9]{6}> [0-9]{2}:[0-9]{2} </fc> "
+    local final_result_line=$(echo "$result_line" | sed 's/<fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}>Ims<\/fc><fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}> [0-9]\{2\}:[0-9]\{2\} <\/fc> //')
+    echo "$final_result_line"
+    log_debug "\$final_result_line=$final_result_line"
 }
 
 # Function: Read prayer times from file

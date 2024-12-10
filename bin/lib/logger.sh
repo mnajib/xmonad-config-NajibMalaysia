@@ -65,9 +65,9 @@ log() {
     fi
 
     # to screen/display
-    if (( LOG_LEVEL == $LOG_LEVEL_INFO )); then
-        echo "[$level] $message" >&2
-    fi
+    #if (( LOG_LEVEL == $LOG_LEVEL_INFO )); then
+    #    echo "[$level] $message" >&2
+    #fi
 }
 
 # Convenience functions
