@@ -32,13 +32,16 @@ RED="\033[31m"
 GREEN="\033[32m"
 YELLOW="\033[33m"
 
-process_prayer_entry_impure() {
+#process_prayer_entry_impure() {
+pure_process_prayer_entry() {
     local line="$1"
     local updated_line="$line"
     local result_line="$line"
 
     local current_time="$2"
 
+    # Toggle state
+    #
     #local toggle="$3"
     #
     #local toggle
@@ -100,14 +103,14 @@ process_prayer_entry_impure() {
       background="7fffd4"
 
       # Calculate proximity and determine new background color
-      if is_near_time "$prayer_time" "$current_time" 15 && is_started "$current_time" "$prayer_time"; then
+      if pure_is_near "$prayer_time" "$current_time" 15 && pure_is_started "$current_time" "$prayer_time"; then
         new_colors="ffffff,ff3333"
-      elif is_near_time "$prayer_time" "$current_time" 15; then
-        new_colors=$(toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
-      elif is_near_time "$prayer_time" "$current_time" 30 && is_started "$current_time" "$prayer_time"; then
+      elif pure_is_near "$prayer_time" "$current_time" 15; then
+        new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+      elif pure_is_near "$prayer_time" "$current_time" 30 && pure_is_started "$current_time" "$prayer_time"; then
         new_colors="000000,ffbf00"
-      elif is_near_time "$prayer_time" "$current_time" 30; then
-        new_colors=$(toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+      elif pure_is_near "$prayer_time" "$current_time" 30; then
+        new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
       else
         new_colors="${foreground},${background}"
       fi
@@ -132,7 +135,11 @@ process_prayer_entry_impure() {
     #log_debug "\$final_result_line=$final_result_line"
 }
 
-main_loop_impure() {
+# - input file
+# - output file
+# - log file
+#main_loop_impure() {
+impure_main_loop() {
     local line="$1"
     local fifo="$2"
     local debug_log="$3"
@@ -144,12 +151,12 @@ main_loop_impure() {
       current_time=$(date +"%H:%M")
 
       # Process the prayer times using the current toggle state
-      #processed_line=$(process_prayer_entry_impure "$line" "$current_time" "$toggle")
+      #processed_line=$(pure_process_prayer_entry "$line" "$current_time" "$toggle")
       #
       # Write the processed line to FIFO and log
       #echo "$processed_line" | tee -a "$debug_log" > "$fifo"
       #
-      process_prayer_entry_impure "$line" "$current_time" "$toggle" > "$fifo"
+      pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
 
       # Alternate the toggle state (alternate between 0 and 1)
       toggle=$((1 - $toggle))
@@ -159,74 +166,4 @@ main_loop_impure() {
     done
 }
 
-# #############################################################################
-
-# Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
-#while true; do
-#  # Read from the prayer times FIFO and process the prayer times
-#  cat "$PRAYER_TIMES_FIFO" | process_prayer_times_1 > "$PRAYER_REMINDER_FIFO"
-#  sleep 1  # Adjust sleep to prevent busy-waiting
-#done
-
-#while true; do
-#    # Use read with timeout (e.g., 5 seconds)
-#    if timeout 5 read -r line < "$FIFO_INPUT"; then
-#        #echo "$line" | process_prayer_times_1 > "$PRAYER_REMINDER_FIFO"
-#        echo "$line" | process_prayer_times_1 | tee "$PRAYER_REMINDER_FIFO"
-#    #else
-#    #    echo "Timeout: No data in FIFO after 5 seconds."
-#    fi
-#    sleep 5
-#done
-
-#--------------------------------------------
-#while true; do
-#  input_string="$( cat ${PRAYER_TIMES_FILE} )"
-#
-#  #...
-#  output_string="$input_string"
-#
-#  #echo "$output_string" > "$PRAYER_REMINDER_FILE"
-#  #echo "$output_string" > "$PRAYER_REMINDER_FIFO"
-#  process_prayer_times "$input_string" > "$PRAYER_REMINDER_FIFO"
-#  #
-#  sleep 1
-#done
-#--------------------------------------------
-#line="Your formatted prayer times line here"
-#input_string="$( cat ${PRAYER_TIMES_FILE} )"
-#main_loop "$line" "$PRAYER_REMINDER_FIFO" "$DEBUG_LOG" 0
-#main_loop_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE" 0
-#main_loop_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
-#--------------------------------------------
-main_loop_impure "$(get_input_string "${PRAYER_TIMES_FILE}")" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
-
-# Monitor prayer times from the FIFO and write the colored output to the reminder FIFO
-#while true; do
-  #if read -r line < "$PRAYER_TIMES_FIFO"; then
-  #  process_prayer_times "$line" > "$PRAYER_REMINDER_FIFO"
-  #  #process_prayer_times "$line" | tee -a "$LOG_FILE" > "$PRAYER_REMINDER_FIFO"
-  #fi
-
-  # Try to keep $PRAYER_REMINDER_FIFO alive
-  #if read -r line < "$PRAYER_REMINDER_FIFO"; then
-  #  echo "$line" &> /dev/null
-  #fi
-  #cat "$PRAYER_REMINDER_FIFO" &> /dev/null
-
-#  sleep 1  # Adjust sleep to prevent busy-waiting
-#done
-
-# Main monitoring loop
-#tail -f "$FIFO_INPUT" | while read -r line; do
-#  processed_line=$(process_prayer_times_2 "$line")
-#  echo "$processed_line" > "$FIFO_OUTPUT"
-#done
-
-# Read prayer times from the socket
-#socat -u UNIX-CONNECT:"$SOCKET" - | while read -r line; do
-#    #echo "$line"
-#    #echo "$line" | tee "$PRAYER_REMINDER_FIFO"
-#    echo "$line" > "$PRAYER_REMINDER_FIFO"
-#    #echo "$line" | process_prayer_times_1 | tee "$PRAYER_REMINDER_FIFO"
-#done
+impure_main_loop "$(impure_string_from_file "${PRAYER_TIMES_FILE}")" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"

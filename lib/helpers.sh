@@ -14,7 +14,8 @@ log_debug "Sourcing helpers.sh"
 #source "$(dirname ${0})/lib/maybe.sh"
 
 # Pure function to toggle colors
-toggle_color() {
+#toggle_color_pure() {
+pure_toggle_color() {
     local current_toggle="$1"
     local color1="$2"
     local color2="$3"
@@ -23,7 +24,8 @@ toggle_color() {
 
 # input:  fg1 bg1 fg2 bg2
 # output: fg2 bg2 fg1 bg1
-toggle_colors() {
+#toggle_colors_pure() {
+pure_toggle_colors() {
     local toggle="$1"
     local fg1="$2" bg1="$3"
     local fg2="$4" bg2="$5"
@@ -36,7 +38,8 @@ toggle_colors() {
 }
 
 # Function to colorize the prayer time based on proximity to current time
-function colorize_time {
+#colorize_time() {
+impure_colorize_time() {
   local prayer_time="$1"
   local current_time
   local prayer_seconds
@@ -59,8 +62,42 @@ function colorize_time {
   fi
 }
 
+#
+# PRAYER_TIMES=(
+#    "Fajr:05:42-06:00"
+#    "Dhuhr:13:05-13:30"
+#    "Asr:16:28-17:00"
+#    "Maghrib:19:02-19:30"
+#    "Isha:20:17-20:45"
+# )
+# input_string=$(cat "$PRAYER_TIMES_FILE")
+# process_prayer_times_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
+#
+# TODO:
+#extract_prayer_times_pure() {
+pure_extract_prayer_times() {
+    local input_line="$1"
+    local pattern='your-regex-here'  # TODO: Replace with actual regex
+    local prayer_times=()  # Initialize a local array
+
+    while [[ $input_line =~ $pattern ]]; do
+        local prayer_name="${BASH_REMATCH[1]}"
+        local prayer_time="${BASH_REMATCH[4]}"
+
+        # Append the formatted string to the local array
+        prayer_times+=("${prayer_name}:${prayer_time}")
+
+        # Remove the matched portion from the input line to process the next match
+        input_line="${input_line#${BASH_REMATCH[0]}}"
+    done
+
+    # Output the array as a single line (space-separated)
+    echo "${prayer_times[@]}"
+}
+
 # Function to highlight the nearest prayer time
-function highlight_prayer_time {
+#highlight_prayer_time() {
+pure_highlight_prayer_time() {
   local line="$1"
   local prayer_name="$2"
   local prayer_time="$3"
@@ -68,13 +105,15 @@ function highlight_prayer_time {
   echo "${line//$prayer_name<fc=[^>]*>$prayer_time<\/fc>/$prayer_name<fc=#ffffff,#ff0000>$prayer_time<\/fc>}"
 }
 
-testdata() {
+#testdata_pure() {
+pure_testdata() {
   echo "On <fc=#ffffff>2024-12-01</fc> <fc=#ffffff>T13:30:30</fc>; <fc=#ffffff,#ff4d4d>OLD</fc> (<fc=#ff66ff>SGR01</fc> (<fc=#ffff00>Dec</fc> <fc=#00ffff>2024-12-01</fc> <fc=#ffff00>Sun</fc> (<fc=#ffff00>Jmawl</fc> <fc=#00ffff>1446-05-29</fc> <fc=#ffff00>Aha</fc> <fc=#000000,#ffffff>Ims</fc><fc=#000000,#00ff00>05:42</fc> <fc=#000000,#ffffff>Sub</fc><fc=#000000,#00ff00>05:52</fc> <fc=#000000,#ffffff>Syu</fc><fc=#000000,#00ff00>07:02</fc> <fc=#000000,#ffffff>Zoh</fc><fc=#000000,#00ff00>13:05</fc> <fc=#000000,#ffffff>Asa</fc><fc=#000000,#00ff00>16:28</fc>) (<fc=#ffff00>Isn</fc> <fc=#000000,#ffffff>Mag</fc><fc=#000000,#00ff00>19:02</fc> <fc=#000000,#ffffff>Isy</fc><fc=#000000,#00ff00>20:17</fc>)))"
 }
 
 # Helper function to determine if a time is within proximity
 # Pure function to determine if a prayer time is near
-is_near_time() {
+#is_near_time_pure() {
+pure_is_near_time() {
     local target_time="$1"
     local current_time="$2"
     #local threshold_minutes="$3"
@@ -97,7 +136,8 @@ is_near_time() {
     [[ ${diff#-} -le "$proximity" ]]
 }
 
-is_near_start() {
+#is_near_pure() {
+pure_is_near() {
     local current_time="$1"
     local start_time="$2"
     local range_minutes="$3"
@@ -108,7 +148,8 @@ is_near_start() {
     (( start_minutes - current_minutes <= range_minutes && current_minutes < start_minutes ))
 }
 
-is_within_range() {
+#is_within_range_pure() {
+pure_is_within_range() {
     local current_time="$1"
     local start_time="$2"
     local end_time="$3"
@@ -120,9 +161,18 @@ is_within_range() {
     [[ "$current_minutes" -ge "$start_minutes" && "$current_minutes" -le "$end_minutes" ]]
 }
 
-# is_started "17:06" "19:04"
 # Returns true (0) if current_time is greater than or equal to start_time
-is_started() {
+#   is_started "17:06" "19:04"
+#
+# Here are a few examples to validate the is_started function:
+#   is_started "12:00" "11:59" && echo "Started" || echo "Not Started"
+#       Output: Started
+#   is_started "12:00" "12:00" && echo "Started" || echo "Not Started"
+#       Output: Started
+#   is_started "11:58" "12:00" && echo "Started" || echo "Not Started"
+#       Output: Not Started
+#is_started_pure() {
+pure_is_started() {
     local current_time="$1"
     local start_time="$2"
 
@@ -134,7 +184,11 @@ is_started() {
     [[ $current_minutes -ge $start_minutes ]]
 }
 
-get_input_string() {
+# Function: Read prayer times from file
+#get_input_string() {
+#get_input_string_impure() {
+#impure_read_file() {
+impure_string_from_file() {
     local file="$1"
     if [[ ! -f "$file" ]]; then
         echo "Error: File $file not found." >&2
