@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-source "$(dirname ${0})/../lib/logger.sh"
+source "$(dirname ${0})/lib/logger.sh"
 LOG_FILE="/tmp/prayer_reminder_log"
 set_log_file "$LOG_FILE"
 
-#set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
+set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
 
 # Source the library
-source "$(dirname ${0})/../lib/maybe.sh"
-source "$(dirname ${0})/../lib/helpers.sh"
+source "$(dirname ${0})/lib/maybe.sh"
+source "$(dirname ${0})/lib/helpers.sh"
 
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
 #PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
@@ -99,25 +99,26 @@ pure_process_prayer_entry() {
       pattern2="${prayer_name}</fc><fc=#${foreground},#${background}> ${prayer_time}"
       updated_line="${updated_line/${pattern2}//}"
 
-      foreground="000000"
-      background="7fffd4"
-
       # Calculate proximity and determine new background color
       if pure_is_near "$prayer_time" "$current_time" 15 && pure_is_started "$current_time" "$prayer_time"; then
         new_colors="ffffff,ff3333"
       elif pure_is_near "$prayer_time" "$current_time" 15; then
+        #new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "$foreground" "$background") # fg1, bg1, fg2, bg2
         new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
       elif pure_is_near "$prayer_time" "$current_time" 30 && pure_is_started "$current_time" "$prayer_time"; then
         new_colors="000000,ffbf00"
       elif pure_is_near "$prayer_time" "$current_time" 30; then
+        #new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "$foreground" "$background") # fg1, bg1, fg2, bg2
         new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
       else
-        new_colors="${foreground},${background}"
+        #new_colors="${foreground},${background}"
+        new_colors="000000,7fffd4"
       fi
 
       # Extract the foreground and background colors
       new_foreground="${new_colors%,*}"
       new_background="${new_colors#*,}"
+      #log_debug "new_foreground=${new_foreground}, new_background=${new_background}"
 
       # Replace the old match with updated background color
       pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
