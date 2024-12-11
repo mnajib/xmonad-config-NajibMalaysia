@@ -17,12 +17,13 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.XUtils (fi)
 import Graphics.X11.Xlib
 import Graphics.X11.Xlib.Extras
-import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys)
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
-import System.IO
+import System.IO -- (Handle)
+--import System.Info (getSystemID, nodeName)
 import System.Process (readProcess)
 import System.Posix.Unistd
 import XMonad.Util.ExtensibleState as XS
@@ -812,26 +813,11 @@ myStartupHook = do {
       , lastWindow = Nothing
       };
 
-    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
-    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh";
-    --spawn "~/.xmonad/bin/kill2restart.sh";
-    --spawn "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
-    --spawnOnce "~/.xmonad/bin/restart-xmobar-sidetool.sh"--;
-    --xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs"
-
-    -- Status: Testing
-    --spawnOnce "~/.xmonad/bin/autostart.sh";
-
-    -- Status: Working
     spawnOnce "~/.xmonad/bin/autostart.sh"
       >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
       >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
       -- >> threadDelay 5000000 -- in miliseconds;
       >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
-
     }
 --
 -- Checking fo duplicate key bindings.
@@ -845,59 +831,10 @@ myStartupHook = do {
 trim :: String -> String
 trim = reverse . dropWhile (`elem` "\n\r") . reverse
 
--- Helper function to select Xmobar configurations based on the hostname
-getXmobarConfig :: String -> (String, String)
-getXmobarConfig hostname = case hostname of
-    "khadijah" ->
-        ( "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
-        , "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
-        )
-    _ ->
-        ( "xmobar --screen 0 --position Bottom ~/.xmonad/xmobarrc.hs"
-        , "xmobar --screen 0 --position Top ~/.xmonad/xmobarrc-top.hs"
-        )
-
--- Helper function to spawn Xmobar
-startXmobar :: (String, String) -> IO (Handle, Handle)
-startXmobar (mainConfig, prayerConfig) = do
-    xmproc1 <- spawnPipe mainConfig
-    xmproc2 <- spawnPipe prayerConfig
-    return (xmproc1, xmproc2)
 
 -- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
-
--- startXmobarPrayerTimes :: String -> IO
-startXmobarPrayerTimes hostname = case hostname of
-    "khadijah" ->
-         -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
-         -- spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
-         spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
-    "zahrah" ->
-         -- spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc-top.hs"
-         spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top.hs" -- XXX: ???
-         --spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-top-zahrah.hs" -- XXX: ???
-    _ ->
-         spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs"
-
--- Helper function to spawn Xmobar
-startXmobarMain :: String -> IO (Handle)
-startXmobarMain hostname = case hostname of
-    "khadijah" -> do
-        -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
-        -- xmproc <- spawnPipe "xmobar --screen=2 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
-        -- xmproc <- spawnPipe "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc.hs" -- XXX: ???
-        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- XXX: ???
-        return xmproc
-    "zahrah" -> do
-        -- xmproc <- spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs"
-        xmproc <- spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs"
-        return xmproc
-    _ -> do
-        -- xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs"
-        xmproc <- spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs"
-        return xmproc
 
 -- Start xmobar instances dynamically based on hostname
 startXmobars :: String -> IO [Handle]
@@ -923,7 +860,8 @@ startXmobars hostname = case hostname of
     [
     --spawnPipe "xmobar ~/.xmonad/xmobarrc.hs" -- Needs xmproc
     --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
+      --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
+      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-oldCPU.hs" -- Needs xmproc
     , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
     ]
 
@@ -943,22 +881,10 @@ main = do {
     spawn "~/.xmonad/bin/start-sidetool.sh";
 
     -- Get the current hostname dynamically
-    -- hostname <- getHostName
-    -- hostname <- readProcess "hostname" [] [];
     hostname <- fmap nodeName getSystemID;
 
-    -- Select configurations and start Xmobar instances
-    -- (xmproc1, xmproc2) <- startXmobar $ getXmobarConfig hostname;
-    -- xmproc <- startXmobarMain hostname;
-    -- startXmobarPrayerTimes hostname;
-    --
     -- Start xmobar instances based on the hostname
     xmprocs <- startXmobars hostname;
-
-    -- -- xmproc <- spawnPipe ("xmobar " ++ myXmobarrc);
-    --xmproc <- spawnPipe "xmobar ~/.xmonad/xmobarrc.hs";
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc-top.hs";
-
 
     --xmonad $ defaults {
     --xmonad $ def {
