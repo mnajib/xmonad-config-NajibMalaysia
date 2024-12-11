@@ -275,19 +275,19 @@ pure_process_prayer_entry() {
       updated_line="${updated_line/${pattern2}//}"
 
       # Calculate proximity and determine new background color
-      #if pure_is_near_time "$prayer_time" "$current_time" 15 && pure_is_started "$current_time" "$prayer_time"; then
-      #  new_colors="ffffff,ff3333"
-      #elif pure_is_near_time "$prayer_time" "$current_time" 15; then
-      if [ $(pure_is_near_time "$prayer_time" "$current_time" 15) = 0 ]; then
-        #new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "$foreground" "$background") # fg1, bg1, fg2, bg2
-        new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
-      #elif pure_is_near_time "$prayer_time" "$current_time" 30 && pure_is_started "$current_time" "$prayer_time"; then
-      #  new_colors="000000,ffbf00"
-      elif [ $(pure_is_near_time "$prayer_time" "$current_time" 30) = 0 ]; then
-        #new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "$foreground" "$background") # fg1, bg1, fg2, bg2
-        new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+      if [[ $(pure_is_near_time "$prayer_time" "$current_time" 15) = 0 ]]; then
+        if [[ $(pure_is_started "$current_time" "$prayer_time") = 0 ]]; then
+          new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "ffffff" "ff3333") # fg1, bg1, fg2, bg2
+        else
+          new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+        fi
+      elif [[ $(pure_is_near_time "$prayer_time" "$current_time" 30) = 0 ]]; then
+        if [[ $(pure_is_started "$current_time" "$prayer_time") = 0 ]]; then
+          new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "ffbf00") # fg1, bg1, fg2, bg2
+        else
+          new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
+        fi
       else
-        #new_colors="${foreground},${background}"
         new_colors="000000,7fffd4"
       fi
 
