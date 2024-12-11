@@ -73,7 +73,6 @@ impure_colorize_time() {
 # input_string=$(cat "$PRAYER_TIMES_FILE")
 # process_prayer_times_impure "$input_string" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
 #
-# TODO:
 #extract_prayer_times_pure() {
 pure_extract_prayer_times() {
     local input_line="$1"
