@@ -843,6 +843,8 @@ fakeHandleDelay delay = do
   return undefined
 
 -- Start xmobar instances dynamically based on hostname
+-- NOTE:
+--   If problem with which screen, check nvidia setting, Xinerama, PRIME, ...
 startXmobars :: String -> IO [Handle]
 startXmobars hostname = case hostname of
   "khadijah" -> sequence
@@ -851,18 +853,24 @@ startXmobars hostname = case hostname of
     --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
       spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
     --, fakeHandleDelay 1000000  -- 1 second
-    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
     --, fakeHandleDelay 1000000  -- 1 second
     --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+    --, spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+    --, fakeHandleDelay 1000000  -- 1 second
+    --, spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
     ]
 
-  "asmak" -> sequence
-    [
-    --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
-    --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-    ]
+  --"asmak" -> sequence
+  --  [
+  --  --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
+  --  --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
+  --    spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+  --  , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+  --  ]
 
   --"host2" -> sequence
   --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host2.hs" -- Needs xmproc
@@ -879,7 +887,8 @@ startXmobars hostname = case hostname of
     --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
       --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
       spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-oldCPU.hs" -- Needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
     ]
 
 -- -----------------------------------------------------------------------------------
