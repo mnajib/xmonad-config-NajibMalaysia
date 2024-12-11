@@ -788,7 +788,9 @@ myLogHook = mempty
 -- Custom xmobarPP for multiple Handles
 myXmobarPP :: [Handle] -> PP
 myXmobarPP xmprocs = xmobarPP
-  { ppOutput  = \x -> mapM_ (\h -> when (h /= undefined) (hPutStrLn h x)) xmprocs
+  {
+  --  ppOutput  = \x -> mapM_ (\h -> when (h /= undefined) (hPutStrLn h x)) xmprocs
+    ppOutput  = \x -> mapM_ (`hPutStrLn` x) xmprocs
   , ppTitle   = xmobarColor "#14FF08" "" . shorten 38
   , ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]"
   , ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")"
@@ -835,11 +837,26 @@ trim = reverse . dropWhile (`elem` "\n\r") . reverse
 -- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
+fakeHandleDelay :: Int -> IO Handle
+fakeHandleDelay delay = do
+  threadDelay delay
+  return undefined
 
 -- Start xmobar instances dynamically based on hostname
 startXmobars :: String -> IO [Handle]
 startXmobars hostname = case hostname of
   "khadijah" -> sequence
+    [
+    --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
+    --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
+      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+    --, fakeHandleDelay 1000000  -- 1 second
+    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    --, fakeHandleDelay 1000000  -- 1 second
+    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+    ]
+
+  "asmak" -> sequence
     [
     --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
     --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
