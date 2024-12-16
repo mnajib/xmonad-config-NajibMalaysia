@@ -1,12 +1,19 @@
 #!/usr/bin/env bash
 
+#
+# NOTES:
+#   To run unit-test:
+#     bats bin/tests/
+#
+
 source "$(dirname ${0})/lib/logger.sh"
-LOG_FILE="/tmp/prayer_reminder_log"
+LOG_FILE="/tmp/${USER}-prayer_reminder_log"
 set_log_file "$LOG_FILE"
 
 set_log_level "silent" # "silent", "error", "warn", "info", or "debug". "info" is the default
 #set_log_level "info" # "silent", "error", "warn", "info", or "debug". "info" is the default
 #set_log_level "debug" # "silent", "error", "warn", "info", or "debug". "info" is the default
+#
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
 
@@ -16,10 +23,10 @@ source "$(dirname ${0})/lib/helpers.sh"
 
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
 #PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
-PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
-PRAYER_REMINDER_FIFO="/tmp/prayer_reminder_fifo"
-FIFO_INPUT="$PRAYER_TIMES_FIFO"
-FIFO_OUTPUT="$PRAYER_REMINDER_FIFO"
+#PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
+PRAYER_REMINDER_FIFO="/tmp/${USER}-prayer_reminder_fifo"
+#FIFO_INPUT="$PRAYER_TIMES_FIFO"
+#FIFO_OUTPUT="$PRAYER_REMINDER_FIFO"
 #SOCKET="/tmp/prayer_times_socket"
 
 # Ensure the reminder FIFO exists
@@ -48,6 +55,8 @@ impure_main_loop() {
 
     while true; do
       current_time=$(date +"%H:%M")
+
+      log_debug "reminder.sh: impure_main_loop: ${current_time}"
 
       # Process the prayer times using the current toggle state
       #processed_line=$(pure_process_prayer_entry "$line" "$current_time" "$toggle")
