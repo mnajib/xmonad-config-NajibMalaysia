@@ -69,7 +69,9 @@ read_dom () {
     }
 
 # NOTE:
-#   view-source:https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+#   To fetch:
+#     https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+#     view-source:https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
 #
 
 fetchData (){

@@ -46,17 +46,20 @@ YELLOW="\033[33m"
 # - log file
 #main_loop_impure() {
 impure_main_loop() {
-    local line="$1"
+    #local line="$1"
+    local input_file="$1"
     local fifo="$2"
     local debug_log="$3"
     local toggle=0  # Initial toggle state
     local current_time
     local processed_line
+    local line
 
     while true; do
-      current_time=$(date +"%H:%M")
-
       log_debug "reminder.sh: impure_main_loop: ${current_time}"
+
+      current_time=$(date +"%H:%M")
+      line="$(impure_string_from_file "${PRAYER_TIMES_FILE}")"
 
       # Process the prayer times using the current toggle state
       #processed_line=$(pure_process_prayer_entry "$line" "$current_time" "$toggle")
@@ -74,4 +77,5 @@ impure_main_loop() {
     done
 }
 
-impure_main_loop "$(impure_string_from_file "${PRAYER_TIMES_FILE}")" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
+#impure_main_loop "$(impure_string_from_file "${PRAYER_TIMES_FILE}")" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
+impure_main_loop "$PRAYER_TIMES_FILE" "$PRAYER_REMINDER_FIFO" "$LOG_FILE"
