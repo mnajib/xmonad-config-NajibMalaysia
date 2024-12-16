@@ -36,6 +36,7 @@ HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
 LOGMODE="NORMAL"
+#LOGMODE="INFO"
 #LOGMODE="DEBUG"
 
 #
@@ -55,6 +56,10 @@ log () {
     elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
         # Normally, just log general information
         echo "${logmode}: ${logstring}" >> $LOG
+    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif [ "$logmode" = "ERROR" ]; then
+        echo "${logmode}: ${logstring}" >> $LOG
     fi
 }
 
@@ -62,6 +67,10 @@ read_dom () {
     local IFS=\>
     read -d \< ENTITY CONTENT
     }
+
+# NOTE:
+#   view-source:https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+#
 
 fetchData (){
     log DEBUG "Start fetchData()"

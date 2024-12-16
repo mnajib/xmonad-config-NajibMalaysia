@@ -43,7 +43,8 @@ STATUS=""
 HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
-LOGMODE="NORMAL"
+#LOGMODE="NORMAL"
+LOGMODE="INFO"
 #LOGMODE="DEBUG"
 
 #
@@ -62,6 +63,10 @@ log () {
         echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
     elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
         # Normally, just log general information
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+    elif [ "${logmode}" = "ERROR" ]; then
         echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
     fi
 }
@@ -141,8 +146,8 @@ pushStringToSocket() {
 
 #----------------------------------------------------------------------
 
-log INFO "==============================="
-log INFO "Start waktusolat-putrajaya-hbar"
+log DEBUG "==============================="
+log DEBUG "Start waktusolat-putrajaya-hbar"
 
 timeInterval1=`echo "60 * 60 * 3" | bc`       # every 3 hours
 timeInterval2=`echo "60 * 1" | bc`            # every 1 minutes; used this if last fetch was failed
@@ -179,7 +184,7 @@ while true; do
         log DEBUG "Decrease fetch time interval"
         timeInterval=${timeInterval2}
 
-        log INFO "Getting old backup data"
+        log DEBUG "Getting old backup data"
         getOldGoodFetchData
         extractData
 
@@ -204,6 +209,7 @@ while true; do
     formatWaktuSolatForXmobar
 
     #---------------------------------------------------------
+    log INFO "`date`: pushStringToFile ${PRAYER_TIMES_FILE}"
     #printNewWaktuSolat
     pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
     #pushStringToPipe "$(printNewWaktuSolat)" "${FIFO}"
