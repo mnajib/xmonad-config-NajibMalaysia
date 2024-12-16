@@ -54,8 +54,30 @@ case $HOSTNAME in
   #   and while the laptop it still detected the monitor, run the script (~/.xmonad/bin/screenlayout-khadijah.sh).
   khadijah)
     echo "Running some customization for $HOSTNAME"
+
     $HOME/.xmonad/bin/screenlayout-khadijah.sh
     sleep 1
+
+    #----------------------------------------------------------------
+    # NOTE:
+    #
+    #xrandr --verbose | less
+    #
+    #xrandr --listmonitors
+    #Monitors: 3
+    # 0: +*VGA-1-1 1280/376x1024/301+1920+0  VGA-1-1
+    # 1: +DP-1 1280/376x1024/301+3200+0  DP-1
+    # 2: +eDP-1-1 1920/344x1080/194+0+0  eDP-1-1
+    #
+    #xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1
+    #xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1
+    #
+    #xrandr --listmonitors
+    #Monitors: 2
+    # 0: CombineMonitor 2560/752x1024/301+0+0  VGA-1-1 DP-1
+    # 1: LaptopMonitor 1920/344x1080/194+0+0  eDP-1-1
+    #----------------------------------------------------------------
+
     setxkbmap dvorak
     ;;
   *)

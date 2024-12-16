@@ -1,5 +1,11 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 
+-- ----------------------------------------------
+-- Ref:
+--   https://www.reddit.com/r/xmonad/comments/ndww5/dual_screens_multi_monitors_tips_and_tricks/
+--   https://hackage.haskell.org/package/xmonad-contrib-0.13/docs/XMonad-Layout-IndependentScreens.html
+-- ----------------------------------------------
+
 import XMonad
 import Data.Monoid -- mapped
 import System.Exit
@@ -14,12 +20,13 @@ import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent t
 
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+-- import XMonad.Hooks.Rescreen
 import XMonad.Util.XUtils (fi)
 import Graphics.X11.Xlib
 import Graphics.X11.Xlib.Extras
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.SpawnOnce
-import XMonad.Util.EZConfig(additionalKeys, removeKeys)
+import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO -- (Handle)
@@ -51,6 +58,8 @@ import XMonad.Layout.Decoration (ModifiedLayout)
 --import XMonad.Layout.Groups
 import XMonad.Layout.Groups.Helpers
 import XMonad.Layout.Groups.Examples
+
+-- import qualified XMonad.Layout.IndependentScreens as LIS
 
 import XMonad.Config.Xfce
 import XMonad.Hooks.EwmhDesktops
@@ -195,6 +204,26 @@ myFocusedBorderColor = "#ff0000"
 --myModMask       = mod1Mask
 myModMask       = mod4Mask
 
+
+-- -----------------------------------------------
+-- TODO:
+--
+--togglevga = do
+--  screencount <- LIS.countScreens
+--  if screencount > 1
+--   then spawn "xrandr --output VGA1 --off"
+--   else spawn "xrandr --output VGA1 --auto --right-of LVDS1"
+--
+--myScreens :: Int
+--myScreens = 2  -- Number of X screens
+--
+--myWorkspaces :: [WorkspaceId]
+--myWorkspaces = withScreens myScreens ["1", "2", "3", "4", "5"]
+--myWorkspaces = withScreens myScreens ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+-- -----------------------------------------------
+
+
+
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
 -- workspace name. The number of workspaces is determined by the length
@@ -202,6 +231,11 @@ myModMask       = mod4Mask
 -- A tagging example:
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
+
+-- Generate screen-specific workspaces
+--myWorkspaces :: [String]
+--myWorkspaces = [show i ++ "_" ++ show sid | sid <- [0..1], i <- [1..9]]
+
 
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
@@ -221,6 +255,9 @@ myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 -- To get list of mod keys:
 --    xmodmap
 --
+-- keyBindings conf = let m = modMask conf in fromList $
+--myKeys :: XConfig l -> [(String, X ())]
+--myKeys conf = [
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
 
     -- launch a terminal -------------------------------------------------------
@@ -437,6 +474,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
 
+    -- ++
+    -- [((m .|. modm .|. controlMask, k), windows $ LIS.onCurrentScreen f i)
+    --     | (i, k) <- zip (LIS.workspaces' conf) [xK_1 .. xK_9]
+    --     , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
 
     --------------------------------------------------------
     -- physical/Xinerama screens
@@ -799,6 +840,19 @@ myXmobarPP xmprocs = xmobarPP
   , ppSep     = " "
   }
 
+-- Function to create screen-specific PP
+--myXmobarPP :: ScreenId -> [Handle] -> PP
+--myXmobarPP sid xmprocs = LIS.marshallPP sid $ xmobarPP
+--  {
+--    ppOutput  = \x -> mapM_ (`hPutStrLn` x) xmprocs
+--  , ppTitle   = xmobarColor "#14FF08" "" . shorten 38
+--  , ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]"
+--  , ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")"
+--  , ppUrgent  = xmobarColor "#181715" "#D81816"
+--  , ppHidden  = xmobarColor "#58C5F1" "#181715"
+--  , ppSep     = " "
+--  }
+
 ------------------------------------------------------------------------
 -- Startup hook
 
@@ -818,6 +872,8 @@ myStartupHook = do {
     spawnOnce "~/.xmonad/bin/autostart.sh"
       >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
       >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
+      -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
+      -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
       -- >> threadDelay 5000000 -- in miliseconds;
       >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
     }
@@ -832,7 +888,6 @@ myStartupHook = do {
 -- Helper function to remove trailing newlines
 trim :: String -> String
 trim = reverse . dropWhile (`elem` "\n\r") . reverse
-
 
 -- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
 -- -----------------------------------------------------------------------------------
@@ -932,6 +987,7 @@ main = do {
 
         -- key bindings
         keys               = myKeys,
+        --keys = \conf -> mkKeymap conf $ myKeys conf,
         mouseBindings      = myMouseBindings,
 
         layoutHook         = myLayout,
@@ -983,8 +1039,19 @@ main = do {
         -- other windows, including xmobar. So if you then try to fullscreen
         -- the window, it should cover the entire screen.
 
-        --logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
+        -- basic: working config
+        -- logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
         logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP xmprocs)
+        --
+        -- screen-base workspaces: not working
+        --logHook = myLogHook <+> mconcat
+        --    [ dynamicLogWithPP (myXmobarPP (fromIntegral sid) [xmprocs !! sid])  -- Cast sid to ScreenId
+        --    | sid <- [0 .. length xmprocs - 1] ]
+        --
+        -- test
+        --logHook = myLogHook <+> mconcat
+        --    [ io (putStrLn "Running logHook") >> dynamicLogWithPP (myXmobarPP (fromIntegral sid) [xmprocs !! sid])
+        --    | sid <- [0 .. length xmprocs - 1] ]
 
         -- } `additionalKeys` myKeys `removeKeys` [(mod4Mask, xK_q)]
         } -- end xmonad -- `additionalKeys` [
