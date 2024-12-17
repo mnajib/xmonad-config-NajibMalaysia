@@ -1,5 +1,8 @@
 {-# OPTIONS_GHC -Wno-deprecations #-}
 
+-- Copyright (c) 2024 xmonad-config-NajibMalaysia
+-- Licensed under the BSD 3-Clause License. See LICENSE file for details.
+
 -- ----------------------------------------------
 -- Ref:
 --   https://www.reddit.com/r/xmonad/comments/ndww5/dual_screens_multi_monitors_tips_and_tricks/

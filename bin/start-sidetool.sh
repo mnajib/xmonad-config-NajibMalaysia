@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright (c) 2024 xmonad-config-NajibMalaysia
+# Licensed under the BSD 3-Clause License. See LICENSE file for details.
+
 # Reset the log file
 cat /dev/null > /tmp/${USER}-wsp.log
 

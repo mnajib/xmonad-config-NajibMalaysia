@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Copyright (c) 2024 [Your Name or Project Name]
+# Licensed under the BSD 3-Clause License. See LICENSE file for details.
+
 #
 #  Get waktu solat formated to be use by xmobar
 #

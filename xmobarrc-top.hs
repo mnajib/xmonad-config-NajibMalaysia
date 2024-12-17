@@ -1,3 +1,5 @@
+--
+
 Config {
     bgColor =      "#181715"
     , fgColor =    "#f3f3f1"
