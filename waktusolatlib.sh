@@ -42,84 +42,9 @@ LOGMODE="NORMAL"
 #LOGMODE="INFO"
 #LOGMODE="DEBUG"
 
-#
-# Usage:
-#     log INFO "Length error."
-#     log DEBUG "Start fetchData()."
-#
-log () {
-    local logmode=$1
-    local logstring=$2
-    #local logfile=$3
-
-    # Will use global var: LOG, LOGMODE
-    if [ "$LOGMODE" = "DEBUG" ]; then
-        # For debugging purpose, log all information
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
-        # Normally, just log general information
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$logmode" = "ERROR" ]; then
-        echo "${logmode}: ${logstring}" >> $LOG
-    fi
-}
-
-read_dom () {
-    local IFS=\>
-    read -d \< ENTITY CONTENT
-    }
-
-# NOTE:
-#   To fetch:
-#     https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
-#     view-source:https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
-#
-
-fetchData (){
-    log DEBUG "Start fetchData()"
-    curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-    log DEBUG "End fetchData()"
-}
-
-function fetchDataZone () {
-    log DEBUG "Start fetchDataZone()"
-    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-
-    # Ignore SSL/cert error ... ???
-    curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-
-    log DEBUG "End fetchDataZone()"
-}
-
-getOldGoodFetchData(){
-    log DEBUG "Start getOldGoodFetchData()"
-    log DEBUG "Get previous backup fetched source from file ${FILE3}"
-    cat $FILE3 > $FILE1
-    log DEBUG "End getOldGoodFetchData()"
-    }
-
-simulateFailFetchData() {
-    log DEBUG "Start simulateFailFetchData()"
-    echo "" > $FILE1
-    log DEBUG "End simulateFailFetchData()"
-    }
-
-simulateFetchData(){
-    cat > $FILE1 << EOL
-hijri,1441-09-07
-date,30-Apr-2020
-day,Thursday
-imsak,05:44:00
-fajr,05:54:00
-syuruk,07:03:00
-dhuhr,13:13:00
-asr,16:31:00
-maghrib,19:20:00
-isha,20:31:00
-EOL
-    }
+# ------------------------------------------------------------------------------
+# Pure functions
+# ------------------------------------------------------------------------------
 
 resetData() {
     log DEBUG "Start resetData()"
@@ -431,6 +356,109 @@ namaHariBI(){
       ;;
   esac
 }
+
+printOldWaktuSolat() {
+    #echo -ne "TODO: Print old waktu solat.\n"
+
+    # Get old waktu solat from file
+    #...
+
+    # Change coloring or add warning mark for 'OLD' data
+    #...sed ...
+
+    # XXX: Test with fake old waktu solat
+    #echo "<23-04-2020 16:08:50>         <fc=#00ff00>Imsak</fc> <fc=#ffffff>05:46</fc> <fc=#00ff00>Subuh</fc> <fc=#ffffff>05:56</fc> <fc=#00ff00>Syuruk</fc> <fc=#ffffff>07:04</fc> <fc=#00ff00>Zohor</fc> <fc=#ffffff>13:14</fc> <fc=#00ff00>Asar</fc> <fc=#ffffff>16:29</fc> <fc=#00ff00>Maghrib</fc> <fc=#ffffff>19:20</fc> <fc=#00ff00>Isyak</fc> <fc=#ffffff>20:31</fc>"
+    echo "Waktu Solat Putrajaya Hari Ini <23-04-2020 16:08:50>         <fc=#999999>Imsak</fc><fc=#cc6600,#663300>05:46</fc> <fc=#999999>Subuh</fc><fc=#cc6600,#663300>05:56</fc> <fc=#999999>Syuruk</fc><fc=#cc6600,#663300>07:04</fc> <fc=#999999>Zohor</fc><fc=#cc6600,#663300>13:14</fc> <fc=#999999>Asar</fc><fc=#cc6600,#663300>16:29</fc> <fc=#999999>Maghrib</fc><fc=#cc6600,#663300>19:20</fc> <fc=#999999>Isyak</fc><fc=#cc6600,#663300>20:31</fc>"
+    }
+
+printEmptyWaktuSolat() {
+    echo "Waktu Solat Putrajaya Hari Ini <00-00-0000 00:00:00>         <fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>"
+    #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
+    }
+
+
+# ------------------------------------------------------------------------------
+# Impure functions
+# ------------------------------------------------------------------------------
+
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+log () {
+    local logmode=$1
+    local logstring=$2
+    #local logfile=$3
+
+    # Will use global var: LOG, LOGMODE
+    if [ "$LOGMODE" = "DEBUG" ]; then
+        # For debugging purpose, log all information
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+        # Normally, just log general information
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+        echo "${logmode}: ${logstring}" >> $LOG
+    elif [ "$logmode" = "ERROR" ]; then
+        echo "${logmode}: ${logstring}" >> $LOG
+    fi
+}
+
+read_dom () {
+    local IFS=\>
+    read -d \< ENTITY CONTENT
+    }
+
+# NOTE:
+#   To fetch:
+#     https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+#     view-source:https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+#
+
+fetchData (){
+    log DEBUG "Start fetchData()"
+    curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    log DEBUG "End fetchData()"
+}
+
+function fetchDataZone () {
+    log DEBUG "Start fetchDataZone()"
+    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+
+    # Ignore SSL/cert error ... ???
+    curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+
+    log DEBUG "End fetchDataZone()"
+}
+
+getOldGoodFetchData(){
+    log DEBUG "Start getOldGoodFetchData()"
+    log DEBUG "Get previous backup fetched source from file ${FILE3}"
+    cat $FILE3 > $FILE1
+    log DEBUG "End getOldGoodFetchData()"
+    }
+
+simulateFailFetchData() {
+    log DEBUG "Start simulateFailFetchData()"
+    echo "" > $FILE1
+    log DEBUG "End simulateFailFetchData()"
+    }
+
+simulateFetchData(){
+    cat > $FILE1 << EOL
+hijri,1441-09-07
+date,30-Apr-2020
+day,Thursday
+imsak,05:44:00
+fajr,05:54:00
+syuruk,07:03:00
+dhuhr,13:13:00
+asr,16:31:00
+maghrib,19:20:00
+isha,20:31:00
+EOL
+    }
 
 # Tak perlu ada
 #namaNextHariBM(){
@@ -1258,21 +1286,3 @@ printNewWaktuSolat() {
     #echo -ne "${ONELINE}" > $FILE2
     }
 
-printOldWaktuSolat() {
-    #echo -ne "TODO: Print old waktu solat.\n"
-
-    # Get old waktu solat from file
-    #...
-
-    # Change coloring or add warning mark for 'OLD' data
-    #...sed ...
-
-    # XXX: Test with fake old waktu solat
-    #echo "<23-04-2020 16:08:50>         <fc=#00ff00>Imsak</fc> <fc=#ffffff>05:46</fc> <fc=#00ff00>Subuh</fc> <fc=#ffffff>05:56</fc> <fc=#00ff00>Syuruk</fc> <fc=#ffffff>07:04</fc> <fc=#00ff00>Zohor</fc> <fc=#ffffff>13:14</fc> <fc=#00ff00>Asar</fc> <fc=#ffffff>16:29</fc> <fc=#00ff00>Maghrib</fc> <fc=#ffffff>19:20</fc> <fc=#00ff00>Isyak</fc> <fc=#ffffff>20:31</fc>"
-    echo "Waktu Solat Putrajaya Hari Ini <23-04-2020 16:08:50>         <fc=#999999>Imsak</fc><fc=#cc6600,#663300>05:46</fc> <fc=#999999>Subuh</fc><fc=#cc6600,#663300>05:56</fc> <fc=#999999>Syuruk</fc><fc=#cc6600,#663300>07:04</fc> <fc=#999999>Zohor</fc><fc=#cc6600,#663300>13:14</fc> <fc=#999999>Asar</fc><fc=#cc6600,#663300>16:29</fc> <fc=#999999>Maghrib</fc><fc=#cc6600,#663300>19:20</fc> <fc=#999999>Isyak</fc><fc=#cc6600,#663300>20:31</fc>"
-    }
-
-printEmptyWaktuSolat() {
-    echo "Waktu Solat Putrajaya Hari Ini <00-00-0000 00:00:00>         <fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc> <fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>"
-    #echo "<00-00-0000 00:00:00>         [<fc=#00ff00>Imsak</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Subuh</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Syuruk</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Zohor</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Asar</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Maghrib</fc><fc=#ff9933,#663300> 00:00 </fc>] [<fc=#00ff00>Isyak</fc><fc=#ff9933,#663300> 00:00 </fc>]"
-    }
