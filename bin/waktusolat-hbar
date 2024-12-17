@@ -16,18 +16,13 @@
 #
 
 # source FILE
-. ~/.xmonad/waktusolatlib.sh
+source "${HOME}/.xmonad/bin/lib/waktusolatlib.sh"
 
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
-#PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 LOGFILE=/tmp/${USER}-wsp.log        # for logging
-#FIFO=/tmp/prayer_times_fifo
-#PRAYER_TIMES_FIFO="/tmp/prayer_times_fifo"
-#PRAYER_REMINDER_FIFO="/tmp/prayer_reminder_fifo"
-#SOCKET=/tmp/prayer_times_socket
 
 ONELINE=""
 NAMASOLAT=()
@@ -158,10 +153,6 @@ timeInterval=${timeInterval1}
 
 # Clean up previous socket
 cleanup-socket "$SOCKET"
-#sleep 3
-# Start a socket listener
-#start-socket "$SOCKET"
-#sleep 3
 
 while true; do
     log DEBUG "-------------------------------"
@@ -193,9 +184,6 @@ while true; do
 
         #echo "Start setup blank data" >> $LOG
         #setBlankDataToArray
-
-        #printEmptyWaktuSolat  # just for testing
-        #printOldWaktuSolat    # just for testing
     else
         log DEBUG "Do backup and reset fetch time interval"
         doBackup
@@ -211,13 +199,8 @@ while true; do
     #
     formatWaktuSolatForXmobar
 
-    #---------------------------------------------------------
     log INFO "`date`: pushStringToFile ${PRAYER_TIMES_FILE}"
-    #printNewWaktuSolat
     pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
-    #pushStringToPipe "$(printNewWaktuSolat)" "${FIFO}"
-    #pushStringToSocket "$(printNewWaktuSolat)" "${SOCKET}"
-    #---------------------------------------------------------
 
     # TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then
@@ -225,7 +208,6 @@ while true; do
     #
     log DEBUG "Do sleep for ${timeInterval}"
     sleep ${timeInterval}
-    #dreamInSleep ${timeInterval} ${FIFO} "$(printNewWaktuSolat)" # Try to keep the FIFO alive
 
     log DEBUG "End main loop"
 done

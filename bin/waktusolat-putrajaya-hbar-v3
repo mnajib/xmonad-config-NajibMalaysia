@@ -10,7 +10,7 @@
 #
 
 # source FILE
-. waktusolatlib.sh
+. ~/.xmonad/bin/lib/waktusolatlib.sh
 
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
@@ -91,11 +91,8 @@ while true; do
     #     waktusolat-putrajaya-hbar cli
     #     waktusolat-putrajaya-hbar xmobar
     #
-    printWaktuSolatForCliType1
-    #printWaktuSolatForCliType2
-
-    #XXX
-    #printWaktuSolatForHtml > liveData
+    formatWaktuSolatForXmobar
+    printNewWaktuSolat
 
     # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then

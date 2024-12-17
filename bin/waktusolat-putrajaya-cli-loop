@@ -10,7 +10,7 @@
 #
 
 # source FILE
-. waktusolatlib.sh
+. ~/.xmonad/bin/lib/waktusolatlib.sh
 
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
@@ -45,8 +45,7 @@ timeInterval1=`echo "60 * 60 * 6" | bc` # every 6 hours
 timeInterval2=`echo "60 * 1" | bc` # every 1 minutes; used this if last fetch was failed
 timeInterval=${timeInterval1}
 
-done=0
-while : ; do
+while true; do
     log DEBUG "-------------------------------"
     log DEBUG "`date` : Start main loop"
 
@@ -83,8 +82,6 @@ while : ; do
         log DEBUG "Do backup and reset fetch time interval"
         doBackup
         timeInterval=${timeInterval1}
-
-        done=1 # no loop, just run until can fetch from internet; exit from while loop
     fi
 
     # TODO: Maybe will get option to print for plain text only, for CLI
@@ -96,11 +93,9 @@ while : ; do
     #
     printWaktuSolatForCliType1
     #printWaktuSolatForCliType2
-    
-    # exit from while loop
-    if [ "$done" -ne 0 ]; then
-        break
-    fi
+
+    #XXX
+    #printWaktuSolatForHtml > liveData
 
     # XXX: TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then

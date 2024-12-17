@@ -13,7 +13,7 @@
 #
 
 #
-#. waktusolatlib.sh
+# waktusolatlib.sh
 
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
