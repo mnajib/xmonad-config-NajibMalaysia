@@ -180,7 +180,8 @@ Config {
         , Run CommandReader "~/.xmonad/bin/keyboard-LED-status.sh" "keylock"
 
         -- Network connection status
-        , Run CommandReader "~/.xmonad/netconnstatus.sh" "NetConnStatus"
+        -- , Run CommandReader "~/.xmonad/netconnstatus.sh" "NetConnStatus"
+        , Run CommandReader "~/.xmonad/bin/netconnstatus.sh" "NetConnStatus"
 
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
     ]

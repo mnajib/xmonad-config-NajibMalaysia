@@ -2,7 +2,8 @@
 
 #------------------------------------------------------------------------------
 
-PING=~/.xmonad/bin/NetConnStatus.sh
+#PING=~/.xmonad/bin/NetConnStatus.sh
+PING=~/.xmonad/bin/ping.sh
 #DATE=~/.xmonad/bin/date.sh
 #LOGLIB=~/.xmonad/loglib.sh
 
