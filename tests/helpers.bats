@@ -1,8 +1,8 @@
 #!/usr/bin/env bats
 
-load ../lib/logger.sh
-load ../lib/maybe.sh
-load ../lib/helpers.sh
+load ../bin/lib/logger.sh
+load ../bin/lib/maybe.sh
+load ../bin/lib/helpers.sh
 
 # Test the `get_input_string` function
 #@test "get_input_string reads file content" {
