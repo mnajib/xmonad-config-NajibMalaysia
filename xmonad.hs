@@ -182,7 +182,7 @@ myTerminal      = "terminology" -- my current urxvt give better clear font with 
 -- myTerminal = "alacritty"
 --myTerminal = "termite" -- Can zoom; but my current termite font and color not better than urxvt
 
-myXmobarrc = "~/.xmonad/xmobarrc.hs"
+-- myXmobarrc = "~/.xmonad/xmobarrc-main-oldCPU.hs"
 
 --_XMONAD_TRAYPAD(UTF8_STRING) = "<hspace=53/>"
 
@@ -909,11 +909,11 @@ startXmobars hostname = case hostname of
     [
     --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
     --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
     --, fakeHandleDelay 1000000  -- 1 second
     --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
     --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
     --, fakeHandleDelay 1000000  -- 1 second
     --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
     --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
@@ -944,9 +944,9 @@ startXmobars hostname = case hostname of
     --spawnPipe "xmobar ~/.xmonad/xmobarrc.hs" -- Needs xmproc
     --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
       --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-oldCPU.hs" -- Needs xmproc
+      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
     --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
     ]
 
 -- -----------------------------------------------------------------------------------
