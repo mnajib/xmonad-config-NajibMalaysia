@@ -4,8 +4,14 @@
 # Licensed under the BSD 3-Clause License. See LICENSE file for details.
 
 # Reset the log file
-cat /dev/null > /tmp/${USER}-wsp.log
-echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "/tmp/${USER}-wsp.log"
+#LOGFILE1="/tmp/${USER}-zikirlog"
+#cat /dev/null > ""$LOGFILE1""
+#echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "${LOGFILE1}"
+#
+LOGFILE2="/tmp/${USER}-wsp.log"
+cat /dev/null > "$LOGFILE2"
+echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "$LOGFILE2"
+#
 cat /dev/null > /tmp/${USER}-prayer_reminder_log
 echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "/tmp/${USER}-prayer_reminder_log"
 
