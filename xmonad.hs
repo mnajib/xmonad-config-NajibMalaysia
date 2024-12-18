@@ -859,6 +859,26 @@ myXmobarPP xmprocs = xmobarPP
 ------------------------------------------------------------------------
 -- Startup hook
 
+-- import Control.Concurrent (threadDelay)
+-- import System.Console.ANSI (setSGR, SGR(..))
+-- Function to sound a continuous beep for a specified duration in seconds
+beepFor :: Int -> IO ()
+beepFor seconds = do
+    let endTime = seconds * 1000000 -- Convert seconds to microseconds
+    let beepDuration = 100000        -- Duration of each beep in microseconds
+    let totalBeepTime = 3000000      -- Total time for beeping in microseconds
+
+    -- Loop to produce beeps
+    let loop timeLeft
+            | timeLeft > 0 = do
+                putStr "\a"          -- Output the beep character
+                threadDelay beepDuration -- Wait for the beep duration
+                loop (timeLeft - beepDuration)
+            | otherwise = return ()
+
+    loop totalBeepTime
+
+
 -- Perform an arbitrary action each time xmonad starts or is restarted
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.

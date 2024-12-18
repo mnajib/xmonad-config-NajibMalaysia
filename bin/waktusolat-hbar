@@ -199,8 +199,12 @@ while true; do
     #
     formatWaktuSolatForXmobar
 
-    log INFO "`date`: pushStringToFile ${PRAYER_TIMES_FILE}"
-    pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
+    new_waktu_solat="$(printNewWaktuSolat)"
+
+    #log INFO "pushStringToFile ${PRAYER_TIMES_FILE}"
+    log INFO "$new_waktu_solat"
+    #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
+    pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
 
     # TODO: Sleep interval mayneed change base on if ERROR occour
     # if ERROR ; then

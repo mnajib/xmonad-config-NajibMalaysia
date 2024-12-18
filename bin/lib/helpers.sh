@@ -62,6 +62,11 @@ impure_colorize_time() {
   fi
 }
 
+pure_sound_a_beep() {
+  echo -e "\a"
+  #printf "\a"
+}
+
 #
 # PRAYER_TIMES=(
 #    "Fajr:05:42-06:00"
@@ -247,7 +252,7 @@ pure_process_prayer_entry() {
     local pattern2
     local pattern3
 
-    log_debug "line=\"$line\""
+    #log_debug "line=\"$line\""
 
     # ---------------------------------------------------------------
     # NOTE:
@@ -293,7 +298,7 @@ pure_process_prayer_entry() {
       # Extract the foreground and background colors
       new_foreground="${new_colors%,*}"
       new_background="${new_colors#*,}"
-      log_debug "new_foreground=${new_foreground}, new_background=${new_background}"
+      #log_debug "new_foreground=${new_foreground}, new_background=${new_background}"
 
       # Replace the old match with updated background color
       pattern3="${prayer_name}</fc><fc=#${new_foreground},#${new_background}> ${prayer_time}"
@@ -309,6 +314,7 @@ pure_process_prayer_entry() {
     local final_result_line=$(echo "$result_line" | sed 's/<fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}>Ims<\/fc><fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}> [0-9]\{2\}:[0-9]\{2\} <\/fc> //')
     echo "$final_result_line"
     log_debug "\$final_result_line=$final_result_line"
+    log_info "$final_result_line"
 }
 
 # Function: Read prayer times from file

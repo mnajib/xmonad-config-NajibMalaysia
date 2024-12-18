@@ -55,7 +55,7 @@ impure_main_loop() {
     while true; do
 
       current_time=$(date +"%H:%M")
-      log_debug "reminder.sh: impure_main_loop: ${current_time}"
+      log_debug "reminder.sh: impure_main_loop: $(date +"%H:%M:%S")"
       line="$(impure_string_from_file "${PRAYER_TIMES_FILE}")"
 
       # Process the prayer times using the current toggle state

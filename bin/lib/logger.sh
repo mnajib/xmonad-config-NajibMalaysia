@@ -59,7 +59,10 @@ log() {
     # to log file
     if (( LOG_LEVEL >= level_value )); then
         #echo "[$level] $message" >&2
-        echo "[$level] $message" >> "$LOG_FILE"
+        #echo "[$level] $message" >> "$LOG_FILE"
+        #
+        #echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+        echo "`date "+%F %T"` ${level}: ${message}" >> $LOG_FILE
     #else
     #    echo "[$level] $message" >> /dev/null #"$LOG_FILE"
     fi

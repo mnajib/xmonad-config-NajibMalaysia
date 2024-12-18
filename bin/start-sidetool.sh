@@ -5,6 +5,9 @@
 
 # Reset the log file
 cat /dev/null > /tmp/${USER}-wsp.log
+echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "/tmp/${USER}-wsp.log"
+cat /dev/null > /tmp/${USER}-prayer_reminder_log
+echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "/tmp/${USER}-prayer_reminder_log"
 
 # If not already created, xmobar need this file before xmobar start
 if [ ! -f /tmp/${USER}-zikirpipe ]; then
