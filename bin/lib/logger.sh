@@ -17,7 +17,7 @@ LOG_LEVEL_DEBUG=4
 LOG_LEVEL=$LOG_LEVEL_INFO
 
 # Default log file
-#LOG_FILE="/tmp/${USER}-xmonad.log"
+LOG_FILE="/tmp/${USER}-xmonad.log"
 #
 # XXX: need to check for LOG_FILE
 
