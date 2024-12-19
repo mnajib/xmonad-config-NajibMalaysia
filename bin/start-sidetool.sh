@@ -3,7 +3,10 @@
 # Copyright (c) 2024 xmonad-config-NajibMalaysia
 # Licensed under the BSD 3-Clause License. See LICENSE file for details.
 
+
+# --------------------------------------------------------------------------------------------------
 # Reset the log file
+# --------------------------------------------------------------------------------------------------
 #LOGFILE1="/tmp/${USER}-zikirlog"
 #cat /dev/null > ""$LOGFILE1""
 #echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "${LOGFILE1}"
@@ -14,18 +17,32 @@ echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "$LO
 #
 cat /dev/null > /tmp/${USER}-prayer_reminder_log
 echo "`date` ${HOME}/.xmonad/bin/start-sidetool.sh: reset this log file" >> "/tmp/${USER}-prayer_reminder_log"
+# --------------------------------------------------------------------------------------------------
 
-# If not already created, xmobar need this file before xmobar start
-if [ ! -f /tmp/${USER}-zikirpipe ]; then
-  mkfifo /tmp/${USER}-zikirpipe
-fi
-sleep 1
-~/.xmonad/bin/zikir &
-#~/.xmonad/waktusolat-hbar SGR01 &
+
+# --------------------------------------------------------------------------------------------------
+# Start zikir
+# --------------------------------------------------------------------------------------------------
+## If not already created, xmobar need this file before xmobar start
+#if [ ! -f /tmp/${USER}-zikirpipe ]; then
+#  mkfifo /tmp/${USER}-zikirpipe
+#fi
+#sleep 1
+#~/.xmonad/bin/zikir &
+#
+# --------------------------------------------------------------------------------------------------
+# Start waktu solat
+# --------------------------------------------------------------------------------------------------
 ~/.xmonad/bin/waktusolat-hbar SGR01 &
+#
+# --------------------------------------------------------------------------------------------------
+# Start waktu solat reminder
+# --------------------------------------------------------------------------------------------------
 sleep 1
 ~/.xmonad/bin/reminder.sh &
 sleep 1
+# --------------------------------------------------------------------------------------------------
+
 
 trayerIsAlive(){
   local processName="trayer"
@@ -144,8 +161,6 @@ case $HOSTNAME in
     ;;
 esac
 
-#sleep 1
-#~/.xmonad/bin/zikir &
 sleep 2
 
 # Volume Control
