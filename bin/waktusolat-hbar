@@ -17,12 +17,26 @@
 
 # source FILE
 source "${HOME}/.xmonad/bin/lib/waktusolatlib.sh"
+#
+source "${HOME}/.xmonad/bin/lib/logger.sh"
+source "${HOME}/.xmonad/bin/lib/maybe.sh"
+source "${HOME}/.xmonad/bin/lib/helpers.sh"
 
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
-LOGFILE=/tmp/${USER}-wsp.log        # for logging
+LOGFILE="/tmp/${USER}-wsp.log"        # for logging
+LOG_FILE="$LOGFILE"
+
+set_log_file "$LOGFILE"
+#
+set_log_level "silent"
+#set_log_level "info"
+#set_log_level "debug"
+#
+log_debug "LOG_FILE: ${LOG_FILE}"
+log_debug "LOG_LEVEL: ${LOG_LEVEL}"
 
 ONELINE=""
 NAMASOLAT=()
@@ -41,8 +55,8 @@ STATUS=""
 HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
-#LOGMODE="NORMAL"
-LOGMODE="INFO"
+LOGMODE="NORMAL"
+#LOGMODE="INFO"
 #LOGMODE="DEBUG"
 
 #
@@ -142,6 +156,28 @@ pushStringToSocket() {
     echo "$1" | socat -u - UNIX-CONNECT:"$SOCKET"
 }
 
+# Usage:
+#   loopCommandUntilSeconds <countdowntime_in_seconds> <command_to_run>
+# Example:
+#   loopCommandUntilSeconds 10 "echo 'Hello, World!'"
+loopCommandUntilSeconds() {
+    countdown_time=$1 # in seconds
+    command="$2"
+
+    # Check if countdown_time is a valid number
+    if ! [[ "$countdown_time" =~ ^[0-9]+$ ]]; then
+        echo "Error: countdown_time must be a non-negative integer."
+        return 1
+    fi
+
+    while (( $countdown_time > 0 )); do
+        eval "${command}" # Use eval to handle commands with arguments
+        sleep 1
+        (( $countdown_time-- ))
+    done
+}
+
+
 #----------------------------------------------------------------------
 
 log DEBUG "==============================="
@@ -202,19 +238,60 @@ while true; do
     new_waktu_solat="$(printNewWaktuSolat)"
 
     #log INFO "pushStringToFile ${PRAYER_TIMES_FILE}"
-    log INFO "$new_waktu_solat"
+    #log INFO "$new_waktu_solat"
+    log_debug "$new_waktu_solat"
+    log DEBUG "$new_waktu_solat"
 
-    echo "$new_waktu_solat"
-    #
-    #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
-    #pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
 
-    # TODO: Sleep interval mayneed change base on if ERROR occour
-    # if ERROR ; then
-    # ...
-    #
-    log DEBUG "Do sleep for ${timeInterval}"
-    sleep ${timeInterval}
+#    #-----------------------------------------------------------------------
+#    # Basic (without coloring for attentions/reminder)
+#    #-----------------------------------------------------------------------
+#    echo "$new_waktu_solat"
+#    #
+#    #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
+#    #pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
+#
+#    # TODO: Sleep interval mayneed change base on if ERROR occour
+#    # if ERROR ; then
+#    # ...
+#    #
+#    # Do sleep for ${timeInterval}
+#    log DEBUG "Do sleep for ${timeInterval}"
+#    sleep ${timeInterval}
+    #-----------------------------------------------------------------------
+    # With coloring/blinking/reminder
+    #-----------------------------------------------------------------------
+    # Do something for ${timeInterval}
+    #loopCommandUntilSeconds 10 "echo 'Hello, World!'"
+    #loopCommandUntilSeconds ${timeInterval} "${process_reminder} ${new_waktu_solat}"
+    countdown_time=$timeInterval
+    toggle=0 # Initial toggle state
+    line="$new_waktu_solat"
+    while (( $countdown_time > 0 )); do
+        current_time=$(date +"%H:%M")
+        #log_debug "inner loop: `date`"
+        #log_info "inner loop: `date`"
+        #log DEBUG "inner loop: `date`"
+        log INFO "inner loop: `date`"
+
+        # Process the prayer times using the current toggle state
+        #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
+        #echo "$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+        final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+        #echo "$line" > "$fifo"
+        #echo "$line"
+        log INFO "final_output: $final_output"
+        echo "$final_output"
+
+        # Alternate the toggle state (alternate between 0 and 1)
+        toggle=$((1 - $toggle))
+
+        sleep 1
+        #(( $countdown_time-- ))
+        countdown_time=$((countdown_time - 1))  # Decrement the countdown time
+    done
+    #-----------------------------------------------------------------------
+
 
     log DEBUG "End main loop"
 done
