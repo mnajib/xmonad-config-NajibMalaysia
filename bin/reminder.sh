@@ -59,7 +59,8 @@ impure_main_loop() {
       line="$(impure_string_from_file "${PRAYER_TIMES_FILE}")"
 
       # Process the prayer times using the current toggle state
-      pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
+      #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
+      echo "$line" > "$fifo"
 
       # Alternate the toggle state (alternate between 0 and 1)
       toggle=$((1 - $toggle))
