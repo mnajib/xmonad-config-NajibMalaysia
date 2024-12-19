@@ -43,11 +43,18 @@ get_log_file() {
     echo "$LOG_FILE"
 }
 
+# clearing the log file
+reset_log_file() {
+    local file="$1"
+    cat /dev/null > "$file"
+}
+
 # Generic log function
 log() {
     local level="$1"
     local message="$2"
     local level_value=0
+    local log_file="$3"
 
     case "$level" in
         error) level_value=$LOG_LEVEL_ERROR ;;
@@ -62,7 +69,8 @@ log() {
         #echo "[$level] $message" >> "$LOG_FILE"
         #
         #echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-        echo "`date "+%F %T"` ${level}: ${message}" >> $LOG_FILE
+        #echo "`date "+%F %T"` ${level}: ${message}" >> $LOG_FILE
+        echo "`date "+%F %T"` ${level}: ${message}" >> "$log_file"
     #else
     #    echo "[$level] $message" >> /dev/null #"$LOG_FILE"
     fi
@@ -74,9 +82,9 @@ log() {
 }
 
 # Convenience functions
-log_error() { log "error" "$1"; }
-log_warn() { log "warn" "$1"; }
-log_info() { log "info" "$1"; }
-log_debug() { log "debug" "$1"; }
+log_error() { log "error" "$1" "$LOG_FILE"; }
+log_warn() { log "warn" "$1" "$LOG_FILE"; }
+log_info() { log "info" "$1" "$LOG_FILE"; }
+log_debug() { log "debug" "$1" "$LOG_FILE"; }
 
 #log_debug "Sourced logger.sh"
