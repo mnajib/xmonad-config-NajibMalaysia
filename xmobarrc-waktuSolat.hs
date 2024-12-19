@@ -27,7 +27,8 @@ Config {
     --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
     , commands = [
                     --Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolat"
-                    Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat"
+                    Run CommandReader "~/.xmonad/bin/waktusolat-hbar SGR01" "WaktuSolat"
+                    --Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat"
 
                     --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe"
                     --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "   +   ") "mpipe"
