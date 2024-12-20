@@ -22,6 +22,8 @@ import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
 import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent two focused windows
 
 import XMonad.Hooks.DynamicLog
+-- import XMonad.Hooks.StatusBar.PP
+
 import XMonad.Hooks.ManageDocks
 -- import XMonad.Hooks.Rescreen
 import XMonad.Util.XUtils (fi)
@@ -829,13 +831,24 @@ zoomEventHook _ = return (All True)
 myLogHook :: X ()
 myLogHook = mempty
 
+myBasicXmobarPP :: Handle -> PP
+myBasicXmobarPP xmproc = xmobarPP {
+    ppOutput  = hPutStrLn xmproc
+  , ppTitle   = xmobarColor "#14FF08" "" . shorten 30
+  , ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]"
+  , ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")"
+  , ppUrgent  = xmobarColor "#181715" "#D81816"
+  , ppHidden  = xmobarColor "#58C5F1" "#181715"
+  , ppSep     = " "
+}
+
 -- Custom xmobarPP for multiple Handles
 myXmobarPP :: [Handle] -> PP
 myXmobarPP xmprocs = xmobarPP
   {
   --  ppOutput  = \x -> mapM_ (\h -> when (h /= undefined) (hPutStrLn h x)) xmprocs
     ppOutput  = \x -> mapM_ (`hPutStrLn` x) xmprocs
-  , ppTitle   = xmobarColor "#14FF08" "" . shorten 38
+  , ppTitle   = xmobarColor "#14FF08" "" . shorten 30
   , ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]"
   , ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")"
   , ppUrgent  = xmobarColor "#181715" "#D81816"
@@ -969,26 +982,55 @@ startXmobars hostname = case hostname of
     , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
     ]
 
+startXmobars2 :: String -> IO [Handle]
+startXmobars2 hostname = case hostname of
+    "khadijah" -> do
+        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
+        spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        return [xmproc]
+
+    _ -> do
+        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+        spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        return [xmproc]
+
+startXmobars3 :: String -> IO [Handle]
+startXmobars3 hostname = case hostname of
+    "khadijah" -> do
+        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
+        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        return [xmprocBottom, xmprocTop]
+
+    _ -> do
+        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+        xmprocTop <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        return [xmprocBottom, xmprocTop]
+
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
 
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
-main = do {
+main = do
     --spawnOnce "~/.xmonad/bin/autostart.sh";
-    spawn "~/.xmonad/bin/kill2restart-xmobar.sh";
-    spawn "~/.xmonad/bin/kill2restart-sidetool.sh";
-    spawn "killall xmobar";
-    spawn "pkill xmobar";
-    threadDelay 5000000; -- in miliseconds;
-    spawn "~/.xmonad/bin/start-sidetool.sh";
+    spawn "~/.xmonad/bin/kill2restart-xmobar.sh"
+    spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
+    spawn "killall xmobar"
+    spawn "pkill xmobar"
+    threadDelay 5000000 -- in miliseconds;
+    spawn "~/.xmonad/bin/start-sidetool.sh"
 
-    -- Get the current hostname dynamically
-    hostname <- fmap nodeName getSystemID;
+    -- -- Get the current hostname dynamically
+    hostname <- fmap nodeName getSystemID
 
-    -- Start xmobar instances based on the hostname
-    xmprocs <- startXmobars hostname;
+    --xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+    --spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+    --
+    -- -- Start xmobar instances based on the hostname
+    -- xmprocs <- startXmobars hostname
+    --xmprocs <- startXmobars2 hostname
+    xmprocs <- startXmobars3 hostname
 
     --xmonad $ defaults {
     --xmonad $ def {
@@ -1062,8 +1104,10 @@ main = do {
         -- other windows, including xmobar. So if you then try to fullscreen
         -- the window, it should cover the entire screen.
 
-        -- basic: working config
-        -- logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
+        --logHook = myLogHook <+> dynamicLogWithPP (myBasicXmobarPP xmproc)
+        --
+        -- -- Multiple xmobar with xmprocs: working config
+        -- -- logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
         logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP xmprocs)
         --
         -- screen-base workspaces: not working
@@ -1082,7 +1126,6 @@ main = do {
         --    ((controlMask, xK_Print), spawn "sleep 0.2; scrot"),
         --    ((0, xK_Print), spawn "scrot")
         --    ]
-    } -- end main = do {
 
 -------------------------------------------------------------------------------
 -- A structure containing your configuration settings, overriding
