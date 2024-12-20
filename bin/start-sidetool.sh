@@ -110,6 +110,7 @@ case $HOSTNAME in
     echo "zahrah"
     startTrayer 1
     setxkbmap dvorak
+    $HOME/bin/barrier-launcher.sh start server --server zahrah --config-file ~/.config/barrier/barrier.conf &
     ;;
   raudah)
     echo "raudah"
@@ -135,6 +136,13 @@ case $HOSTNAME in
     echo "khadijah"
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
     startTrayer 0
+    $HOME/bin/barrier-launcher.sh start client --client khadijah --server zahrah &
+    ;;
+  taufiq)
+    echo "taufiq"
+    setxkbmap dvorak
+    startTrayer 0
+    $HOME/bin/barrier-launcher.sh start client --client taufiq --server zahrah &
     ;;
   manggis)
     echo "maggis"
