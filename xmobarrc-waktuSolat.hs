@@ -16,7 +16,7 @@ Config {
     --, template = "%WaktuSolatPutrajaya%  <fc=#ff9933,#663300>%mpipe%</fc> %_XMONAD_TRAYPAD%" -- XXX: TEST
 
     -- general behavior
-    , lowerOnStart =     False --True    -- send to bottom of window stack on start
+    , lowerOnStart =     True    -- send to bottom of window stack on start
     , hideOnStart =      False   -- start with window unmapped (hidden)
     , allDesktops =      True    -- show on all desktops
     , overrideRedirect = True    -- set the Override Redirect flag (Xlib)

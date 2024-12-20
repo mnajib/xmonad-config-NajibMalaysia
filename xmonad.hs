@@ -905,14 +905,14 @@ myStartupHook = do {
       , lastWindow = Nothing
       };
 
-    spawnOnce "~/.xmonad/bin/autostart.sh"
-      >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
-      >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
+    spawnOnce "~/.xmonad/bin/autostart.sh";
+      -- >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
+      -- >> spawn "killall xmobar"
+      -- >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
       -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
       -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
-      -- >> threadDelay 5000000 -- in miliseconds;
-      >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
-    }
+      -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
+}
 --
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
@@ -998,12 +998,14 @@ startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
     "khadijah" -> do
         xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
-        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top --lowerOnStart=True ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
         return [xmprocBottom, xmprocTop]
 
     _ -> do
         xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+        -- threadDelay 5000000 -- in miliseconds;
         xmprocTop <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        -- threadDelay 5000000 -- in miliseconds;
         return [xmprocBottom, xmprocTop]
 
 -- -----------------------------------------------------------------------------------
@@ -1013,12 +1015,12 @@ startXmobars3 hostname = case hostname of
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
 main = do
-    --spawnOnce "~/.xmonad/bin/autostart.sh";
+    -- spawnOnce "~/.xmonad/bin/autostart.sh"
     spawn "~/.xmonad/bin/kill2restart-xmobar.sh"
     spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
     spawn "killall xmobar"
     spawn "pkill xmobar"
-    threadDelay 5000000 -- in miliseconds;
+    threadDelay 5000000 -- in miliseconds
     spawn "~/.xmonad/bin/start-sidetool.sh"
 
     -- -- Get the current hostname dynamically
@@ -1031,6 +1033,7 @@ main = do
     -- xmprocs <- startXmobars hostname
     --xmprocs <- startXmobars2 hostname
     xmprocs <- startXmobars3 hostname
+    --threadDelay 5000000 -- in miliseconds;
 
     --xmonad $ defaults {
     --xmonad $ def {
