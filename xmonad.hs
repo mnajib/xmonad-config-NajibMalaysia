@@ -998,7 +998,7 @@ startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
     "khadijah" -> do
         xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
-        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top --lowerOnStart=True ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
         return [xmprocBottom, xmprocTop]
 
     _ -> do
