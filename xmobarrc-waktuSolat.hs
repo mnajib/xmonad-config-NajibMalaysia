@@ -26,6 +26,12 @@ Config {
     -- plugins
     --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
     , commands = [
+
+                    -- ------------------------------------------------------------------------------
+                    -- TODO: Use XMonadLog instead of StdinReader:
+                    -- XMonadLog is a more efficient way to communicate with xmobar, especially for complex configurations.
+                    -- It avoids the potential issues associated with pipes.
+                    -- ------------------------------------------------------------------------------
                     --Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolat"
                     Run CommandReader "~/.xmonad/bin/waktusolat-hbar SGR01" "WaktuSolat"
                     --Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat"

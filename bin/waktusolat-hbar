@@ -243,54 +243,57 @@ while true; do
     log DEBUG "$new_waktu_solat"
 
 
-#    #-----------------------------------------------------------------------
-#    # Basic (without coloring for attentions/reminder)
-#    #-----------------------------------------------------------------------
-#    echo "$new_waktu_solat"
-#    #
-#    #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
-#    #pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
-#
-#    # TODO: Sleep interval mayneed change base on if ERROR occour
-#    # if ERROR ; then
-#    # ...
-#    #
-#    # Do sleep for ${timeInterval}
-#    log DEBUG "Do sleep for ${timeInterval}"
-#    sleep ${timeInterval}
+    #-----------------------------------------------------------------------
+    # Basic (without coloring for attentions/reminder)
+    #-----------------------------------------------------------------------
+    echo "$new_waktu_solat"
+    #
+    #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
+    #pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
+
+    # TODO: Sleep interval mayneed change base on if ERROR occour
+    # if ERROR ; then
+    # ...
+    #
+    # Do sleep for ${timeInterval}
+    log DEBUG "Do sleep for ${timeInterval}"
+    sleep ${timeInterval}
     #-----------------------------------------------------------------------
     # With coloring/blinking/reminder
     #-----------------------------------------------------------------------
-    # Do something for ${timeInterval}
-    #loopCommandUntilSeconds 10 "echo 'Hello, World!'"
-    #loopCommandUntilSeconds ${timeInterval} "${process_reminder} ${new_waktu_solat}"
-    countdown_time=$timeInterval
-    toggle=0 # Initial toggle state
-    line="$new_waktu_solat"
-    while (( $countdown_time > 0 )); do
-        current_time=$(date +"%H:%M")
-        #log_debug "inner loop: `date`"
-        #log_info "inner loop: `date`"
-        #log DEBUG "inner loop: `date`"
-        log INFO "inner loop: `date`"
-
-        # Process the prayer times using the current toggle state
-        #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
-        #echo "$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
-        final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
-        #echo "$line" > "$fifo"
-        #echo "$line"
-        log INFO "final_output: $final_output"
-        echo "$final_output"
-
-        # Alternate the toggle state (alternate between 0 and 1)
-        toggle=$((1 - $toggle))
-
-        sleep 1
-        #(( $countdown_time-- ))
-        countdown_time=$((countdown_time - 1))  # Decrement the countdown time
-    done
+#    # Do something for ${timeInterval}
+#    #loopCommandUntilSeconds 10 "echo 'Hello, World!'"
+#    #loopCommandUntilSeconds ${timeInterval} "${process_reminder} ${new_waktu_solat}"
+#    countdown_time=$timeInterval
+#    toggle=0 # Initial toggle state
+#    line="$new_waktu_solat"
+#    while (( $countdown_time > 0 )); do
+#        current_time=$(date +"%H:%M")
+#        #log_debug "inner loop: `date`"
+#        #log_info "inner loop: `date`"
+#        #log DEBUG "inner loop: `date`"
+#        log INFO "inner loop: `date`"
+#
+#        # Process the prayer times using the current toggle state
+#        #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
+#        #echo "$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+#        final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+#        #echo "$line" > "$fifo"
+#        #echo "$line"
+#        log INFO "final_output: $final_output"
+#        echo "$final_output"
+#
+#        # Alternate the toggle state (alternate between 0 and 1)
+#        toggle=$((1 - $toggle))
+#
+#        sleep 1
+#        #(( $countdown_time-- ))
+#        countdown_time=$((countdown_time - 1))  # Decrement the countdown time
+#    done
     #-----------------------------------------------------------------------
+    # TODO: Use XMonadLog instead of StdinReader:
+    # XMonadLog is a more efficient way to communicate with xmobar, especially for complex configurations.
+    # It avoids the potential issues associated with pipes.
 
 
     log DEBUG "End main loop"
