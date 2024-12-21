@@ -898,21 +898,20 @@ beepFor seconds = do
 --
 -- By default, do nothing.
 -- myStartupHook = return ()
-myStartupHook = do {
+myStartupHook = do
     -- Reset custom maximize state
     XS.put $ MaximizeState
       { isMaximized = False
       , lastWindow = Nothing
-      };
+      }
 
-    spawnOnce "~/.xmonad/bin/autostart.sh";
+    spawnOnce "~/.xmonad/bin/autostart.sh"
       -- >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
       -- >> spawn "killall xmobar"
       -- >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
       -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
       -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
       -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
-}
 --
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
@@ -1085,8 +1084,8 @@ main = do
 
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
-        startupHook        = myStartupHook <+> setWMName "LG3D",
-        --startupHook        = myStartupHook <+> ewmhDesktopStartup <+> setWMName "LG3D",
+        --startupHook        = myStartupHook <+> setWMName "LG3D",
+        startupHook        = myStartupHook <+> ewmhDesktopsStartup <+> setWMName "LG3D",
 
         -- The "manage hook" is the thing that decides how windows are supposed to appear.
         -- The <+> thing combines options for the manage hook.
