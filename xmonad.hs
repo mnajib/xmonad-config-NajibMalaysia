@@ -1031,7 +1031,7 @@ main = do
     -- -- Start xmobar instances based on the hostname
     -- xmprocs <- startXmobars hostname
     --xmprocs <- startXmobars2 hostname
-    xmprocs <- startXmobars3 hostname
+--    xmprocs <- startXmobars3 hostname
     --threadDelay 5000000 -- in miliseconds;
 
     --xmonad $ defaults {
@@ -1106,11 +1106,13 @@ main = do
         -- other windows, including xmobar. So if you then try to fullscreen
         -- the window, it should cover the entire screen.
 
+        logHook = myLogHook
+        --
         --logHook = myLogHook <+> dynamicLogWithPP (myBasicXmobarPP xmproc)
         --
         -- -- Multiple xmobar with xmprocs: working config
         -- -- logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
-        logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP xmprocs)
+--        logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP xmprocs)
         --
         -- screen-base workspaces: not working
         --logHook = myLogHook <+> mconcat
