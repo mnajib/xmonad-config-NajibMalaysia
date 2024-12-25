@@ -25,11 +25,11 @@ LOG_FILE="/tmp/${USER}-xmonad.log"
 set_log_level() {
     local level="$1"
     case "$level" in
-        silent) LOG_LEVEL=$LOG_LEVEL_SILENT ;;
-        error)  LOG_LEVEL=$LOG_LEVEL_ERROR ;;
-        warn)   LOG_LEVEL=$LOG_LEVEL_WARN ;;
-        info)   LOG_LEVEL=$LOG_LEVEL_INFO ;;
-        debug)  LOG_LEVEL=$LOG_LEVEL_DEBUG ;;
+        silent|SILENT) LOG_LEVEL=$LOG_LEVEL_SILENT ;;
+        error|ERROR)  LOG_LEVEL=$LOG_LEVEL_ERROR ;;
+        warn|WARN|warning|WARNING)   LOG_LEVEL=$LOG_LEVEL_WARN ;;
+        info|INFO)   LOG_LEVEL=$LOG_LEVEL_INFO ;;
+        debug|DEBUG)  LOG_LEVEL=$LOG_LEVEL_DEBUG ;;
         *)      LOG_LEVEL=$LOG_LEVEL_INFO ;;
     esac
 }

@@ -22,18 +22,29 @@ source "${HOME}/.xmonad/bin/lib/logger.sh"
 source "${HOME}/.xmonad/bin/lib/maybe.sh"
 source "${HOME}/.xmonad/bin/lib/helpers.sh"
 
+#---------------------------------------------------------------------
+
+# inputs
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+# outputs
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
-LOGFILE="/tmp/${USER}-wsp.log"        # for logging
-LOG_FILE="$LOGFILE"
+PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
+# log
+LOG_FILE="/tmp/${USER}-wsp.log"        # for logging
+LOG_LEVEL="SILENT" # "SILENT" "NORMAL" "INFO" "DEBUG" # "silent", "info", "warning", or "debug"
 
+#---------------------------------------------------------------------
+
+LOGFILE="$LOG_FILE"        # for logging
+#
 set_log_file "$LOGFILE"
 #
-set_log_level "silent"
+#set_log_level "silent"
 #set_log_level "info"
 #set_log_level "debug"
+set_log_level "$LOG_LEVEL"
 #
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
@@ -55,33 +66,34 @@ STATUS=""
 HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
-LOGMODE="NORMAL"
+#LOGMODE="NORMAL"
 #LOGMODE="INFO"
 #LOGMODE="DEBUG"
+LOGMODE="$LOG_LEVEL"
 
 #
 # Usage:
 #     log INFO "Length error."
 #     log DEBUG "Start fetchData()."
 #
-log () {
-    local logmode=$1
-    local logstring=$2
-    #local logfile=$3
-
-    # Will use global var: LOG, LOGMODE
-    if [ "$LOGMODE" = "DEBUG" ]; then
-        # For debugging purpose, log all information
-        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
-        # Normally, just log general information
-        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
-        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-    elif [ "${logmode}" = "ERROR" ]; then
-        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-    fi
-}
+#log () {
+#    local logmode=$1
+#    local logstring=$2
+#    #local logfile=$3
+#
+#    # Will use global var: LOG, LOGMODE
+#    if [ "$LOGMODE" = "DEBUG" ]; then
+#        # For debugging purpose, log all information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+#        # Normally, just log general information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "${logmode}" = "ERROR" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    fi
+#}
 
 createFifo(){
     mkfifo $PIPE
@@ -246,8 +258,7 @@ while true; do
     #-----------------------------------------------------------------------
     # Basic (without coloring for attentions/reminder)
     #-----------------------------------------------------------------------
-    echo "$new_waktu_solat"
-    #
+#   echo "$new_waktu_solat"
     #pushStringToFile "$(printNewWaktuSolat)" "${PRAYER_TIMES_FILE}"
     #pushStringToFile "${new_waktu_solat}" "${PRAYER_TIMES_FILE}"
 
@@ -256,40 +267,42 @@ while true; do
     # ...
     #
     # Do sleep for ${timeInterval}
-    log DEBUG "Do sleep for ${timeInterval}"
-    sleep ${timeInterval}
+#   log DEBUG "Do sleep for ${timeInterval}"
+#   sleep ${timeInterval}
     #-----------------------------------------------------------------------
     # With coloring/blinking/reminder
     #-----------------------------------------------------------------------
-#    # Do something for ${timeInterval}
-#    #loopCommandUntilSeconds 10 "echo 'Hello, World!'"
-#    #loopCommandUntilSeconds ${timeInterval} "${process_reminder} ${new_waktu_solat}"
-#    countdown_time=$timeInterval
-#    toggle=0 # Initial toggle state
-#    line="$new_waktu_solat"
-#    while (( $countdown_time > 0 )); do
-#        current_time=$(date +"%H:%M")
-#        #log_debug "inner loop: `date`"
-#        #log_info "inner loop: `date`"
-#        #log DEBUG "inner loop: `date`"
-#        log INFO "inner loop: `date`"
-#
-#        # Process the prayer times using the current toggle state
-#        #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
-#        #echo "$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
-#        final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
-#        #echo "$line" > "$fifo"
-#        #echo "$line"
-#        log INFO "final_output: $final_output"
-#        echo "$final_output"
-#
-#        # Alternate the toggle state (alternate between 0 and 1)
-#        toggle=$((1 - $toggle))
-#
-#        sleep 1
-#        #(( $countdown_time-- ))
-#        countdown_time=$((countdown_time - 1))  # Decrement the countdown time
-#    done
+    # Do something for ${timeInterval}
+    #loopCommandUntilSeconds 10 "echo 'Hello, World!'"
+    #loopCommandUntilSeconds ${timeInterval} "${process_reminder} ${new_waktu_solat}"
+    countdown_time=$timeInterval
+    toggle=0 # Initial toggle state
+    line="$new_waktu_solat"
+    while (( $countdown_time > 0 )); do
+        current_time=$(date +"%H:%M")
+        #log_debug "inner loop: `date`"
+        #log_info "inner loop: `date`"
+        #log DEBUG "inner loop: `date`"
+        #log INFO "inner loop: `date`"
+
+        # Process the prayer times using the current toggle state
+        #pure_process_prayer_entry "$line" "$current_time" "$toggle" > "$fifo"
+        #echo "$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+        final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+        #echo "$line" > "$fifo"
+        #echo "$line"
+        #log INFO "final_output: $final_output"
+        log_info "final_output: $final_output"
+        #echo "$final_output"
+        pushStringToFile "${final_output}" "${PRAYER_REMINDER_FILE}"
+
+        # Alternate the toggle state (alternate between 0 and 1)
+        toggle=$((1 - $toggle))
+
+        sleep 1
+        #(( $countdown_time-- ))
+        countdown_time=$((countdown_time - 1))  # Decrement the countdown time
+    done
     #-----------------------------------------------------------------------
     # TODO: Use XMonadLog instead of StdinReader:
     # XMonadLog is a more efficient way to communicate with xmobar, especially for complex configurations.

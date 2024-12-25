@@ -26,18 +26,21 @@ Config {
     -- plugins
     --, commands = [  Run CommandReader "~/.xmonad/waktusolat-putrajaya-hbar-v3" "WaktuSolatPutrajaya",
     , commands = [
-
                     -- ------------------------------------------------------------------------------
                     -- TODO: Use XMonadLog instead of StdinReader:
                     -- XMonadLog is a more efficient way to communicate with xmobar, especially for complex configurations.
                     -- It avoids the potential issues associated with pipes.
                     -- ------------------------------------------------------------------------------
-                    --Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolat"
-                    Run CommandReader "~/.xmonad/bin/waktusolat-hbar SGR01" "WaktuSolat"
-                    --Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat"
+                    -- Run CommandReader "~/.xmonad/waktusolat-hbar SGR01" "WaktuSolat",
+                    -- Run CommandReader "~/.xmonad/bin/waktusolat-hbar SGR01" "WaktuSolat"
+                    -- Run CommandReader "echo Testing..." "WaktuSolat"
+                    -- Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat",
+                    -- Run CommandReader "cat /tmp/${USER}-prayer_times_file" "WaktuSolat"
+                    --Run CommandReader "cat /tmp/${USER}-prayer_reminder_file" "WaktuSolat"
+                    Run CommandReader "${HOME}/.xmonad/bin/loop-cat-prayer_reminder_file.sh" "WaktuSolat"
 
-                    --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe"
-                    --, Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "   +   ") "mpipe"
-                    --, Run XPropertyLog "_XMONAD_TRAYPAD" -- XXX: TEST
+                    -- Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe",
+                    -- Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "   +   ") "mpipe",
+                    -- Run XPropertyLog "_XMONAD_TRAYPAD" -- XXX: TEST
                  ]
 }
