@@ -1077,7 +1077,8 @@ main = do
         --
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
-        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
+        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
         --handleEventHook    = handleEventHook def <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> zoomEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> maximizeRestoreHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
