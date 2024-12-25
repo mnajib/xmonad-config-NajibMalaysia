@@ -18,7 +18,7 @@ import qualified Data.Map as M -- fromList
 
 import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
-import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
+--import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
 import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent two focused windows
 
 import XMonad.Hooks.DynamicLog
@@ -28,17 +28,16 @@ import XMonad.Hooks.ManageDocks
 -- import XMonad.Hooks.Rescreen
 import XMonad.Util.XUtils (fi)
 import Graphics.X11.Xlib
-import Graphics.X11.Xlib.Extras
+--import Graphics.X11.Xlib.Extras
 import XMonad.Util.Run (spawnPipe)
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO -- (Handle)
---import System.Info (getSystemID, nodeName)
-import System.Process (readProcess)
-import System.Posix.Unistd
-import XMonad.Util.ExtensibleState as XS
+--import System.Process (readProcess)
+import System.Posix.Unistd (getSystemID, nodeName)
+--import XMonad.Util.ExtensibleState as XS
 
 import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.SetWMName
@@ -71,7 +70,7 @@ import XMonad.Hooks.EwmhDesktops
 
 import Graphics.X11.ExtraTypes.XF86
 
-import Control.Concurrent
+import Control.Concurrent (threadDelay)
 --threadDelay 1000000 --sleep for a million microseconds, or one second
 
 import Control.Monad (forM_, when)
@@ -81,86 +80,86 @@ import Control.Monad (forM_, when)
 
 -- XXX:
 
--- Custom State for Maximize Tracking
-data MaximizeState = MaximizeState
-    { isMaximized :: Bool
-    , lastWindow :: Maybe Window
-    }
-    deriving (Typeable, Read, Show)
-
--- Initialize the state
-instance ExtensionClass MaximizeState where
-    initialValue = MaximizeState
-        { isMaximized = False
-        , lastWindow = Nothing
-        }
-
--- Color Definitions
-blueColor, redColor :: String
--- blueColor = "#0000FF"
-blueColor = "#FF00FF"
-redColor = "#FF0000"
-
--- Color Initialization for X11
-initColorPixel :: Display -> String -> IO Pixel
-initColorPixel d colorString = do
-    let colormap = defaultColormap d (defaultScreen d)
-    (color, _) <- allocNamedColor d colormap colorString
-    return $ color_pixel color
-
--- Window Border Color Setting
-setWindowBorderColor :: Window -> String -> X ()
-setWindowBorderColor win color = do
-    d <- asks display
-    pixel <- io $ initColorPixel d color
-    io $ setWindowBorder d win pixel
-    -- io $ setWindowBorderWidth d win 2 -- 1-pixels window border width?
-    io $ setWindowBorderWidth d win 1 -- 2-pixels window border width?
-
--- Toggle Maximize with Border Color
-toggleMaximizeWithBorder :: X ()
-toggleMaximizeWithBorder = do
-    -- Get current focused window
-    maybeWindow <- XMonad.gets (W.peek . windowset)
-
-    case maybeWindow of
-        Nothing -> return ()
-        Just win -> do
-            -- Retrieve current state
-            currentState <- XS.get
-
-            -- Determine new state and color
-            let newMaximizedState = not (isMaximized currentState)
-                newColor = if newMaximizedState then blueColor else redColor
-
-            -- Update window border color
-            -- setWindowBorderColor win newColor
-
-            -- Send maximize/restore message
-            withFocused (sendMessage . maximizeRestore)
-
-            -- -------------------------------------------
-
-            -- Retrieve current state
-            -- currentState2 <- XS.get
-
-            -- Determine new state and color
-            -- let newMaximizedState2 = isMaximized currentState2
-            --     newColor2 = if newMaximizedState2 then blueColor else redColor
-
-            -- Update window border color
-            setWindowBorderColor win newColor
-            -- setWindowBorderColor win newColor2
-
-            -- -------------------------------------------
-
-            -- Update state
-            XS.put $ MaximizeState
-                { isMaximized = newMaximizedState
-                -- { isMaximized = newMaximizedState2
-                , lastWindow = Just win
-                }
-
+---- Custom State for Maximize Tracking
+--data MaximizeState = MaximizeState
+--    { isMaximized :: Bool
+--    , lastWindow :: Maybe Window
+--    }
+--    deriving (Typeable, Read, Show)
+--
+---- Initialize the state
+--instance ExtensionClass MaximizeState where
+--    initialValue = MaximizeState
+--        { isMaximized = False
+--        , lastWindow = Nothing
+--        }
+--
+---- Color Definitions
+--blueColor, redColor :: String
+---- blueColor = "#0000FF"
+--blueColor = "#FF00FF"
+--redColor = "#FF0000"
+--
+---- Color Initialization for X11
+--initColorPixel :: Display -> String -> IO Pixel
+--initColorPixel d colorString = do
+--    let colormap = defaultColormap d (defaultScreen d)
+--    (color, _) <- allocNamedColor d colormap colorString
+--    return $ color_pixel color
+--
+---- Window Border Color Setting
+--setWindowBorderColor :: Window -> String -> X ()
+--setWindowBorderColor win color = do
+--    d <- asks display
+--    pixel <- io $ initColorPixel d color
+--    io $ setWindowBorder d win pixel
+--    -- io $ setWindowBorderWidth d win 2 -- 1-pixels window border width?
+--    io $ setWindowBorderWidth d win 1 -- 2-pixels window border width?
+--
+---- Toggle Maximize with Border Color
+--toggleMaximizeWithBorder :: X ()
+--toggleMaximizeWithBorder = do
+--    -- Get current focused window
+--    maybeWindow <- XMonad.gets (W.peek . windowset)
+--
+--    case maybeWindow of
+--        Nothing -> return ()
+--        Just win -> do
+--            -- Retrieve current state
+--            currentState <- XS.get
+--
+--            -- Determine new state and color
+--            let newMaximizedState = not (isMaximized currentState)
+--                newColor = if newMaximizedState then blueColor else redColor
+--
+--            -- Update window border color
+--            -- setWindowBorderColor win newColor
+--
+--            -- Send maximize/restore message
+--            withFocused (sendMessage . maximizeRestore)
+--
+--            -- -------------------------------------------
+--
+--            -- Retrieve current state
+--            -- currentState2 <- XS.get
+--
+--            -- Determine new state and color
+--            -- let newMaximizedState2 = isMaximized currentState2
+--            --     newColor2 = if newMaximizedState2 then blueColor else redColor
+--
+--            -- Update window border color
+--            setWindowBorderColor win newColor
+--            -- setWindowBorderColor win newColor2
+--
+--            -- -------------------------------------------
+--
+--            -- Update state
+--            XS.put $ MaximizeState
+--                { isMaximized = newMaximizedState
+--                -- { isMaximized = newMaximizedState2
+--                , lastWindow = Just win
+--                }
+--
 
 
 
@@ -311,7 +310,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- Toggle maximize focused window using "Super"+"\" key combo. -------------
     -- , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
     --, ((modm, xK_backslash), toggleMaximizeRestore)
-    , ((modm, xK_backslash), toggleMaximizeWithBorder) -- XXX:
+    --, ((modm, xK_backslash), toggleMaximizeWithBorder) -- XXX:
 
     -- close focused window ----------------------------------------------------
     , ((modm .|. shiftMask,                                 xK_c),              kill)
@@ -900,10 +899,10 @@ beepFor seconds = do
 -- myStartupHook = return ()
 myStartupHook = do
     -- Reset custom maximize state
-    XS.put $ MaximizeState
-      { isMaximized = False
-      , lastWindow = Nothing
-      }
+--    XS.put $ MaximizeState
+--      { isMaximized = False
+--      , lastWindow = Nothing
+--      }
 
     spawnOnce "~/.xmonad/bin/autostart.sh"
       -- >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
