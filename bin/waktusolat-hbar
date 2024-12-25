@@ -32,19 +32,18 @@ FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
 PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
 PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 # log
-LOG_FILE="/tmp/${USER}-wsp.log"        # for logging
-LOG_LEVEL="SILENT" # "SILENT" "NORMAL" "INFO" "DEBUG" # "silent", "info", "warning", or "debug"
+LOGFILE="/tmp/${USER}-wsp.log"        # for logging
+LOGLEVEL="SILENT" # "SILENT" "ERROR" "WARNING" "INFO" "DEBUG". "INFO" is the default.
 
 #---------------------------------------------------------------------
 
-LOGFILE="$LOG_FILE"        # for logging
-#
+#LOG_FILE="$LOGFILE"        # for logging
 set_log_file "$LOGFILE"
 #
 #set_log_level "silent"
 #set_log_level "info"
 #set_log_level "debug"
-set_log_level "$LOG_LEVEL"
+set_log_level "$LOGLEVEL"
 #
 log_debug "LOG_FILE: ${LOG_FILE}"
 log_debug "LOG_LEVEL: ${LOG_LEVEL}"
@@ -69,7 +68,7 @@ MMONTHFULLNAME=""
 #LOGMODE="NORMAL"
 #LOGMODE="INFO"
 #LOGMODE="DEBUG"
-LOGMODE="$LOG_LEVEL"
+#LOGMODE="$LOG_LEVEL"
 
 #
 # Usage:
@@ -114,9 +113,11 @@ start-socket() {
 
 sleepLengthInSeconds() {
     local s="$1" # string
-    log DEBUG "String: ${s}"
+    #log DEBUG "String: ${s}"
+    log_debug "String: ${s}"
     local size=${#s}
-    log DEBUG "String size: ${size}"
+    #log DEBUG "String size: ${size}"
+    log_debug "String size: ${size}"
 
     #i=$(( ($size / 5) * 60 ))
     i=$(( ($size / 10) * 60 ))
@@ -145,7 +146,8 @@ dreamInSleep() {
 pushStringToFile() {
     local STRING=$1
     local FILE=$2
-    log DEBUG "pushStringToFile: ${STRING}"
+    #log DEBUG "pushStringToFile: ${STRING}"
+    log_debug "pushStringToFile: ${STRING}"
     echo "$STRING" > "$FILE"
     #echo -en "${STRING}\n" > "$FILE"
 }
@@ -155,7 +157,8 @@ pushStringToFile() {
 pushStringToPipe() {
     local STRING=$1
     local PIPE=$2
-    log DEBUG "pushStringToPipe: ${STRING}"
+    #log DEBUG "pushStringToPipe: ${STRING}"
+    log_debug "pushStringToPipe: ${STRING}"
     echo "${STRING}" > $PIPE
     #echo -en "${STRING}\n" > $PIPE
 }
@@ -163,7 +166,8 @@ pushStringToPipe() {
 pushStringToSocket() {
     local STRING=$1
     local SOCKET=$2
-    log DEBUG "pushStringToSocket: ${STRING}"
+    #log DEBUG "pushStringToSocket: ${STRING}"
+    log_debug "pushStringToSocket: ${STRING}"
     #echo "Maghrib: 19:02, Isyak: 20:16, Subuh: 05:52" | socat -u - UNIX-CONNECT:"$SOCKET"
     echo "$1" | socat -u - UNIX-CONNECT:"$SOCKET"
 }
@@ -192,8 +196,10 @@ loopCommandUntilSeconds() {
 
 #----------------------------------------------------------------------
 
-log DEBUG "==============================="
-log DEBUG "Start waktusolat-putrajaya-hbar"
+#log DEBUG "==============================="
+#log DEBUG "Start waktusolat-putrajaya-hbar"
+log_debug "==============================="
+log_debug "Start waktusolat-putrajaya-hbar"
 
 timeInterval1=`echo "60 * 60 * 3" | bc`       # every 3 hours
 timeInterval2=`echo "60 * 1" | bc`            # every 1 minutes; used this if last fetch was failed
@@ -203,8 +209,10 @@ timeInterval=${timeInterval1}
 cleanup-socket "$SOCKET"
 
 while true; do
-    log DEBUG "-------------------------------"
-    log DEBUG "`date` : Start main loop"
+    #log DEBUG "-------------------------------"
+    #log DEBUG "`date` : Start main loop"
+    log_debug "-------------------------------"
+    log_debug "`date` : Start main loop"
 
     ## Note:
     ##waktu=`~/.xmonad/waktusolat-putrajaya-hbar`
@@ -219,21 +227,25 @@ while true; do
 
     extractData
     checkData
-    log DEBUG "ERROR --> ${ERROR}"
+    #log DEBUG "ERROR --> ${ERROR}"
+    log_debug "ERROR --> ${ERROR}"
 
     if $ERROR; then
         resetData
-        log DEBUG "Decrease fetch time interval"
+        #log DEBUG "Decrease fetch time interval"
+        log_debug "Decrease fetch time interval"
         timeInterval=${timeInterval2}
 
-        log DEBUG "Getting old backup data"
+        #log DEBUG "Getting old backup data"
+        log_debug "Getting old backup data"
         getOldGoodFetchData
         extractData
 
         #echo "Start setup blank data" >> $LOG
         #setBlankDataToArray
     else
-        log DEBUG "Do backup and reset fetch time interval"
+        #log DEBUG "Do backup and reset fetch time interval"
+        log_debug "Do backup and reset fetch time interval"
         doBackup
         timeInterval=${timeInterval1}
     fi
@@ -252,7 +264,7 @@ while true; do
     #log INFO "pushStringToFile ${PRAYER_TIMES_FILE}"
     #log INFO "$new_waktu_solat"
     log_debug "$new_waktu_solat"
-    log DEBUG "$new_waktu_solat"
+    #log DEBUG "$new_waktu_solat"
 
 
     #-----------------------------------------------------------------------
@@ -281,7 +293,7 @@ while true; do
     while (( $countdown_time > 0 )); do
         current_time=$(date +"%H:%M")
         #log_debug "inner loop: `date`"
-        #log_info "inner loop: `date`"
+        log_info "inner loop: `date`"
         #log DEBUG "inner loop: `date`"
         #log INFO "inner loop: `date`"
 
@@ -292,7 +304,7 @@ while true; do
         #echo "$line" > "$fifo"
         #echo "$line"
         #log INFO "final_output: $final_output"
-        log_info "final_output: $final_output"
+        #log_debug "final_output: $final_output"
         #echo "$final_output"
         pushStringToFile "${final_output}" "${PRAYER_REMINDER_FILE}"
 
@@ -309,7 +321,9 @@ while true; do
     # It avoids the potential issues associated with pipes.
 
 
-    log DEBUG "End main loop"
+    #log DEBUG "End main loop"
+    log_debug "End main loop"
 done
 
-log DEBUG "End waktusolat-putrajaya-hbar"
+#log DEBUG "End waktusolat-putrajaya-hbar"
+log_debug "End waktusolat-putrajaya-hbar"

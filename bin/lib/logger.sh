@@ -51,26 +51,28 @@ reset_log_file() {
 
 # Generic log function
 log() {
-    local level="$1"
+    local message_level="$1"
     local message="$2"
-    local level_value=0
+    local message_level_value=0
     local log_file="$3"
+    local mode_level_value=$LOG_LEVEL
 
-    case "$level" in
-        error) level_value=$LOG_LEVEL_ERROR ;;
-        warn)  level_value=$LOG_LEVEL_WARN ;;
-        info)  level_value=$LOG_LEVEL_INFO ;;
-        debug) level_value=$LOG_LEVEL_DEBUG ;;
+    case "$message_level" in
+        error|ERROR) message_level_value=$LOG_LEVEL_ERROR ;;
+        warn|warning|WARN|WARNING)  message_level_value=$LOG_LEVEL_WARN ;;
+        info|INFO)  message_level_value=$LOG_LEVEL_INFO ;;
+        debug|DEBUG) message_level_value=$LOG_LEVEL_DEBUG ;;
     esac
 
     # to log file
-    if (( LOG_LEVEL >= level_value )); then
+    # more higher value == more verbose logging
+    if (( mode_level_value >= message_level_value )); then
         #echo "[$level] $message" >&2
         #echo "[$level] $message" >> "$LOG_FILE"
         #
         #echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
-        #echo "`date "+%F %T"` ${level}: ${message}" >> $LOG_FILE
-        echo "`date "+%F %T"` ${level}: ${message}" >> "$log_file"
+        echo "`date "+%F %T"` ${message_level}: ${message}" >> $LOG_FILE
+        #echo "`date "+%F %T"` ${level}: ${message}" >> "$log_file"
     #else
     #    echo "[$level] $message" >> /dev/null #"$LOG_FILE"
     fi
@@ -81,10 +83,38 @@ log() {
     #fi
 }
 
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+#log () {
+#    local logmode=$1
+#    local logstring=$2
+#    #local logfile=$3
+#
+#    # Will use global var: LOG, LOGMODE
+#    if [ "$LOGMODE" = "DEBUG" ]; then
+#        # For debugging purpose, log all information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+#        # Normally, just log general information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "${logmode}" = "ERROR" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    fi
+#}
+
 # Convenience functions
-log_error() { log "error" "$1" "$LOG_FILE"; }
-log_warn() { log "warn" "$1" "$LOG_FILE"; }
-log_info() { log "info" "$1" "$LOG_FILE"; }
-log_debug() { log "debug" "$1" "$LOG_FILE"; }
+#log_error() { log "error" "$1" "$LOG_FILE"; }
+#log_warn() { log "warn" "$1" "$LOG_FILE"; }
+#log_info() { log "info" "$1" "$LOG_FILE"; }
+#log_debug() { log "debug" "$1" "$LOG_FILE"; }
+log_error() { log "ERROR" "$1" "$LOG_FILE"; }
+log_warn() { log "WARN" "$1" "$LOG_FILE"; }
+log_info() { log "INFO" "$1" "$LOG_FILE"; }
+log_debug() { log "DEBUG" "$1" "$LOG_FILE"; }
 
 #log_debug "Sourced logger.sh"

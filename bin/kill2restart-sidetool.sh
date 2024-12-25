@@ -27,6 +27,7 @@ pgrep -a zikir | grep 'xscreensaver' | awk '{print $1}' | tr '\n' ' ' | sed 's/$
 
 pgrep -a bash | grep 'waktusolat-hbar' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 pgrep -a bash | grep 'reminder.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
+pgrep -a bash | grep 'loop-cat-prayer_reminder_file.sh' | awk '{print $1}' | tr '\n' ' ' | sed 's/$/\n/' | xargs kill
 
 sleep 2
 #echo "--------------------"

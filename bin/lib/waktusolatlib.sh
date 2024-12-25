@@ -47,7 +47,7 @@ LOGMODE="NORMAL"
 # ------------------------------------------------------------------------------
 
 resetData() {
-    log DEBUG "Start resetData()"
+    log_debug "Start resetData()"
 
     ONELINE=""
     NAMASOLAT=()
@@ -59,7 +59,7 @@ resetData() {
     MDATE=""
     DAY=""
 
-    log DEBUG "End resetData()"
+    log_debug "End resetData()"
     }
 
 # Usage:
@@ -381,29 +381,29 @@ printEmptyWaktuSolat() {
 # Impure functions
 # ------------------------------------------------------------------------------
 
+##
+## Usage:
+##     log INFO "Length error."
+##     log_debug "Start fetchData()."
+##
+#log () {
+#    local logmode=$1
+#    local logstring=$2
+#    #local logfile=$3
 #
-# Usage:
-#     log INFO "Length error."
-#     log DEBUG "Start fetchData()."
-#
-log () {
-    local logmode=$1
-    local logstring=$2
-    #local logfile=$3
-
-    # Will use global var: LOG, LOGMODE
-    if [ "$LOGMODE" = "DEBUG" ]; then
-        # For debugging purpose, log all information
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
-        # Normally, just log general information
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
-        echo "${logmode}: ${logstring}" >> $LOG
-    elif [ "$logmode" = "ERROR" ]; then
-        echo "${logmode}: ${logstring}" >> $LOG
-    fi
-}
+#    # Will use global var: LOG, LOGMODE
+#    if [ "$LOGMODE" = "DEBUG" ]; then
+#        # For debugging purpose, log all information
+#        echo "${logmode}: ${logstring}" >> $LOG
+#    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+#        # Normally, just log general information
+#        echo "${logmode}: ${logstring}" >> $LOG
+#    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+#        echo "${logmode}: ${logstring}" >> $LOG
+#    elif [ "$logmode" = "ERROR" ]; then
+#        echo "${logmode}: ${logstring}" >> $LOG
+#    fi
+#}
 
 read_dom () {
     local IFS=\>
@@ -417,32 +417,32 @@ read_dom () {
 #
 
 fetchData (){
-    log DEBUG "Start fetchData()"
+    log_debug "Start fetchData()"
     curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=WLY01" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
-    log DEBUG "End fetchData()"
+    log_debug "End fetchData()"
 }
 
 function fetchDataZone () {
-    log DEBUG "Start fetchDataZone()"
+    log_debug "Start fetchDataZone()"
     #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
 
     # Ignore SSL/cert error ... ???
     curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
 
-    log DEBUG "End fetchDataZone()"
+    log_debug "End fetchDataZone()"
 }
 
 getOldGoodFetchData(){
-    log DEBUG "Start getOldGoodFetchData()"
-    log DEBUG "Get previous backup fetched source from file ${FILE3}"
+    log_debug "Start getOldGoodFetchData()"
+    log_debug "Get previous backup fetched source from file ${FILE3}"
     cat $FILE3 > $FILE1
-    log DEBUG "End getOldGoodFetchData()"
+    log_debug "End getOldGoodFetchData()"
     }
 
 simulateFailFetchData() {
-    log DEBUG "Start simulateFailFetchData()"
+    log_debug "Start simulateFailFetchData()"
     echo "" > $FILE1
-    log DEBUG "End simulateFailFetchData()"
+    log_debug "End simulateFailFetchData()"
     }
 
 simulateFetchData(){
@@ -471,7 +471,7 @@ EOL
 #}
 
 extractData() {
-    log DEBUG "Start extractData()"
+    log_debug "Start extractData()"
 
     BAKIFS="$IFS"
     IFS=","
@@ -541,12 +541,12 @@ extractData() {
     done < "$FILE1"
     IFS="$BAKIFS"
 
-    log DEBUG "End extractData()"
+    log_debug "End extractData()"
     }
 
 # XXX: may need revice
 setBlankDataToArray() {
-    log DEBUG "Start setBlankDataToArray"
+    log_debug "Start setBlankDataToArray"
     resetData
 
     ONELINE="Waktu Solat Putrajaya Hari Ini"
@@ -555,7 +555,7 @@ setBlankDataToArray() {
     NAMASOLAT=(Imsak Subuh Syuruk Zohor Asar Maghrib Isyak)
     #NAMASOLAT=(Imsk Subh Syur Zohr Asar Mghr Isyk)
     MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
-    log DEBUG "End setBlankDataToArray"
+    log_debug "End setBlankDataToArray"
 
     HDATE="0000-00-00"
     MDATE="0000-xxx-00"
@@ -567,38 +567,38 @@ setBlankDataToArray() {
 # NAMASOLAT[1]="Subuh"
 # MASASOLAT=("00:00" "00:00" "00:00" "00:00" "00:00" "00:00" "00:00")
 checkData() {
-    log DEBUG "Start checkData()"
+    log_debug "Start checkData()"
 
     arrayLength=0
     arrayLength=${#NAMASOLAT[@]}
     if (( $arrayLength == 7 )) ; then
-        log DEBUG "Array length as we needed : $arrayLength"
+        log_debug "Array length as we needed : $arrayLength"
         if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
         #if [ "${NAMASOLAT[0]}" != "Imsk" ] || [ "${NAMASOLAT[1]}" != "Subh" ] || [ "${NAMASOLAT[2]}" != "Syur" ] || [ "${NAMASOLAT[3]}" != "Zohr" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Mghr" ] || [ "${NAMASOLAT[6]}" != "Isyk" ]; then
-            log DEBUG "ERROR #001: Nama waktu solat tak sama"
+            log_debug "ERROR #001: Nama waktu solat tak sama"
             ERROR=true
         else
-            log DEBUG "No error detected."
+            log_debug "No error detected."
             # XXX:
             ERROR=false
         fi
     else
-        log DEBUG "ERROR #002: Array length NOT as we expacted : $arrayLength"
+        log_debug "ERROR #002: Array length NOT as we expacted : $arrayLength"
         ERROR=true
     fi
 
-    log DEBUG "End chechData()"
+    log_debug "End chechData()"
     }
 
 doBackup() {
-    log DEBUG "Start doBackup()"
-    log DEBUG "Do backup fetch source file to ${FILE3}"
+    log_debug "Start doBackup()"
+    log_debug "Do backup fetch source file to ${FILE3}"
     cat $FILE1 > $FILE3
-    log DEBUG "End doBackup()"
+    log_debug "End doBackup()"
     }
 
 printWaktuSolatForHtml() {
-    #log DEBUG "Start qqfy665..."
+    #log_debug "Start qqfy665..."
 
     local out=""
     local mDate=""
@@ -656,12 +656,12 @@ printWaktuSolatForHtml() {
     echo -en "${out}\n"
     #ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 # Berasaskan hari/tarihk hijrah, bertukar hari pada waktu maghrib
 printWaktuSolatForCliType1() {
-    #log DEBUG "Start qqfy665..."
+    #log_debug "Start qqfy665..."
 
     local out=""
     local mDate=""
@@ -750,12 +750,12 @@ printWaktuSolatForCliType1() {
     echo -en "${out}\n"
     #ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 # Berasaskan hari/tarikh masihi, bertukar hari pada 12 tengah malam.
 printWaktuSolatForCliType2() {
-    #log DEBUG "Start qqfy665..."
+    #log_debug "Start qqfy665..."
 
     local out=""
     local mDate=""
@@ -848,7 +848,7 @@ printWaktuSolatForCliType2() {
     echo -en "${out}\n"
     #ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 #startTxtSyle() {
@@ -861,7 +861,7 @@ printWaktuSolatForCliType2() {
 
 # Berasaskan hari/tarikh masihi, bertukar hari pada 12 tengah malam.
 printWaktuSolatForCliType3() {
-    log DEBUG "Start qqfy665gg..."
+    log_debug "Start qqfy665gg..."
 
     local out=""
     local mDate=""
@@ -901,10 +901,10 @@ printWaktuSolatForCliType3() {
     local nomborNextHari=`nomNextHari $nomborHari`
     local hariInBM=`namaHariBM $nomborHari`
     local nextHariInBM=`namaHariBM ${nomborNextHari}`
-    log DEBUG "nomborHari = ${nomborHari}"
-    log DEBUG "hariInBM = ${hariInBM}"
-    log DEBUG "nomborNextHari = ${nomborNextHari}"
-    log DEBUG "nextHariInBM = ${nextHariInBM}"
+    log_debug "nomborHari = ${nomborHari}"
+    log_debug "hariInBM = ${hariInBM}"
+    log_debug "nomborNextHari = ${nomborNextHari}"
+    log_debug "nextHariInBM = ${nextHariInBM}"
 
     #--------------------------------------------------------------------------
     out+="${cPre}${cPurple}${ZON}${cPost}"                 # Area/Zone
@@ -961,12 +961,12 @@ printWaktuSolatForCliType3() {
     echo -en "${out}\n"
     #ONELINE="${out}"
 
-    log DEBUG "End qqfy665gg..."
+    log_debug "End qqfy665gg..."
     }
 
 formatWaktuSolatForXmobar_NEW_DEV_2024-11-29() {
 #formatWaktuSolatForXmobar() {
-    log DEBUG "Start formatWaktuSolatForXmobar()"
+    log_debug "Start formatWaktuSolatForXmobar()"
 
     local out=""
     local mDate=""
@@ -1017,8 +1017,8 @@ formatWaktuSolatForXmobar_NEW_DEV_2024-11-29() {
     local nomborNextHari=`nomNextHari $nomborHari`
     local hariInBM=`namaHariBM $nomborHari`
     local nextHariInBM=`namaHariBM $nomborNextHari`
-    log DEBUG "nomborNexHari=${nomborNextHari}"
-    log DEBUG "nextHariInBM=${nextHariInBM}"
+    log_debug "nomborNexHari=${nomborNextHari}"
+    log_debug "nextHariInBM=${nextHariInBM}"
 
     #out+="Downloaded from www.e-solat.gov.my on"
     #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
@@ -1069,12 +1069,12 @@ formatWaktuSolatForXmobar_NEW_DEV_2024-11-29() {
     #echo -en "${out}\n"
     ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 formatWaktuSolatForXmobar() {
 #formatWaktuSolatForXmobar_with_HTML_color() {
-    log DEBUG "Start formatWaktuSolatForXmobar()"
+    log_debug "Start formatWaktuSolatForXmobar()"
 
     local out=""
     local mDate=""
@@ -1102,8 +1102,8 @@ formatWaktuSolatForXmobar() {
     local nomborNextHari=`nomNextHari $nomborHari`
     local hariInBM=`namaHariBM $nomborHari`
     local nextHariInBM=`namaHariBM $nomborNextHari`
-    log DEBUG "nomborNexHari=${nomborNextHari}"
-    log DEBUG "nextHariInBM=${nextHariInBM}"
+    log_debug "nomborNexHari=${nomborNextHari}"
+    log_debug "nextHariInBM=${nextHariInBM}"
 
     #out+="Downloaded from www.e-solat.gov.my on"
     #out+="Downloaded on"                                                        # Need shorten the overall text line, because Thinkpad X220 sceen not wide enough to display it
@@ -1164,12 +1164,12 @@ formatWaktuSolatForXmobar() {
     #echo -en "${out}\n"
     ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 
 formatWaktuSolatForXmobar2() {
-    log DEBUG "Start formatWaktuSolatForXmobar()"
+    log_debug "Start formatWaktuSolatForXmobar()"
 
     local out=""
     local mDate=""
@@ -1241,11 +1241,11 @@ formatWaktuSolatForXmobar2() {
     #echo -en "${out}\n"
     ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 formatWaktuSolatForXmobarOld() {
-    log DEBUG "Start formatWaktuSolatForXmobar()"
+    log_debug "Start formatWaktuSolatForXmobar()"
 
     local out=""
     local mDate=""
@@ -1278,7 +1278,7 @@ formatWaktuSolatForXmobarOld() {
     #echo -en "${out}\n"
     ONELINE="${out}"
 
-    log DEBUG "End formatWaktuSolatForXmobar()"
+    log_debug "End formatWaktuSolatForXmobar()"
     }
 
 printNewWaktuSolat() {

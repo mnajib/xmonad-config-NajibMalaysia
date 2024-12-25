@@ -314,7 +314,7 @@ pure_process_prayer_entry() {
     local final_result_line=$(echo "$result_line" | sed 's/<fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}>Ims<\/fc><fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}> [0-9]\{2\}:[0-9]\{2\} <\/fc> //')
     echo "$final_result_line"
     log_debug "\$final_result_line=$final_result_line"
-    log_info "$final_result_line"
+    log_debug "$final_result_line"
 }
 
 # Function: Read prayer times from file
