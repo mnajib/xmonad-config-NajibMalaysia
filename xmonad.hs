@@ -1,4 +1,4 @@
-{-# OPTIONS_GHC -Wno-deprecations #-}
+-- {-# OPTIONS_GHC -Wno-deprecations #-}
 
 -- Copyright (c) 2024 xmonad-config-NajibMalaysia
 -- Licensed under the BSD 3-Clause License. See LICENSE file for details.
@@ -1045,7 +1045,9 @@ main = do
     --xmonad $ Hacks.javaHack (def {
     --xmonad $ Hacks.javaHack  def {
     --xmonad $ ewmh defaultConfig {
-    xmonad . configureMRU $ ewmh defaultConfig {
+    -- xmonad . configureMRU $ ewmh defaultConfig {
+    -- xmonad . configureMRU $ ewmh def {
+    xmonad $ ewmh def {
 -- {-
         -- simple stuff
         terminal           = myTerminal,
@@ -1063,6 +1065,7 @@ main = do
         mouseBindings      = myMouseBindings,
 
         layoutHook         = myLayout,
+        --layoutHook         = avoidStruts $ (docks $ myLayout),
         --layoutHook = avoidStruts $ layoutHook defaultConfig,
         --layoutHook         = smartBorders $ myLayout,
         --layoutHook = smartBorders . avoidStruts $ layoutHook defaultConfig
@@ -1083,7 +1086,9 @@ main = do
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook,  -- <-- I am using this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
-        handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+        -- handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+        -- handleEventHook    = handleEventHook def <+> myEventHook <+> docks <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+        handleEventHook    = handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
         --handleEventHook    = handleEventHook def <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> zoomEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> maximizeRestoreHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
@@ -1091,7 +1096,9 @@ main = do
         -- startupHook        = myStartupHook,
         --startupHook        = setWMName "LG3D",
         --startupHook        = myStartupHook <+> setWMName "LG3D",
-        startupHook        = myStartupHook <+> ewmhDesktopsStartup <+> setWMName "LG3D",
+        -- startupHook        = myStartupHook <+> ewmhDesktopsStartup <+> setWMName "LG3D",
+        -- startupHook        = myStartupHook <+> ewmh <+> setWMName "LG3D",
+        startupHook        = myStartupHook <+> setWMName "LG3D",
 
         -- The "manage hook" is the thing that decides how windows are supposed to appear.
         -- The <+> thing combines options for the manage hook.
