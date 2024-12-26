@@ -29,12 +29,12 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.XUtils (fi)
 import Graphics.X11.Xlib
 --import Graphics.X11.Xlib.Extras
-import XMonad.Util.Run (spawnPipe)
+import XMonad.Util.Run (spawnPipe, hPutStrLn) -- hPutStrLn
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
 import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
-import System.IO -- (Handle)
+import System.IO (Handle) -- , hPutStrLn)
 --import System.Process (readProcess)
 import System.Posix.Unistd (getSystemID, nodeName)
 --import XMonad.Util.ExtensibleState as XS
@@ -177,11 +177,13 @@ import Control.Monad (forM_, when)
 -- createXmobarrc hostname -- produce appropriate .xmobarrc file for a given host
 -- -- other xmonad stuff follows here
 
---myTerminal      = "urxvt +sb -bg black -fg white -uc -bc" -- my current urxvt give better clear font with smaller font size, and also color theme
-myTerminal      = "terminology" -- my current urxvt give better clear font with smaller font size, and also color theme
+-- myTerminal      = "urxvt +sb -bg black -fg white -uc -bc" -- my current urxvt give better clear font with smaller font size, and also color theme
+-- myTerminal      = "terminology" -- my current urxvt give better clear font with smaller font size, and also color theme
 -- myTerminal   = "termonad"
--- myTerminal = "alacritty"
---myTerminal = "termite" -- Can zoom; but my current termite font and color not better than urxvt
+myTerminal = "alacritty"
+-- myTerminal = "termite" -- Can zoom; but my current termite font and color not better than urxvt
+
+myEditor = "emacsclient -c"
 
 -- myXmobarrc = "~/.xmonad/xmobarrc-main-oldCPU.hs"
 
@@ -267,6 +269,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- launch a terminal -------------------------------------------------------
     ((modm .|. shiftMask,                                   xK_Return),         spawn $ XMonad.terminal conf)
 
+    , ((modm, xK_c), spawn "emacsclient -c") -- super+c
+
     -- launch dmenu
     --, ((modm,                                             xK_p),              spawn "dmenu_run")
 
@@ -305,7 +309,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- XF86MonBrightnessDown
 
     -- clipcat-menu: Clipboard Manager -----------------------------------------
-    , ((modm,                                               xK_c),              spawn "clipcat-menu")
+    --, ((modm,                                               xK_c),              spawn "clipcat-menu")
 
     -- Toggle maximize focused window using "Super"+"\" key combo. -------------
     -- , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
@@ -495,6 +499,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
+    -- ++
+    -- [ ((modm, xK_c), spawn "emacsclient -c") ] -- super+c
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -760,22 +766,22 @@ myEventHook = mempty
 --   return (All True)
 -- zoomEventHook _ = return (All True)
 
--- Change border color based on window state
-changeBorderColor :: Window -> Pixel -> X ()
-changeBorderColor w color = withDisplay $ \dpy ->
-    io $ setWindowBorder dpy w color
-
--- Hook to change border color when a window is maximized or restored
-zoomEventHook :: Event -> X All
-zoomEventHook (ClientMessageEvent {ev_window = w}) = do
-    -- Check if the window is in the current window set
-    withWindowSet $ \ws -> do
-        let isMaximized = any (\win -> win == w) (W.allWindows ws)
-        if isMaximized
-            then changeBorderColor w (fromIntegral 0x0000FF) -- Blue when maximized
-            else changeBorderColor w (fromIntegral 0x000000) -- Default when not maximized
-    return (All True)
-zoomEventHook _ = return (All True)
+---- Change border color based on window state
+--changeBorderColor :: Window -> Pixel -> X ()
+--changeBorderColor w color = withDisplay $ \dpy ->
+--    io $ setWindowBorder dpy w color
+--
+---- Hook to change border color when a window is maximized or restored
+--zoomEventHook :: Event -> X All
+--zoomEventHook (ClientMessageEvent {ev_window = w}) = do
+--    -- Check if the window is in the current window set
+--    withWindowSet $ \ws -> do
+--        let isMaximized = any (\win -> win == w) (W.allWindows ws)
+--        if isMaximized
+--            then changeBorderColor w (fromIntegral 0x0000FF) -- Blue when maximized
+--            else changeBorderColor w (fromIntegral 0x000000) -- Default when not maximized
+--    return (All True)
+--zoomEventHook _ = return (All True)
 
 
 -- maximizeRestoreHook :: Event -> X All
