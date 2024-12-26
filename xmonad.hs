@@ -10,7 +10,7 @@
 -- ----------------------------------------------
 
 import XMonad
-import Data.Monoid -- mapped
+-- import Data.Monoid -- mapped
 import System.Exit
 
 import qualified XMonad.StackSet as W
@@ -26,13 +26,13 @@ import XMonad.Hooks.DynamicLog
 
 import XMonad.Hooks.ManageDocks
 -- import XMonad.Hooks.Rescreen
-import XMonad.Util.XUtils (fi)
-import Graphics.X11.Xlib
---import Graphics.X11.Xlib.Extras
+-- import XMonad.Util.XUtils (fi)
+-- import Graphics.X11.Xlib
+-- import Graphics.X11.Xlib.Extras
 import XMonad.Util.Run (spawnPipe, hPutStrLn) -- hPutStrLn
 import XMonad.Util.SpawnOnce
 import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
-import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
+-- import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO (Handle) -- , hPutStrLn)
 --import System.Process (readProcess)
@@ -57,15 +57,15 @@ import XMonad.Layout.LayoutCombinators hiding ( (|||) )
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Column
 import XMonad.Layout.Maximize -- (maximize) --, RestoreMaximized)
-import XMonad.Layout.Decoration (ModifiedLayout)
+-- import XMonad.Layout.Decoration (ModifiedLayout)
 
 --import XMonad.Layout.Groups
-import XMonad.Layout.Groups.Helpers
+-- import XMonad.Layout.Groups.Helpers
 import XMonad.Layout.Groups.Examples
 
 -- import qualified XMonad.Layout.IndependentScreens as LIS
 
-import XMonad.Config.Xfce
+-- import XMonad.Config.Xfce
 import XMonad.Hooks.EwmhDesktops
 
 import Graphics.X11.ExtraTypes.XF86
@@ -73,7 +73,7 @@ import Graphics.X11.ExtraTypes.XF86
 import Control.Concurrent (threadDelay)
 --threadDelay 1000000 --sleep for a million microseconds, or one second
 
-import Control.Monad (forM_, when)
+-- import Control.Monad (forM_, when)
 
 
 -- ----------------------------------------------------------------------------
