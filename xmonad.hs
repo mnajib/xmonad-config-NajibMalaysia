@@ -19,7 +19,7 @@ import qualified Data.Map as M -- fromList
 import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
 --import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
-import XMonad.Actions.MostRecentlyUsed  -- to toggle focus between last/recent two focused windows
+--import XMonad.Actions.MostRecentlyUsed (mostRecentlyUsed) -- to toggle focus between last/recent two focused windows
 
 import XMonad.Hooks.DynamicLog
 -- import XMonad.Hooks.StatusBar.PP
@@ -353,7 +353,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -- Status: OK, but between next and current window
     --, ((modm .|. mod1Mask,                                  xK_Tab),            cycleAction "toggleTwoRecentWindows" [windows W.focusDown, windows W.focusUp])
     -- Status: Working, should toggle between two last focus windows. But need to relase buttons after each time apply
-    , ((modm .|. mod1Mask,                                  xK_Tab),            mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
+    --, ((modm .|. mod1Mask,                                  xK_Tab),            mostRecentlyUsed [xK_Alt_L, xK_Alt_R] xK_Tab)
 
 
     -------------------------------------------------------
