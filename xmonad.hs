@@ -312,7 +312,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     --, ((modm,                                               xK_c),              spawn "clipcat-menu")
 
     -- Toggle maximize focused window using "Super"+"\" key combo. -------------
-    -- , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
+    , ((modm, xK_backslash), withFocused (sendMessage . maximizeRestore))
     --, ((modm, xK_backslash), toggleMaximizeRestore)
     --, ((modm, xK_backslash), toggleMaximizeWithBorder) -- XXX:
 
@@ -877,24 +877,24 @@ myXmobarPP xmprocs = xmobarPP
 ------------------------------------------------------------------------
 -- Startup hook
 
--- import Control.Concurrent (threadDelay)
--- import System.Console.ANSI (setSGR, SGR(..))
--- Function to sound a continuous beep for a specified duration in seconds
-beepFor :: Int -> IO ()
-beepFor seconds = do
-    let endTime = seconds * 1000000 -- Convert seconds to microseconds
-    let beepDuration = 100000        -- Duration of each beep in microseconds
-    let totalBeepTime = 3000000      -- Total time for beeping in microseconds
-
-    -- Loop to produce beeps
-    let loop timeLeft
-            | timeLeft > 0 = do
-                putStr "\a"          -- Output the beep character
-                threadDelay beepDuration -- Wait for the beep duration
-                loop (timeLeft - beepDuration)
-            | otherwise = return ()
-
-    loop totalBeepTime
+---- import Control.Concurrent (threadDelay)
+---- import System.Console.ANSI (setSGR, SGR(..))
+---- Function to sound a continuous beep for a specified duration in seconds
+--beepFor :: Int -> IO ()
+--beepFor seconds = do
+--    let endTime = seconds * 1000000 -- Convert seconds to microseconds
+--    let beepDuration = 100000        -- Duration of each beep in microseconds
+--    let totalBeepTime = 3000000      -- Total time for beeping in microseconds
+--
+--    -- Loop to produce beeps
+--    let loop timeLeft
+--            | timeLeft > 0 = do
+--                putStr "\a"          -- Output the beep character
+--                threadDelay beepDuration -- Wait for the beep duration
+--                loop (timeLeft - beepDuration)
+--            | otherwise = return ()
+--
+--    loop totalBeepTime
 
 
 -- Perform an arbitrary action each time xmonad starts or is restarted
@@ -926,77 +926,77 @@ myStartupHook = do
 -- Now run xmonad with all the defaults we set up.
 
 -- Helper function to remove trailing newlines
-trim :: String -> String
-trim = reverse . dropWhile (`elem` "\n\r") . reverse
+-- trim :: String -> String
+-- trim = reverse . dropWhile (`elem` "\n\r") . reverse
 
 -- Ref: https://github.com/prikhi/xmobar/blob/master/src/Xmobar/Config/Types.hs
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
-fakeHandleDelay :: Int -> IO Handle
-fakeHandleDelay delay = do
-  threadDelay delay
-  return undefined
+-- fakeHandleDelay :: Int -> IO Handle
+-- fakeHandleDelay delay = do
+--   threadDelay delay
+--   return undefined
 
 -- Start xmobar instances dynamically based on hostname
 -- NOTE:
 --   If problem with which screen, check nvidia setting, Xinerama, PRIME, ...
-startXmobars :: String -> IO [Handle]
-startXmobars hostname = case hostname of
-  "khadijah" -> sequence
-    [
-    --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
-    --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
-    --, fakeHandleDelay 1000000  -- 1 second
-    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
-    --, fakeHandleDelay 1000000  -- 1 second
-    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
-    --, spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
-    --, fakeHandleDelay 1000000  -- 1 second
-    --, spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
-    ]
-
-  --"asmak" -> sequence
-  --  [
-  --  --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
-  --  --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
-  --    spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
-  --  , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-  --  ]
-
-  --"host2" -> sequence
-  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host2.hs" -- Needs xmproc
-  --  , spawn "xmobar ~/.xmonad/xmobarrc-top-host2.hs" >> return undefined -- No xmproc
-  --  ]
-
-  --"host3" -> sequence
-  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host3.hs" -- Needs xmproc
-  --  ]
-
-  _ -> sequence
-    [
-    --spawnPipe "xmobar ~/.xmonad/xmobarrc.hs" -- Needs xmproc
-    --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
-      --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
-      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
-    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
-    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
-    ]
-
-startXmobars2 :: String -> IO [Handle]
-startXmobars2 hostname = case hostname of
-    "khadijah" -> do
-        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
-        spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
-        return [xmproc]
-
-    _ -> do
-        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
-        spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
-        return [xmproc]
+--startXmobars :: String -> IO [Handle]
+--startXmobars hostname = case hostname of
+--  "khadijah" -> sequence
+--    [
+--    --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
+--    --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
+--      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
+--    --, fakeHandleDelay 1000000  -- 1 second
+--    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+--    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+--    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+--    --, fakeHandleDelay 1000000  -- 1 second
+--    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+--    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
+--    --, spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+--    --, fakeHandleDelay 1000000  -- 1 second
+--    --, spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+--    ]
+--
+--  --"asmak" -> sequence
+--  --  [
+--  --  --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
+--  --  --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
+--  --    spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+--  --  , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+--  --  ]
+--
+--  --"host2" -> sequence
+--  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host2.hs" -- Needs xmproc
+--  --  , spawn "xmobar ~/.xmonad/xmobarrc-top-host2.hs" >> return undefined -- No xmproc
+--  --  ]
+--
+--  --"host3" -> sequence
+--  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host3.hs" -- Needs xmproc
+--  --  ]
+--
+--  _ -> sequence
+--    [
+--    --spawnPipe "xmobar ~/.xmonad/xmobarrc.hs" -- Needs xmproc
+--    --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
+--      --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
+--      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+--    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
+--    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+--    ]
+--
+--startXmobars2 :: String -> IO [Handle]
+--startXmobars2 hostname = case hostname of
+--    "khadijah" -> do
+--        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
+--        spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+--        return [xmproc]
+--
+--    _ -> do
+--        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+--        spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+--        return [xmproc]
 
 startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
