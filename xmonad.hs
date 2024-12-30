@@ -1001,16 +1001,20 @@ myStartupHook = do
 startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
     "khadijah" -> do
-        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
-        xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
-        return [xmprocBottom, xmprocTop]
+        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
+        --xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        -- return [xmprocBottom, xmprocTop]
+        return [xmprocBottom]
 
     _ -> do
-        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
+        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs -d" -- Needs xmproc
         -- threadDelay 5000000 -- in miliseconds;
-        xmprocTop <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
+        -- xmprocTop <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
         -- threadDelay 5000000 -- in miliseconds;
-        return [xmprocBottom, xmprocTop]
+        -- return [xmprocBottom, xmprocTop]
+        return [xmprocBottom]
 
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
@@ -1047,7 +1051,8 @@ main = do
     --xmonad $ ewmh defaultConfig {
     -- xmonad . configureMRU $ ewmh defaultConfig {
     -- xmonad . configureMRU $ ewmh def {
-    xmonad $ ewmh def {
+    -- xmonad $ ewmh def {
+    xmonad $ ewmh . docks $ def {
 -- {-
         -- simple stuff
         terminal           = myTerminal,
