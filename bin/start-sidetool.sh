@@ -95,8 +95,8 @@ startTrayer(){
   #if [ ! trayerIsAlive ]; then
   #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
   #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
-  #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
-  trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber -l &
+  trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
+  #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber -l &
   #fi
 }
 
@@ -138,7 +138,8 @@ case $HOSTNAME in
   khadijah)
     echo "khadijah"
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
-    startTrayer 0
+    #startTrayer 0
+    startTrayer 2
     #$HOME/bin/kill-program barrier
     #sleep 2
     #$HOME/bin/barrier-launcher.sh start client --client khadijah --server zahrah &
