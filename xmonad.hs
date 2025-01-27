@@ -178,9 +178,9 @@ import Control.Concurrent (threadDelay)
 -- -- other xmonad stuff follows here
 
 -- myTerminal      = "urxvt +sb -bg black -fg white -uc -bc" -- my current urxvt give better clear font with smaller font size, and also color theme
--- myTerminal      = "terminology" -- my current urxvt give better clear font with smaller font size, and also color theme
+myTerminal      = "terminology" -- my current urxvt give better clear font with smaller font size, and also color theme
 -- myTerminal   = "termonad"
-myTerminal = "alacritty"
+-- myTerminal = "alacritty"
 -- myTerminal = "termite" -- Can zoom; but my current termite font and color not better than urxvt
 
 myEditor = "emacsclient -c"
