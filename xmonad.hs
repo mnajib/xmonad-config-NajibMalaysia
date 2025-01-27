@@ -1007,6 +1007,8 @@ startXmobars3 hostname = case hostname of
         --xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
         -- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
         spawn "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        -- TODO: both xmobar position at bottom screen-1 and screen-2
+        --
         -- return [xmprocBottom, xmprocTop]
         return [xmprocBottom]
 
