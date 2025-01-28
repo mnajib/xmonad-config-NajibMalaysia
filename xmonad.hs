@@ -1002,12 +1002,15 @@ myStartupHook = do
 startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
     "khadijah" -> do
-        -- xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
-        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
-        --xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
-        -- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
-        spawn "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
-        -- TODO: both xmobar position at bottom screen-1 and screen-2
+        -- -- xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
+        -- xmprocBottom <- spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
+        -- --xmprocTop <- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        -- -- spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        -- spawn "xmobar --screen=1 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
+        -- -- TODO: both xmobar position at bottom screen-1 and screen-2
+        --
+        xmprocBottom <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs -d" -- Needs xmproc
+        spawn "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs -d" -- Do not needs xmproc
         --
         -- return [xmprocBottom, xmprocTop]
         return [xmprocBottom]

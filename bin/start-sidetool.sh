@@ -139,7 +139,8 @@ case $HOSTNAME in
     echo "khadijah"
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
     #startTrayer 0
-    startTrayer 2
+    startTrayer 1
+    #startTrayer 2
     #$HOME/bin/kill-program barrier
     #sleep 2
     #$HOME/bin/barrier-launcher.sh start client --client khadijah --server zahrah &
