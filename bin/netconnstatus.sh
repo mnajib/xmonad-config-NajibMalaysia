@@ -36,7 +36,7 @@ BgColor1="#58C5F1"
 FgColor2="#646464"
 BgColor2="#ff0000"
 
-timeInterval=15 #3 #2 #5 #10 #15 60 # In seconds? (for 'sleep')
+timeInterval=3 #15 #3 #2 #5 #10 #15 60 # In seconds? (for 'sleep')
 
 #------------------------------------------------------------------------------
 #:'

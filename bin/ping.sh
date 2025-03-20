@@ -10,15 +10,16 @@ ping_interface() {
     PACKETS_COUNT=3 #10
     PACKETS_LOST=0
 
-    PACKETS_LOST=$(ping -q -c $PACKETS_COUNT $2 2> /dev/null | grep '% packet loss' | sed 's/, /\n/g' | grep 'loss' | sed 's/\%.*$//g')
+    #PACKETS_LOST=$(ping -q -c $PACKETS_COUNT $2 2> /dev/null | grep '% packet loss' | sed 's/, /\n/g' | grep 'loss' | sed 's/\%.*$//g')
+    PACKETS_LOST=$(ping -q -c 1 -W 2 $2 2> /dev/null | grep '% packet loss' | sed 's/, /\n/g' | grep 'loss' | sed 's/\%.*$//g')
 
     if [ "$PACKETS_LOST" == "" ]; then
-	#echo "FAILED. Return 1."
+        #echo "FAILED. Return 1."
         return 1
     else
         if (( ${PACKETS_LOST} > ${PACKETS_LOST_TRESHOLD} )); then
-           #echo "Network Connection is FAILED with ${PACKETS_LOST} packets lost. Return 2."
-           #echo 1
+            #echo "Network Connection is FAILED with ${PACKETS_LOST} packets lost. Return 2."
+            #echo 1
             return 2
         else
             #echo "Network is fine. Return 0."
