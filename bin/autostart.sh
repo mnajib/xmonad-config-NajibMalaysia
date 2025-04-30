@@ -83,6 +83,14 @@ case $HOSTNAME in
 
     setxkbmap dvorak
     ;;
+  nyxora)
+    echo "Running some customization for ${HOSTNAME}"
+
+    ${HOME}/.xmonad/bin/screenlayout-${HOSTNAME}.sh
+    sleep 1
+
+    setxkbmap dvorak
+    ;;
   *)
     echo "Else .."
     ;;
