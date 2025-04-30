@@ -536,8 +536,8 @@ tabConfig = def {
     --fontName = "xft:monospace:pixelsize=10:style=bold:hinting=true",
     --fontName = "xft:monospace:pixelsize=10:style=bold",
     --fontName = "xft:monospace:size=10:style=bold", -- best 2024-11-30 20:24
-    fontName = "xft:monospace:size=9:style=bold",
-    --fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
+    --fontName = "xft:monospace:size=9:style=bold",
+    fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
     --fontName = "xft:Source Code Pro:pixelsize=12:antialias=false:hinting=true",
 
     --fontName = "xft:terminus:pixelsize=10:antialias=false:hinting=true",
