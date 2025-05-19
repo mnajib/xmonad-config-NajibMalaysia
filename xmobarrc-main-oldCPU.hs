@@ -30,7 +30,8 @@ Config {
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio%%memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %diskio% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %dynnetwork% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
-    , template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% " -- 2024-12-05 backup before test MultiCoreTemp
+    --, template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% " -- 2024-12-05 backup before test MultiCoreTemp
+    , template = " %StdinReader% }{ %NetConnStatus% %memory% %multicpu% %coretemp% %default:Master%%battery% %movie_mode% %keylock% %kbd% %date% " -- 2024-12-05 backup before test MultiCoreTemp
     --, template = " %StdinReader% }{ %NetConnStatus% %multicpu%,%multicoretemp% %memory% %default:Master%%battery% %keylock% %kbd% %date% "
     --, template = " %StdinReader% }{ %NetConnStatus% %multicpu% %memory% %default:Master%%battery% %keylock% %kbd% %date% " -- error on zahrah; ok on khadijah, taufiq
     --, template = " %StdinReader% }{ %NetConnStatus% %memory% %coretemp% %default:Master%%battery% %keylock% %kbd% %date% "
@@ -186,5 +187,7 @@ Config {
         , Run CommandReader "~/.xmonad/bin/netconnstatus.sh" "NetConnStatus"
 
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
+
+        , Run CommandReader "~/.xmonad/bin/get-movie-mode-status.sh" "movie_mode"
     ]
 }
