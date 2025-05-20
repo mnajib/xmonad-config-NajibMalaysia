@@ -291,6 +291,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_F6),             spawn $ "setxkbmap -layout msa -variant najib")
     --, ((modm,                                             xK_F7 ),            spawn $ "setxkbmap -layout us,us,msa -variant dvorak,,najib -option \"grp:shift_caps_toggle,grp:alt_shift_toggle\"")
 
+    -- -------------------------------------------------------------------------
+    , ((modm,                                               xK_F9),             spawn $ "~/.xmonad/bin/toggle-screen-sleep-movie-mode-v2.sh")
+
     -- audio-out (speaker) Volume control --------------------------------------
     , ((modm,                                               xK_F10),            lowerVolume 1 >> return () )
     , ((modm,                                               xK_F11),            raiseVolume 1 >> return () )

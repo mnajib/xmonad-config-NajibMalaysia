@@ -4,11 +4,14 @@ status_file="/tmp/movie-mode-status"
 
 # UP
 FgColor1="#000000"  #"#181715"
+#FgColor1="#ff0000" #"#181715"
 BgColor1="#ff0000" #"#58C5F1"
 # DOWN
 FgColor2="#646464"
-#BgColor2="#ff0000"
+BgColor2="#ff0000"
+
 onColor="${FgColor1},${BgColor1}"
+#onColor="${FgColor1}"
 #offColor="${FgColor2},${BgColor2}"
 offColor="${FgColor2}"
 
@@ -27,4 +30,4 @@ else
 fi
 
 # Notify XMobar to refresh (if needed)
-pkill -SIGUSR1 xmobar
+#pkill -SIGUSR1 xmobar
