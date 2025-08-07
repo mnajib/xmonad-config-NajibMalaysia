@@ -46,22 +46,31 @@ import XMonad.Layout.Fullscreen -- (fullscreenFull)
 import XMonad.Layout.NoBorders
 -- import XMonad.Layout.Spiral
 import XMonad.Layout.Grid
-import XMonad.Layout.Tabbed
 -- import XMonad.Layout.ThreeColumns
-import XMonad.Layout.TwoPane
+import XMonad.Layout.TwoPane --(TwoPane)
 import XMonad.Layout.Combo -- combineTwo
 import XMonad.Layout.WindowNavigation
-import XMonad.Layout.Renamed
+import XMonad.Layout.Renamed --(renamed )
 import XMonad.Layout.LayoutCombinators hiding ( (|||) )
---import XMonad.Layout.SubLayouts
+import XMonad.Layout.SubLayouts
 import XMonad.Layout.ToggleLayouts
 import XMonad.Layout.Column
-import XMonad.Layout.Maximize -- (maximize) --, RestoreMaximized)
+import XMonad.Layout.Maximize (maximizeWithPadding, maximizeRestore) -- (maximize) --, RestoreMaximized)
 -- import XMonad.Layout.Decoration (ModifiedLayout)
 
 --import XMonad.Layout.Groups
 -- import XMonad.Layout.Groups.Helpers
 import XMonad.Layout.Groups.Examples
+
+import XMonad.Layout.Spacing
+import XMonad.Layout.Simplest
+import XMonad.Layout.ResizableTile
+
+import XMonad.Layout.Accordion
+import XMonad.Layout.Tabbed -- (tabbed, shrinkText, Theme, def, fontName)
+--import XMonad.Layout.AvoidStruts (avoidStruts)
+-- import XMonad.Layout.LayoutCombinators (CombineTwo)
+import XMonad.Layout.LayoutCombinators hiding ((|||)) -- Import all combinators, but hide ||| to avoid conflict with XMonad.Layout's |||
 
 -- import qualified XMonad.Layout.IndependentScreens as LIS
 
@@ -362,17 +371,30 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     -------------------------------------------------------
     -- Window swap
     -------------------------------------------------------
-    -- Swap the focused window and the master window
+    -- Swap position between the focused window and the master window
     --, ((modm,                                             xK_Return),         windows W.swapMaster)
     , ((modm .|. shiftMask,                                 xK_m),              windows W.swapMaster)
 
-    -- Swap the focused window with the next window
+    -- Swap position between the focused window with the next window
     --, ((modm .|. shiftMask,                                 xK_j),              windows W.swapDown)
     , ((modm .|. shiftMask,                                 xK_Page_Down),      windows W.swapDown)
 
-    -- Swap the focused window with the previous window
+    -- Swap position between the focused window with the previous window
     --, ((modm .|. shiftMask,                                 xK_k),              windows W.swapUp)
     , ((modm .|. shiftMask,                                 xK_Page_Up),        windows W.swapUp)
+
+
+    ------------------------------------------------------------------------
+    -- Merge/Unmerge pane
+    ------------------------------------------------------------------------
+    -- Merge focused window into neighbor (tab together)
+    , ((modm .|. controlMask, xK_m),          withFocused (sendMessage . MergeAll))
+
+    -- Unmerge focused tab into new pane
+    , ((modm .|. controlMask, xK_u),          withFocused (sendMessage . UnMerge))
+
+    -- Merge with focused window (can extend to select another window)
+    --, ((modm .|. shiftMask, xK_m),            withFocused (sendMessage . MergeWith))
 
 
     ------------------------------------------------------------------------
@@ -387,8 +409,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     ------------------------------------------------------------------------
     -- Shrink the master area
     , ((modm,                                               xK_h),              sendMessage Shrink)
+    --, ((modm,                                             xK_h),              shrinkMasterGroups)
+    , ((modm .|. shiftMask,                                 xK_h),              shrinkMasterGroups)
     -- Expand the master area
     , ((modm,                                               xK_l),              sendMessage Expand)
+    --, ((modm,                                             xK_l),              expandMasterGroups)
+    , ((modm .|. shiftMask,                                 xK_l),              expandMasterGroups)
 
     -- Increment the number of windows in the master area
     , ((modm,                                               xK_comma),          sendMessage (IncMasterN 1))
@@ -436,6 +462,15 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     --, ((modm .|. controlMask .|. shiftMask .|. mod1Mask,  xK_k),              sendMessage $ moveToNewGroupUp)
     --, ((modm .|. controlMask .|. shiftMask .|. mod1Mask,  xK_j),              sendMessage $ moveToNewGroupDown)
     --, ((modm .|. controlMask .|. shiftMask,               xK_K),              moveToNewGroupUp)
+
+
+    --------------------------------------------------------
+    -- Merges focused window with a window/pane in that direction. You don’t need to specify Window manually
+    --------------------------------------------------------
+    , ((modm .|. controlMask .|. shiftMask,               xK_Up),             sendMessage $ pullGroup U)
+    , ((modm .|. controlMask .|. shiftMask,               xK_Down),           sendMessage $ pullGroup D)
+    , ((modm .|. controlMask .|. shiftMask,               xK_Right),          sendMessage $ pullGroup R)
+    , ((modm .|. controlMask .|. shiftMask,               xK_Left),           sendMessage $ pullGroup L)
 
 
     --------------------------------------------------------
@@ -533,6 +568,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $ [
 -- Colors for text and backgrounds of each tab when in "Tabbed" layout.
 -- NOTE: https://sourcefoundry.org/hack/playground.html
 -- tabConfig = defaultTheme {
+tabConfig :: Theme
 tabConfig = def {
     --fontName = "xft:monospace:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:monospace:pixelsize=10:style=bold:antialias=false:hinting=true",
@@ -542,6 +578,7 @@ tabConfig = def {
     --fontName = "xft:monospace:size=9:style=bold",
     fontName = "xft:Terminus (TTF):pixelsize=12:antialias=false:hinting=true", -- GOOD!
     --fontName = "xft:Source Code Pro:pixelsize=12:antialias=false:hinting=true",
+    -- fontName            = "xft:Fira Code:size=9:antialias=true:hinting=true",
 
     --fontName = "xft:terminus:pixelsize=10:antialias=false:hinting=true",
     --fontName = "xft:terminus:size=8:antialias=false:hinting=true",
@@ -555,18 +592,31 @@ tabConfig = def {
     --fontName = "xft:Fira Mono for Powerline:style=Bold:size=9", -- working good, but the font problem when zoom
     --fontName = "xft:Fira Mono for Powerline:style=Bold:size=8",
     --fontName = "xft:Fira Mono for Powerline:style=Regular:size=9",
-    activeBorderColor = "#FF0000",-- "#7C7C7C",
-    activeTextColor = "#00FF00",--"#CEFFAC",
-    activeColor = "#000000",
+    activeColor =   "#000000",
+    inactiveColor = "#000000",
+    activeBorderColor =   "#FF0000",-- "#7C7C7C",
     inactiveBorderColor = "#7C7C7C",--"#222222",
-    inactiveTextColor = "#EEEEEE",
-    inactiveColor = "#000000"--,
+    activeTextColor =   "#00FF00",--"#CEFFAC",
+    inactiveTextColor = "#EEEEEE"--,
     --inactiveBorderWidth = 0
     }
 
-myTiledTabsConfig = def {
-    tabsTheme = tabConfig
-    }
+myTabTheme = tabConfig
+
+myTiledTabsConfig = def
+  { vNMaster   = 1           -- Number of windows in the vertical master pane
+  , vRatio     = 1/2         -- Initial ratio for vertical master pane (e.g., top half)
+  , vIncrement = 3/100       -- Increment for vertical master pane resizing
+  , hNMaster   = 1           -- Number of windows in the horizontal master pane (within slaves)
+  , hRatio     = 1/2         -- Initial ratio for horizontal master pane
+  , hIncrement = 3/100       -- Increment for horizontal master pane resizing
+  , tabsShrinker = shrinkText
+  , tabsTheme = tabConfig
+  }
+
+-- Define your maximize padding
+-- myMaxWithPad :: Rational
+-- myMaxWithPad = 0.05 -- Or whatever value you prefer
 
 -- You can specify and transform your layouts by modifying these values.
 -- If you change layout bindings be sure to use 'mod-shift-space' after
@@ -576,14 +626,16 @@ myTiledTabsConfig = def {
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 myLayout =
-    renamed [Replace "Tab"] ( avoidStruts (
+    renamed [Replace "TabOn1"] ( avoidStruts (
                               windowNavigation (
                                 tabbed shrinkText tabConfig
                               )
                             ))
+
     |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
-    renamed [Replace "Tab2VSplit"] ( avoidStruts (
+    --renamed [Replace "Tab2VSplit"] ( avoidStruts (
+    renamed [Replace "TabOn2Tall"] ( avoidStruts (
            maximizeWithPadding myMaxWithPad (
            -- windowNavigation (
              -- maximizeWithPadding myMaxWithPad (
@@ -592,12 +644,15 @@ myLayout =
              )
            )
          ))
+
     |||
-    renamed [Replace "Tab2HSplit"] ( avoidStruts (
+    --renamed [Replace "Tab2HSplit"] ( avoidStruts (
+    renamed [Replace "TabOn2Wide"] ( avoidStruts (
             maximizeWithPadding myMaxWithPad ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             ))
+
     |||
-    renamed [Replace "TabOn3"] (
+    renamed [Replace "TabOn3Tall"] (
       avoidStruts (
         maximizeWithPadding myMaxWithPad (
           windowNavigation (
@@ -610,8 +665,41 @@ myLayout =
         )
       )
     )
+
     |||
-    --{-
+    renamed [Replace "TabOn3Wide"] (
+      avoidStruts . spacing 0 $ (
+      -- avoidStruts . spacing 1 $ (
+        maximizeWithPadding myMaxWithPad (
+          windowNavigation (
+            (tabbed shrinkText tabConfig)
+            */*
+            -- windowNavigation (
+              (tabbed shrinkText tabConfig) *|* (tabbed shrinkText tabConfig)
+            -- )
+          )
+        )
+      )
+    )
+
+    {--
+    |||
+    renamed [Replace "TabOn3Wide"] (avoidStruts $ maximizeWithPadding myMaxWithPad $
+      subLayout [] (tabbed shrinkText tabConfig) $
+      windowNavigation (
+        (tabbed shrinkText tabConfig)
+        *|*
+        subLayout [] (tabbed shrinkText tabConfig) (
+          windowNavigation (
+            (tabbed shrinkText tabConfig)
+            ===
+            (tabbed shrinkText tabConfig)
+          )
+        )
+      )
+    --}
+
+    |||
     renamed [Replace "TabOn4"] (
       avoidStruts (
         maximizeWithPadding myMaxWithPad (
@@ -627,9 +715,9 @@ myLayout =
         )
       )
     )
+
+    {--
     |||
-    ---}
-    {-
     renamed [Replace "TabInTallMstr"] (
       avoidStruts (
         maximizeWithPadding myMaxWithPad (
@@ -637,9 +725,9 @@ myLayout =
         )
       )
     )
+    --}
+
     |||
-    -}
-    --{-
     renamed [Replace "TiledTabGroups"] (
       avoidStruts (
         maximizeWithPadding myMaxWithPad (
@@ -651,28 +739,53 @@ myLayout =
       )
     )
     |||
-    ---}
+
     renamed [Replace "Columns"] ( avoidStruts(
             maximizeWithPadding myMaxWithPad (Mirror(Column 1) )
-            )) |||
+            ))
+
+    |||
     renamed [Replace "Rows"] (avoidStruts(
             maximizeWithPadding myMaxWithPad (Column 1)
-            )) |||
-    renamed [Replace "TallMaster"] ( avoidStruts (
+            ))
+
+    |||
+    -- renamed [Replace "TallMaster"] ( avoidStruts (
+    renamed [Replace "TabbedTall"] (
+      avoidStruts $
+      windowNavigation $
+      maximizeWithPadding myMaxWithPad $
+      addTabs shrinkText myTabTheme $
+      subLayout [0,1] Simplest $
+      ResizableTall 1 (3/100) (1/2) []
+    )
+
+    |||
+    -- renamed [Replace "TallMaster"] ( avoidStruts (
+    renamed [Replace "TallMaster"] ( avoidStruts $ windowNavigation (
             maximizeWithPadding myMaxWithPad ( Tall 1 (3/100) (1/2) )
-            )) |||
+            ))
+
+    |||
     renamed [Replace "WideMaster"] (avoidStruts (
           maximizeWithPadding myMaxWithPad (
             Mirror (Tall 1 (3/100) (1/2))
           )
-        )) |||
+        ))
+
+    |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts (
           maximizeWithPadding myMaxWithPad (Grid)
-        )) |||
-    renamed [Replace "Max"] (avoidStruts Full) |||
-    -- renamed [Replace "SuperFull"] (fullscreenFull Full) |||
+        ))
+
+    |||
+    renamed [Replace "Max"] (avoidStruts Full)
+
+    |||
+    -- renamed [Replace "SuperFull"] (fullscreenFull Full)
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
+
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -688,9 +801,9 @@ myLayout =
 
      -- To be use by maximizeWithPadding
      -- myMaxWithPad = 7
-     -- myMaxWithPad = 1
-     myMaxWithPad = 0
-     -- XXX:
+     myMaxWithPad = 1 -- good for testing
+     -- myMaxWithPad = 0.05 -- problem
+     -- myMaxWithPad = 0 -- good
 
 ------------------------------------------------------------------------
 -- Window rules:
