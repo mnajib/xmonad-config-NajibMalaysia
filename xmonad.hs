@@ -920,6 +920,7 @@ myStartupHook = do
       -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
       -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
       -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
+    spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
 --
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
