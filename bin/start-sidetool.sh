@@ -95,7 +95,11 @@ startTrayer(){
   #if [ ! trayerIsAlive ]; then
   #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 &
   #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
-  trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
+
+  #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber &
+  #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --tint 0x333333 --height 16 --alpha 200 --monitor $monitorNumber --padding 5 &
+  trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --tint 0x333333 --height 16 --alpha 200 --monitor $monitorNumber --padding 5 --margin 1 --distance 1 --iconspacing 4 &
+
   #trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0xffffff --height 14 --alpha 0 --monitor $monitorNumber -l &
   #fi
 }
