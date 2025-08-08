@@ -626,12 +626,14 @@ myTiledTabsConfig = def
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 myLayout =
+    -- ------------------------------------------------------------------------
     renamed [Replace "TabOn1"] ( avoidStruts (
                               windowNavigation (
                                 tabbed shrinkText tabConfig
                               )
                             ))
 
+    -- ------------------------------------------------------------------------
     |||
     -- renamed [Replace "TabTab"] ( avoidStruts ( windowNavigation (combineTwo (TwoPane (3/100) (1/2)) (tabbed shrinkText tabConfig) (tabbed shrinkText tabConfig) )) ) |||
     --renamed [Replace "Tab2VSplit"] ( avoidStruts (
@@ -645,12 +647,14 @@ myLayout =
            )
          ))
 
+    -- ------------------------------------------------------------------------
     |||
     --renamed [Replace "Tab2HSplit"] ( avoidStruts (
     renamed [Replace "TabOn2Wide"] ( avoidStruts (
             maximizeWithPadding myMaxWithPad ( windowNavigation (    (tabbed shrinkText tabConfig) */* (tabbed shrinkText tabConfig)    ) )
             ))
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "TabOn3Tall"] (
       avoidStruts (
@@ -666,6 +670,7 @@ myLayout =
       )
     )
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "TabOn3Wide"] (
       avoidStruts . spacing 0 $ (
@@ -682,6 +687,7 @@ myLayout =
       )
     )
 
+    -- -------------------------------------------------------------------------
     {--
     |||
     renamed [Replace "TabOn3Wide"] (avoidStruts $ maximizeWithPadding myMaxWithPad $
@@ -699,6 +705,7 @@ myLayout =
       )
     --}
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "TabOn4"] (
       avoidStruts (
@@ -716,6 +723,7 @@ myLayout =
       )
     )
 
+    -- -------------------------------------------------------------------------
     {--
     |||
     renamed [Replace "TabInTallMstr"] (
@@ -727,6 +735,7 @@ myLayout =
     )
     --}
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "TiledTabGroups"] (
       avoidStruts (
@@ -738,17 +747,20 @@ myLayout =
         )
       )
     )
-    |||
 
+    -- -------------------------------------------------------------------------
+    |||
     renamed [Replace "Columns"] ( avoidStruts(
             maximizeWithPadding myMaxWithPad (Mirror(Column 1) )
             ))
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "Rows"] (avoidStruts(
             maximizeWithPadding myMaxWithPad (Column 1)
             ))
 
+    -- -------------------------------------------------------------------------
     |||
     -- renamed [Replace "TallMaster"] ( avoidStruts (
     renamed [Replace "TabbedTall"] (
@@ -760,12 +772,14 @@ myLayout =
       ResizableTall 1 (3/100) (1/2) []
     )
 
+    -- -------------------------------------------------------------------------
     |||
     -- renamed [Replace "TallMaster"] ( avoidStruts (
     renamed [Replace "TallMaster"] ( avoidStruts $ windowNavigation (
             maximizeWithPadding myMaxWithPad ( Tall 1 (3/100) (1/2) )
             ))
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "WideMaster"] (avoidStruts (
           maximizeWithPadding myMaxWithPad (
@@ -773,19 +787,23 @@ myLayout =
           )
         ))
 
+    -- -------------------------------------------------------------------------
     |||
     -- avoidStruts ( ThreeColMid 1 (3/100) (1/2) ) |||
     renamed [Replace "Grid"] (avoidStruts (
           maximizeWithPadding myMaxWithPad (Grid)
         ))
 
+    -- -------------------------------------------------------------------------
     |||
     renamed [Replace "Max"] (avoidStruts Full)
 
+    -- -------------------------------------------------------------------------
     |||
     -- renamed [Replace "SuperFull"] (fullscreenFull Full)
     renamed [Replace "SuperFull"] (noBorders (fullscreenFull Full))
 
+    -- -------------------------------------------------------------------------
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
