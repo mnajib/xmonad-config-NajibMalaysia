@@ -59,7 +59,7 @@ import XMonad.Layout.Maximize (maximizeWithPadding, maximizeRestore) -- (maximiz
 -- import XMonad.Layout.Decoration (ModifiedLayout)
 
 --import XMonad.Layout.Groups
--- import XMonad.Layout.Groups.Helpers
+--import XMonad.Layout.Groups.Helpers
 import XMonad.Layout.Groups.Examples
 
 import XMonad.Layout.Spacing
@@ -771,6 +771,36 @@ myLayout =
       subLayout [0,1] Simplest $
       ResizableTall 1 (3/100) (1/2) []
     )
+
+
+    -- -------------------------------------------------------------------------
+    |||
+    renamed [Replace "tallTabs"] (
+      avoidStruts $
+      windowNavigation $
+      maximizeWithPadding myMaxWithPad $
+      -- tallTabs def
+      tallTabs def --myTiledTabsConfig
+    )
+    -- -------------------------------------------------------------------------
+    |||
+    renamed [Replace "mirrorTallTabs"] (
+      avoidStruts $
+      windowNavigation $
+      maximizeWithPadding myMaxWithPad $
+      -- tallTabs def
+      mirrorTallTabs def --myTiledTabsConfig
+    )
+    -- -------------------------------------------------------------------------
+    |||
+    renamed [Replace "fullTabs"] (
+      avoidStruts $
+      windowNavigation $
+      maximizeWithPadding myMaxWithPad $
+      -- tallTabs def
+      fullTabs def -- myTiledTabsConfig
+    )
+
 
     -- -------------------------------------------------------------------------
     |||
