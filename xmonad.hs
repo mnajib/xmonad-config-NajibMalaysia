@@ -308,12 +308,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_F11),            raiseVolume 1 >> return () )
     , ((modm,                                               xK_F12),            toggleMute >> return () )
     -- audio-in (microphone) volume control ------------------------------------
-    , ((modm .|. shiftMask,                                 xK_F10),            spawn $ "pactl -- set-source-volume 2 -4" )
-    , ((modm .|. shiftMask,                                 xK_F11),            spawn $ "pactl -- set-source-volume 2 +4" )
+    , ((modm .|. shiftMask,                                 xK_F10),            spawn $ "pactl -- set-source-volume 2 -1" )
+    , ((modm .|. shiftMask,                                 xK_F11),            spawn $ "pactl -- set-source-volume 2 +1" )
     , ((modm .|. shiftMask,                                 xK_F12),            spawn $ "pactl -- set-source-mute 1 toggle" )
     --
-    , ((0, xF86XK_AudioLowerVolume),                                            lowerVolume 4 >> return () )
-    , ((0, xF86XK_AudioRaiseVolume),                                            raiseVolume 4 >> return () )
+    , ((0, xF86XK_AudioLowerVolume),                                            lowerVolume 1 >> return () )
+    , ((0, xF86XK_AudioRaiseVolume),                                            raiseVolume 1 >> return () )
     , ((0, xF86XK_AudioMute),                                                   toggleMute >> return () ) -- spawn $ "pactl -- set-sink-mute 1 toggle"
     , ((0, xF86XK_AudioMicMute),                                                spawn $ "pactl -- set-source-mute 1 toggle" )
 
