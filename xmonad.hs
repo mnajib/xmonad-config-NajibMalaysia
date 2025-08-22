@@ -845,7 +845,8 @@ myLayout =
      ratio   = 1/2      -- half of the screen size
 
      -- Percent of screen to increment by when resizing panes
-     delta   = 3/100    -- 3% of the screen
+     --delta   = 3/100    -- 3% of the screen
+     delta   = 1/100    -- 3% of the screen
 
      -- To be use by maximizeWithPadding
      -- myMaxWithPad = 7
