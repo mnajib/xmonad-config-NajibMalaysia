@@ -32,4 +32,6 @@ else
 fi
 
 # Notify XMobar to refresh (if needed)
+#sleep 2
 #pkill -SIGUSR1 xmobar
+#~/.xmonad/bin/refresh-xmobar.sh

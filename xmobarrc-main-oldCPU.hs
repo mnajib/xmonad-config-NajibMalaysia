@@ -189,5 +189,7 @@ Config {
         --, Run Weather "RJTT" [ "--template", "<skyCondition>,<fc=#4682B4><tempC></fc>°C,<fc=#4682B4><rh></fc>%,<fc=#4682B4><pressure></fc>hPa" ] 36000
 
         , Run CommandReader "~/.xmonad/bin/get-movie-mode-status.sh" "movie_mode"
+        --, Run Com "cat" ["/tmp/movie-mode-status"] "movie_mode" 10
+        --, Run Com "~/.xmonad/bin/movie-mode-status.sh" [] "movie_mode" 10
     ]
 }
