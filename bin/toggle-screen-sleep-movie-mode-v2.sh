@@ -21,12 +21,14 @@ if [[ "$dpms_state" == "Enabled" ]]; then
     xset s off && xset -dpms
     #echo "<fc=#ff0000>🎥 MOVIE MODE</fc>" > "$status_file"  # Red highlight
     #echo "<fc=#ff0000>Movie</fc>" > "$status_file"  # Red highlight
-    echo "<fc=${onColor}>Movie</fc>" > "$status_file"  # Red highlight
+    #echo "<fc=${onColor}>Movie</fc>" > "$status_file"  # Red highlight
+    echo "<action=\`~/.xmonad/bin/toggle-screen-sleep-movie-mode-v2.sh\`><fc=${onColor}>Movie</fc></action>" > "$status_file"  # Red highlight
 else
     xset s on && xset +dpms
     #echo "<fc=#00ff00>🖥️ NORMAL</fc>" > "$status_file"    # Green highlight
     #echo "<fc=#00ff00>Movie</fc>" > "$status_file"    # Green highlight
-    echo "<fc=${offColor}>Movie</fc>" > "$status_file"    # Green highlight
+    #echo "<fc=${offColor}>Movie</fc>" > "$status_file"    # Green highlight
+    echo "<action=\`~/.xmonad/bin/toggle-screen-sleep-movie-mode-v2.sh\`><fc=${offColor}>Movie</fc></action>" > "$status_file"    # Green highlight
 fi
 
 # Notify XMobar to refresh (if needed)

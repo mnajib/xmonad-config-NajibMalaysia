@@ -26,7 +26,8 @@ offColor="${FgColor2}"
     xset s on && xset +dpms
     #echo "<fc=#00ff00>🖥️ NORMAL</fc>" > "$status_file"    # Green highlight
     #echo "<fc=#00ff00>Movie</fc>" > "$status_file"    # Green highlight
-    echo "<fc=${offColor}>Movie</fc>" > "$status_file"    # Green highlight
+    #echo "<fc=${offColor}>Movie</fc>" > "$status_file"    # Green highlight
+    echo "<action=\`~/.xmonad/bin/toggle-screen-sleep-movie-mode-v2.sh\`><fc=${offColor}>Movie</fc></action>" > "$status_file"    # Green highlight
 #fi
 
 # Notify XMobar to refresh (if needed)
