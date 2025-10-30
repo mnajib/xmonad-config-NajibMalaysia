@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-status_file="/tmp/movie-mode-status"
+status_file="/tmp/${USER}-movie-mode-status"
 
 # UP
 FgColor1="#000000"  #"#181715"

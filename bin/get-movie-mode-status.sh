@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
+
+FILE="/tmp/${USER}-movie-mode-status"
+
 while true; do
-  cat /tmp/movie-mode-status  # Simply outputs the file's content
+  cat "${FILE}"  # Simply outputs the file's content
   sleep 3
 done
