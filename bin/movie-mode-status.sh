@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
-cat /tmp/movie-mode-status
+
+FILE="/tmp/${USER}-movie-mode-status"
+cat "${FILE}"
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Toggle screen sleep/blanking for movie mode and write status for XMobar
 
-status_file="/tmp/movie-mode-status"
+status_file="/tmp/${USER}-movie-mode-status"
 
 # Check current DPMS state
 dpms_state=$(xset q | grep "DPMS is" | awk '{print $3}')
