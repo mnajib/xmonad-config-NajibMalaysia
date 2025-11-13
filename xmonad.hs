@@ -1084,6 +1084,11 @@ myStartupHook = do
       -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
       -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
     spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
+
+    -- spawn "polkit-gnome-authentication-agent-1 &"
+    spawn "soteria &"
+    spawn "xsetroot -cursor_name left_ptr"
+    setWMName "LG3D"  -- optional: helps with Java apps
 --
 -- Checking fo duplicate key bindings.
 -- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
