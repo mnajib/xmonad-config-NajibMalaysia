@@ -35,6 +35,12 @@ case $HOSTNAME in
     sleep 1
     setxkbmap dvorak
     ;;
+  maryam)
+    echo "Running some customization for ${HOSTNAME}"
+    $HOME/.xmonad/bin/screenlayout-${HOSTNAME}.sh
+    sleep 1
+    setxkbmap dvorak
+    ;;
   raudah)
     echo "Running some customization for $HOSTNAME"
     $HOME/.xmonad/bin/screenlayout-raudah.sh
