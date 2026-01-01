@@ -851,7 +851,8 @@ myLayout =
      -- To be use by maximizeWithPadding
      -- myMaxWithPad = 7
      --myMaxWithPad = 1 -- good for testing
-     myMaxWithPad = 3
+     --myMaxWithPad = 3
+     myMaxWithPad = 5
      -- myMaxWithPad = 0.05 -- problem
      -- myMaxWithPad = 0 -- good
 
