@@ -161,7 +161,8 @@ case $HOSTNAME in
     echo "maggis"
     #sudo $HOME/bin/decrease-trackpoint-sensitivity-x220.sh
     sudo $HOME/.xmonad/bin/decrease-trackpoint-sensitivity-x220.sh
-    setxkbmap us
+    #setxkbmap us
+    setxkbmap dvorak
     startTrayer 0
     ;;
   khawlah)
