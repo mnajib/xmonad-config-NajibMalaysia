@@ -99,6 +99,7 @@ case $HOSTNAME in
     ;;
   *)
     echo "Else .."
+    setxkbmap dvorak
     ;;
 esac
 
