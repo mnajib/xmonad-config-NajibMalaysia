@@ -288,8 +288,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     --, ((modm .|. shiftMask,                               xK_p),              spawn "")
 
     -- launch rofi -------------------------------------------------------------
-    , ((modm,                                               xK_p),              spawn "rofi -font \"hack 10\" -modes \"window,calc,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
-    , ((modm .|. shiftMask,                                 xK_p),              spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,calc,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    -- , ((modm,                                               xK_p),              spawn "rofi -font \"hack 10\" -modes \"window,calc,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    -- , ((modm .|. shiftMask,                                 xK_p),              spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,calc,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm,                                               xK_p),              spawn "rofi -font \"hack 10\" -modes \"window,filebrowser,keys,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
+    , ((modm .|. shiftMask,                                 xK_p),              spawn "rofi -font \"hack 10\" -modes \"drun,run,window,windowcd,ssh,filebrowser,file-browser-extended,keys,emoji,combi\" -combi-modes \"drun,run\" -font \"hack 10\" -show combi -icon-theme \"Papirus\" -show-icons")
 
     -- toggle enable/disable touchpad ------------------------------------------
     , ((modm, xK_F3 ), spawn $ "~/.xmonad/bin/toggleTouchpadEnableDisable-Thinkpad.sh")
