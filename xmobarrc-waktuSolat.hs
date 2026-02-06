@@ -1,8 +1,11 @@
 --
 
 Config {
-    bgColor =      "#181715"
+    -- bgColor =      "#181715"
+    --, fgColor =    "#f3f3f1"
+    bgColor =      "#000000"
     , fgColor =    "#f3f3f1"
+
     , font = "Monospace Bold 9" -- Refer https://codeberg.org/xmobar/xmobar/src/branch/master/doc/quick-start.org#text-mode
     --, position =     Top
     --, textOffset =   13
