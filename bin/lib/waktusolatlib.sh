@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# bin/lib/waktusolatlib.sh
 
 # Copyright (c) 2024 [Your Name or Project Name]
 # Licensed under the BSD 3-Clause License. See LICENSE file for details.
@@ -15,10 +16,14 @@
 #
 # waktusolatlib.sh
 
+# Guard Clause
+[[ "${_WAKTUSOLATLIB_SH_INCLUDED:-}" == "true" ]] && return
+declare -r _WAKTUSOLATLIB_SH_INCLUDED="true"
+
 FILE1=/tmp/${USER}-wsp1         # source data file
 FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
 FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
-LOG=/tmp/${USER}-wsp.log        # for logging
+#LOG=/tmp/${USER}-wsp.log        # for logging
 
 ONELINE=""
 NAMASOLAT=()
@@ -38,9 +43,13 @@ MMONTHNUMBER=""
 HMONTHFULLNAME=""
 MMONTHFULLNAME=""
 
-LOGMODE="NORMAL"
+#LOGMODE="NORMAL"
 #LOGMODE="INFO"
 #LOGMODE="DEBUG"
+
+#source ~/.xmonad/bin/lib/logger.sh
+# Note: We NO LONGER source logger.sh here.
+# The main script (waktusolat) should source it before this library.
 
 # ------------------------------------------------------------------------------
 # Pure functions
@@ -422,12 +431,33 @@ fetchData (){
     log_debug "End fetchData()"
 }
 
-function fetchDataZone () {
-    log_debug "Start fetchDataZone()"
-    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+#function fetchDataZone () {
+#    log_debug "Start fetchDataZone()"
+#    #curl "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+#
+#    # Ignore SSL/cert error ... ???
+#    curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+#
+#    log_debug "End fetchDataZone()"
+#}
+#
+fetchDataZone() {
+    local zone="$1"
+    log_debug "Start fetchDataZone() for zone: $zone"
 
-    # Ignore SSL/cert error ... ???
-    curl -k "https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}" 2>/dev/null | sed "s/^.*\[{//g" | sed "s/}]//g" | sed 's/}$//g'  | sed 's/$/\n/g' | tr "," "\n" | sed 's/\":\"/\",\"/g' | sed 's/"//g' > $FILE1
+    # Define the mimicry headers
+    local agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    local accept_hdr="Accept: application/json"
+    local url="https://www.e-solat.gov.my/index.php?r=esolatApi/TakwimSolat&period=today&zone=${zone}"
+
+    # Fetch and save to FILE1
+    curl -s -k -H "$accept_hdr" -A "$agent" "$url" > "$FILE1"
+
+    # Check if we got the 403 error page instead of JSON
+    if grep -q "403 ERROR" "$FILE1"; then
+        log_debug "ERROR: Still getting CloudFront 403 block"
+        ERROR=true
+    fi
 
     log_debug "End fetchDataZone()"
 }
@@ -472,6 +502,56 @@ EOL
 
 extractData() {
     log_debug "Start extractData()"
+
+    # Gunakan jq untuk menukar JSON kepada format "key,value" baris demi baris
+    # Kita ambil objek pertama dalam array .prayerTime
+    local internal_data
+    internal_data=$(jq -r '.prayerTime[0] | to_entries | .[] | "\(.key),\(.value)"' "$FILE1" 2>/dev/null)
+
+    # Ambil juga serverTime dan zone dari akar JSON
+    local meta_data
+    meta_data=$(jq -r '"serverTime,\(.serverTime)\nzone,\(.zone)"' "$FILE1" 2>/dev/null)
+
+    # Jika jq gagal, set ERROR
+    if [[ -z "$internal_data" ]]; then
+        log_debug "ERROR: jq failed to parse JSON in $FILE1"
+        ERROR=true
+        return
+    fi
+
+    BAKIFS="$IFS"
+    IFS=","
+    # Gabungkan meta dan data solat dalam satu loop
+    while read -r NAME VALUE; do
+        case "${NAME}" in
+            'serverTime') MDATETIME="$VALUE" ;;
+            'zone')       ZON="$VALUE" ;;
+            'hijri')      HDATE="$VALUE" ;;
+            'date')       MDATE="$VALUE" ;;
+            'day')        DAY="$VALUE" ;;
+            'imsak')      NAMASOLAT+=("Imsak");  MASASOLAT+=("${VALUE%:*}") ;;
+            'fajr')       NAMASOLAT+=("Subuh");  MASASOLAT+=("${VALUE%:*}") ;;
+            'syuruk')     NAMASOLAT+=("Syuruk"); MASASOLAT+=("${VALUE%:*}") ;;
+            'dhuhr')      NAMASOLAT+=("Zohor");  MASASOLAT+=("${VALUE%:*}") ;;
+            'asr')        NAMASOLAT+=("Asar");   MASASOLAT+=("${VALUE%:*}") ;;
+            'maghrib')    NAMASOLAT+=("Maghrib"); MASASOLAT+=("${VALUE%:*}") ;;
+            'isha')       NAMASOLAT+=("Isyak");  MASASOLAT+=("${VALUE%:*}") ;;
+        esac
+    done <<< "$(echo -e "$meta_data\n$internal_data")"
+    IFS="$BAKIFS"
+
+    log_debug "End extractData()"
+}
+
+extractData_oldVersion() {
+    log_debug "Start extractData()"
+
+    # Check if file is empty or contains HTML instead of JSON
+    if [[ ! -s "$FILE1" ]] || grep -q "<HTML" "$FILE1"; then
+        log_debug "ERROR: FILE1 is empty or contains invalid HTML data"
+        ERROR=true
+        return
+    fi
 
     BAKIFS="$IFS"
     IFS=","
@@ -542,7 +622,7 @@ extractData() {
     IFS="$BAKIFS"
 
     log_debug "End extractData()"
-    }
+}
 
 # XXX: may need revice
 setBlankDataToArray() {
@@ -571,6 +651,7 @@ checkData() {
 
     arrayLength=0
     arrayLength=${#NAMASOLAT[@]}
+
     if (( $arrayLength == 7 )) ; then
         log_debug "Array length as we needed : $arrayLength"
         if [ "${NAMASOLAT[0]}" != "Imsak" ] || [ "${NAMASOLAT[1]}" != "Subuh" ] || [ "${NAMASOLAT[2]}" != "Syuruk" ] || [ "${NAMASOLAT[3]}" != "Zohor" ] || [ "${NAMASOLAT[4]}" != "Asar" ] || [ "${NAMASOLAT[5]}" != "Maghrib" ] || [ "${NAMASOLAT[6]}" != "Isyak" ]; then
@@ -587,8 +668,8 @@ checkData() {
         ERROR=true
     fi
 
-    log_debug "End chechData()"
-    }
+    log_debug "End checkData()"
+}
 
 doBackup() {
     log_debug "Start doBackup()"
