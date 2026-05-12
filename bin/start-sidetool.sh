@@ -204,7 +204,8 @@ nm-applet & # Not really needed, just use nmtui.
 
 #qtox &
 
-$HOME/.xmonad/bin/waktusolat-hbar SGR01 &
+#$HOME/.xmonad/bin/waktusolat-hbar SGR01 &
+$HOME/.xmonad/bin/waktusolat -o hbar SGR01 &
 
 #xscreensaver -no-splash &
 $HOME/.xmonad/bin/set-display-screen-power-saver.sh

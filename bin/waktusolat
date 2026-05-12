@@ -1,0 +1,370 @@
+#!/usr/bin/env bash
+
+# Copyright (c) 2024 xmonad-config-NajibMalaysia
+# Licensed under the BSD 3-Clause License. See LICENSE file for details.
+
+#
+#  Get waktu solat formated to be use by xmobar
+#
+#  by Muhammad Najib Bin Ibrahim <mnajib@gmail.com>
+#
+#  Usage:
+#      waktusolat-hbar SGR01
+#      waktusolat-hbar WLY01
+#      waktusolat-hbar MLK01
+#      waktusolat-hbar TRG01
+#
+
+# source FILE
+source "${HOME}/.xmonad/bin/lib/waktusolatlib.sh"
+source "${HOME}/.xmonad/bin/lib/logger.sh"
+source "${HOME}/.xmonad/bin/lib/maybe.sh"
+source "${HOME}/.xmonad/bin/lib/helpers.sh"
+
+#---------------------------------------------------------------------
+
+# inputs
+FILE1=/tmp/${USER}-wsp1         # source data file
+FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
+FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
+# outputs
+PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
+PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
+# log
+LOGFILE="/tmp/${USER}-wsp.log"        # for logging
+#LOGLEVEL="SILENT" # "SILENT" "ERROR" "WARNING" "INFO" "DEBUG". "INFO" is the default.
+LOGLEVEL="DEBUG" #"SILENT" # "SILENT" "ERROR" "WARNING" "INFO" "DEBUG". "INFO" is the default.
+
+#---------------------------------------------------------------------
+
+#LOG_FILE="$LOGFILE"        # for logging
+set_log_file "$LOGFILE"
+#
+#set_log_level "silent"
+#set_log_level "info"
+#set_log_level "debug"
+set_log_level "$LOGLEVEL"
+#
+log_debug "LOG_FILE: ${LOG_FILE}"
+log_debug "LOG_LEVEL: ${LOG_LEVEL}"
+
+ONELINE=""
+NAMASOLAT=()
+MASASOLAT=()
+KAWASAN=""
+ZON=""
+zone=$1
+BEARING=""
+TITLE=""
+ERROR=false
+HDATE=""
+MDATE=""
+MDATETIME=""
+DAY=""
+STATUS=""
+HMONTHFULLNAME=""
+MMONTHFULLNAME=""
+
+#LOGMODE="NORMAL"
+#LOGMODE="INFO"
+#LOGMODE="DEBUG"
+#LOGMODE="$LOG_LEVEL"
+
+#
+# Usage:
+#     log INFO "Length error."
+#     log DEBUG "Start fetchData()."
+#
+#log () {
+#    local logmode=$1
+#    local logstring=$2
+#    #local logfile=$3
+#
+#    # Will use global var: LOG, LOGMODE
+#    if [ "$LOGMODE" = "DEBUG" ]; then
+#        # For debugging purpose, log all information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "NORMAL" ] && [ "$logmode" = "ERROR" ]; then
+#        # Normally, just log general information
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "$LOGMODE" = "INFO" ] && [ "$logmode" = "INFO" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    elif [ "${logmode}" = "ERROR" ]; then
+#        echo "`date "+%F %T"` ${logmode}: ${logstring}" >> $LOGFILE
+#    fi
+#}
+
+
+# --- Help Usage Function ---
+show_usage() {
+    cat << EOF
+Usage: $(basename "$0") [-o MODE] ZONE
+
+A script to fetch and display prayer times (Waktu Solat) based on JAKIM data.
+
+Arguments:
+  ZONE          The JAKIM area code (e.g., SGR01, TRG01, KLS01).
+
+Options:
+  -o MODE       Select the output format. Modes available:
+                  hbar : (Default) Runs a continuous loop for xmobar/status bars.
+                  cli  : Prints a formatted list to the terminal and exits.
+                  txt  : Prints a single line of plain text and exits.
+                  xml  : Prints data in XML format and exits.
+  -h            Show this help message.
+
+Example:
+  $(basename "$0") -o cli SGR01
+EOF
+}
+
+# --- Argument Parsing ---
+OUTPUT_MODE="hbar" # Default mode
+
+if [[ $# -eq 0 ]]; then
+    show_usage
+    exit 0
+fi
+
+#while getopts "o:" opt; do
+#  case $opt in
+#    o) OUTPUT_MODE=$OPTARG ;;
+#    \?) echo "Usage: $0 [-o hbar|cli|txt|xml] zone" >&2; exit 1 ;;
+#  esac
+#done
+#shift $((OPTIND-1))
+#
+while getopts "o:h" opt; do
+  case $opt in
+    o) OUTPUT_MODE=$OPTARG ;;
+    h) show_usage; exit 0 ;;
+    \?) show_usage; exit 1 ;;
+  esac
+done
+shift $((OPTIND-1))
+
+zone=$1 # The zone (e.g., SGR01) is now the first positional argument after flags
+
+if [[ -z "$zone" ]]; then
+    echo "Error: ZONE is required."
+    show_usage
+    exit 1
+fi
+
+
+createFifo(){
+    mkfifo $PIPE
+    mkfifo $LOGFILE
+}
+
+cleanup-socket(){
+    local SOCKET=$1
+    [[ -e "$SOCKET" ]] && rm "$SOCKET"
+    sleep 2
+}
+
+# Start a socket listener in the background
+start-socket() {
+    local SOCKET=$1
+    socat -u UNIX-LISTEN:"$SOCKET" - &
+}
+
+sleepLengthInSeconds() {
+    local s="$1" # string
+    #log DEBUG "String: ${s}"
+    log_debug "String: ${s}"
+    local size=${#s}
+    #log DEBUG "String size: ${size}"
+    log_debug "String size: ${size}"
+
+    #i=$(( ($size / 5) * 60 ))
+    i=$(( ($size / 10) * 60 ))
+    #echo "$(( ($size / 5) * 60 ))"
+}
+
+dreamInSleep() {
+    local DIRATION=$1  # Total duration in seconds
+    local FIFO=$2
+    local TEXT=$3
+
+    #local duration=10  # Total duration in seconds
+    local interval=1   # Update interval
+
+    #echo -n "Progress: "
+    for (( i = 0; i < $DURATION; i += $interval )); do
+        #echo -n "#"
+        #cat "$FIFO" &> /dev/null
+        pushStringToPipe "${TEXT}" "${FIFO}"
+        sleep $interval
+    done
+
+    #echo " Done!"
+}
+
+pushStringToFile() {
+    local STRING=$1
+    local FILE=$2
+    #log DEBUG "pushStringToFile: ${STRING}"
+    log_debug "pushStringToFile: ${STRING}"
+    echo "$STRING" > "$FILE"
+    #echo -en "${STRING}\n" > "$FILE"
+}
+
+# Usage: pushStringToPipe <string> <pipefile>
+# Example: pushStringToPipe "string" "/tmp/thepipefile"
+pushStringToPipe() {
+    local STRING=$1
+    local PIPE=$2
+    #log DEBUG "pushStringToPipe: ${STRING}"
+    log_debug "pushStringToPipe: ${STRING}"
+    echo "${STRING}" > $PIPE
+    #echo -en "${STRING}\n" > $PIPE
+}
+
+pushStringToSocket() {
+    local STRING=$1
+    local SOCKET=$2
+    #log DEBUG "pushStringToSocket: ${STRING}"
+    log_debug "pushStringToSocket: ${STRING}"
+    #echo "Maghrib: 19:02, Isyak: 20:16, Subuh: 05:52" | socat -u - UNIX-CONNECT:"$SOCKET"
+    echo "$1" | socat -u - UNIX-CONNECT:"$SOCKET"
+}
+
+# Usage:
+#   loopCommandUntilSeconds <countdowntime_in_seconds> <command_to_run>
+# Example:
+#   loopCommandUntilSeconds 10 "echo 'Hello, World!'"
+loopCommandUntilSeconds() {
+    countdown_time=$1 # in seconds
+    command="$2"
+
+    # Check if countdown_time is a valid number
+    if ! [[ "$countdown_time" =~ ^[0-9]+$ ]]; then
+        echo "Error: countdown_time must be a non-negative integer."
+        return 1
+    fi
+
+    while (( $countdown_time > 0 )); do
+        eval "${command}" # Use eval to handle commands with arguments
+        sleep 1
+        (( $countdown_time-- ))
+    done
+}
+
+
+#----------------------------------------------------------------------
+# --- Execution Logic ---
+
+case "$OUTPUT_MODE" in
+    "cli")
+        log_debug "Running in CLI mode for zone: $zone"
+        resetData
+        fetchDataZone "$zone"
+
+        # Check if fetchDataZone actually got something
+        if [[ ! -s "$FILE1" ]]; then
+            echo "Error: Failed to fetch data from e-solat. Check your internet or $LOGFILE"
+            exit 1
+        fi
+
+        extractData
+
+        # Verify arrays are populated
+        if [[ ${#NAMASOLAT[@]} -eq 0 ]]; then
+            echo "Error: Data extraction failed. The API response might have changed."
+            exit 1
+        fi
+
+        # Print the output header
+        echo "----------------------------------------"
+        echo " Waktu Solat"
+        echo " Zon: $ZON"
+        echo " Hari: $DAY"
+        echo " Tarikh: (M) ${MDATE}, (H) ${HDATE}"
+        echo "----------------------------------------"
+
+        # Menggunakan printf untuk alignment yang sempurna
+        for i in "${!NAMASOLAT[@]}"; do
+            printf "%-10s : %s\n" " ${NAMASOLAT[$i]}" "${MASASOLAT[$i]}"
+        done
+        echo "----------------------------------------"
+        ;;
+    "txt")
+        fetchDataZone "$zone"
+        extractData
+        printNewWaktuSolat
+        ;;
+    "xml")
+        fetchDataZone "$zone"
+        extractData
+        echo "<prayer_times zone=\"$zone\" date=\"$MDATE\">"
+        for i in "${!NAMASOLAT[@]}"; do
+            echo "  <item name=\"${NAMASOLAT[$i]}\" time=\"${MASASOLAT[$i]}\" />"
+        done
+        echo "</prayer_times>"
+        ;;
+    "hbar")
+        # Your original continuous loop logic
+        log_debug "==============================="
+        log_debug "Start waktusolat-putrajaya-hbar"
+
+        timeInterval1=$(echo "60 * 60 * 3" | bc)
+        timeInterval2=$(echo "60 * 1" | bc)
+        timeInterval=${timeInterval1}
+
+        cleanup-socket "$SOCKET"
+
+        while true; do
+            log_debug "-------------------------------"
+            log_debug "$(date) : Start main loop"
+
+            resetData
+            fetchDataZone "$zone"
+            extractData
+            checkData
+            log_debug "ERROR --> ${ERROR}"
+
+            if $ERROR; then
+                resetData
+                log_debug "Decrease fetch time interval"
+                timeInterval=${timeInterval2}
+                log_debug "Getting old backup data"
+                getOldGoodFetchData
+                extractData
+            else
+                log_debug "Do backup and reset fetch time interval"
+                doBackup
+                timeInterval=${timeInterval1}
+            fi
+
+            formatWaktuSolatForXmobar
+            new_waktu_solat="$(printNewWaktuSolat)"
+            log_debug "$new_waktu_solat"
+
+            countdown_time=$timeInterval
+            toggle=0
+            line="$new_waktu_solat"
+            while (( countdown_time > 0 )); do
+                current_time=$(date +"%H:%M")
+                log_info "inner loop: $(date)"
+
+                final_output="$(pure_process_prayer_entry "$line" "$current_time" "$toggle")"
+                pushStringToFile "${final_output}" "${PRAYER_REMINDER_FILE}"
+
+                toggle=$((1 - toggle))
+                sleep 1
+                countdown_time=$((countdown_time - 1))
+            done
+            log_debug "End main loop"
+        done
+        ;;
+    *)
+        echo "Error: Unknown output mode '$OUTPUT_MODE'"
+        show_usage
+        exit 1
+        ;;
+esac
+
+
+#log DEBUG "End waktusolat-putrajaya-hbar"
+log_debug "End waktusolat-putrajaya-hbar"
