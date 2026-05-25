@@ -179,6 +179,11 @@ case $HOSTNAME in
     startTrayer 0
     setxkbmap dvorak
     ;;
+  nyxora)
+    echo "nyxora"
+    setxkbmap dvorak
+    startTrayer 0 #1
+    ;;
   *)
     echo "lain"
     setxkbmap dvorak

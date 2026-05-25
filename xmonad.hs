@@ -1112,66 +1112,83 @@ myStartupHook = do
 --   threadDelay delay
 --   return undefined
 
--- Start xmobar instances dynamically based on hostname
 -- NOTE:
 --   If problem with which screen, check nvidia setting, Xinerama, PRIME, ...
---startXmobars :: String -> IO [Handle]
---startXmobars hostname = case hostname of
---  "khadijah" -> sequence
---    [
---    --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
---    --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
---      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
---    --, fakeHandleDelay 1000000  -- 1 second
---    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
---    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
---    , spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
---    --, fakeHandleDelay 1000000  -- 1 second
---    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
---    --, spawnPipe "xmobar --screen=2 --position=Bottom ~/.xmonad/xmobarrc-top.hs" -- Do not needs xmproc
---    --, spawnPipe "xmobar --screen=1 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
---    --, fakeHandleDelay 1000000  -- 1 second
---    --, spawnPipe "xmobar --screen=2 --position=Top ~/.xmonad/xmobarrc.hs" -- Needs xmproc
---    ]
 --
---  --"asmak" -> sequence
---  --  [
---  --  --  spawnPipe "xmobar ~/.xmonad/xmobarrc-host1.hs" -- Needs xmproc
---  --  --, spawnPipe "xmobar ~/.xmonad/xmobarrc-prayertimes-host1.hs" -- Needs xmproc
---  --    spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc.hs" -- Needs xmproc
---  --  , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
---  --  ]
+-- xrandr --listmonitors
+-- Monitors: 2
+--   0: +*DP-1 2560/597x1440/336+1920+0  DP-1
+--   1: +DVI-I-1 1920/508x1080/286+0+434  DVI-I-1
 --
---  --"host2" -> sequence
---  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host2.hs" -- Needs xmproc
---  --  , spawn "xmobar ~/.xmonad/xmobarrc-top-host2.hs" >> return undefined -- No xmproc
---  --  ]
---
---  --"host3" -> sequence
---  --  [ spawnPipe "xmobar ~/.xmonad/xmobarrc-host3.hs" -- Needs xmproc
---  --  ]
---
---  _ -> sequence
---    [
---    --spawnPipe "xmobar ~/.xmonad/xmobarrc.hs" -- Needs xmproc
---    --, spawn "xmobar ~/.xmonad/xmobarrc-prayertimes.hs" >> return undefined -- No xmproc
---      --spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-bottom-zahrah.hs" -- Needs xmproc
---      spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
---    --, spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-top.hs" >> return undefined -- Do not needs xmproc
---    , spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
---    ]
---
---startXmobars2 :: String -> IO [Handle]
---startXmobars2 hostname = case hostname of
---    "khadijah" -> do
---        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-newCPU.hs" -- Needs xmproc
---        spawnPipe "xmobar --screen=0 --position=Top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
---        return [xmproc]
---
---    _ -> do
---        xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
---        spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
---        return [xmproc]
+-- | A clean data type to hold the specific layout rules for each host.
+data XmobarHostConfig = XmobarHostConfig
+    { mainBarCmd  :: String  -- The Xmobar config file path for the main bar
+    , mainBarPos  :: String  -- e.g., "Bottom" or "top"
+    , mainBarScr  :: Int     -- Screen index for the main bar (e.g., 0)
+    , solatBarCmd :: String  -- The Xmobar config file path for the waktu solat bar
+    , solatBarPos :: String  -- e.g., "top" or "Bottom"
+    , solatBarScr :: Int     -- Screen index for the waktu solat bar
+    , trayerArgs  :: String  -- Custom command-line arguments for trayer
+    }
+
+-- Start xmobar instances dynamically based on hostname
+-- NOTE: !!! must use 'top', and not 'Top' !!!
+startXmobars :: String -> IO [Handle]
+startXmobars hostname = do
+    -- 1. Build and run the main bar (tracked via Handle)
+    mainHandle <- spawnPipe $ "xmobar --screen=" ++ show (mainBarScr cfg)
+                           ++ " --position=" ++ mainBarPos cfg
+                           ++ " " ++ mainBarCmd cfg ++ " -d"
+
+    -- 2. Build and run the background bar (untacked, fire-and-forget)
+    spawn $ "xmobar --screen=" ++ show (solatBarScr cfg)
+         ++ " --position=" ++ solatBarPos cfg
+         ++ " " ++ solatBarCmd cfg ++ " -d"
+
+    -- 3. Kill any existing trayer process first to avoid stacking up processes
+    spawn "pkill trayer"
+
+    -- 4. Spawn the host-specific trayer configuration
+    spawn $ "trayer " ++ trayerArgs cfg
+
+    return [mainHandle]
+  where
+    -- Lookup the layout details depending on which machine is booting up
+    cfg :: XmobarHostConfig
+    cfg = case hostname of
+        "khadijah" -> XmobarHostConfig
+            { mainBarCmd  = "~/.xmonad/xmobarrc-main-newCPU.hs"
+            , mainBarPos  = "Bottom"
+            , mainBarScr  = 0
+            , solatBarCmd = "~/.xmonad/xmobarrc-waktuSolat.hs"
+            , solatBarPos = "top"
+            -- You can easily shift this bar over to screen 1 on "khadijah"
+            , solatBarScr = 0
+            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+            }
+
+        "nyxora" -> XmobarHostConfig
+            -- { mainBarCmd  = "~/.xmonad/xmobarrc-main-workstation.hs"
+            { mainBarCmd  = "~/.xmonad/xmobarrc-main-oldCPU.hs"
+            , mainBarPos  = "Bottom"
+            , mainBarScr  = 0
+            , solatBarCmd = "~/.xmonad/xmobarrc-waktuSolat.hs"
+            , solatBarPos = "top"
+            -- Example: Send the secondary bar to your second monitor!
+            , solatBarScr = 0
+            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 1 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+            }
+
+        -- Fallback default layout if the hostname isn't matched above
+        _ -> XmobarHostConfig
+            { mainBarCmd  = "~/.xmonad/xmobarrc-main-oldCPU.hs"
+            , mainBarPos  = "Bottom"
+            , mainBarScr  = 0
+            , solatBarCmd = "~/.xmonad/xmobarrc-waktuSolat.hs"
+            , solatBarPos = "top"
+            , solatBarScr = 0
+            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+            }
 
 -- NOTE: !!! must use 'top', and not 'Top' !!!
 startXmobars3 :: String -> IO [Handle]
@@ -1223,7 +1240,7 @@ main = do
     -- -- Start xmobar instances based on the hostname
     -- xmprocs <- startXmobars hostname
     --xmprocs <- startXmobars2 hostname
-    xmprocs <- startXmobars3 hostname
+    xmprocs <- startXmobars hostname
     --threadDelay 5000000 -- in miliseconds;
 
     --xmonad $ defaults {
