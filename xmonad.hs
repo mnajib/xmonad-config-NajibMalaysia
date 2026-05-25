@@ -12,11 +12,12 @@
 import XMonad
 -- import Data.Monoid -- mapped
 import System.Exit
+--import System.HostName (getHostName)
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M -- fromList
 
-import XMonad.Actions.Volume
+--import XMonad.Actions.Volume
 import XMonad.Actions.CycleWindows      -- now working like what I want
 --import XMonad.Actions.CycleWS -- try to implement custom "zoom tiling window"
 --import XMonad.Actions.MostRecentlyUsed (mostRecentlyUsed) -- to toggle focus between last/recent two focused windows
@@ -30,12 +31,12 @@ import XMonad.Hooks.ManageDocks
 -- import Graphics.X11.Xlib
 -- import Graphics.X11.Xlib.Extras
 import XMonad.Util.Run (spawnPipe, hPutStrLn) -- hPutStrLn
-import XMonad.Util.SpawnOnce
+import XMonad.Util.SpawnOnce (spawnOnce)
 import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
 -- import XMonad.Util.ActionCycle          -- I try to use this to keybinding for toggle focus between last two window
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO (Handle) -- , hPutStrLn)
---import System.Process (readProcess)
+import System.Process (readProcess)
 import System.Posix.Unistd (getSystemID, nodeName)
 --import XMonad.Util.ExtensibleState as XS
 
@@ -306,17 +307,25 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $ [
     , ((modm,                                               xK_F9),             spawn $ "~/.xmonad/bin/toggle-screen-sleep-movie-mode-v2.sh")
 
     -- audio-out (speaker) Volume control --------------------------------------
-    , ((modm,                                               xK_F10),            lowerVolume 1 >> return () )
+    {-, ((modm,                                               xK_F10),            lowerVolume 1 >> return () )
     , ((modm,                                               xK_F11),            raiseVolume 1 >> return () )
-    , ((modm,                                               xK_F12),            toggleMute >> return () )
+    , ((modm,                                               xK_F12),            toggleMute >> return () ) -}
+    , ((modm,                                               xK_F10),            spawn "pamixer -d 1" )
+    , ((modm,                                               xK_F11),            spawn "pamixer -i 1" )
+    , ((modm,                                               xK_F12),            spawn "pamixer -t" )
     -- audio-in (microphone) volume control ------------------------------------
     , ((modm .|. shiftMask,                                 xK_F10),            spawn $ "pactl -- set-source-volume 2 -1" )
     , ((modm .|. shiftMask,                                 xK_F11),            spawn $ "pactl -- set-source-volume 2 +1" )
     , ((modm .|. shiftMask,                                 xK_F12),            spawn $ "pactl -- set-source-mute 1 toggle" )
     --
+    {-
     , ((0, xF86XK_AudioLowerVolume),                                            lowerVolume 1 >> return () )
     , ((0, xF86XK_AudioRaiseVolume),                                            raiseVolume 1 >> return () )
     , ((0, xF86XK_AudioMute),                                                   toggleMute >> return () ) -- spawn $ "pactl -- set-sink-mute 1 toggle"
+    -}
+    , ((0, xF86XK_AudioLowerVolume),                                            spawn "pamixer -d 1" )
+    , ((0, xF86XK_AudioRaiseVolume),                                            spawn "pamixer -i 1" )
+    , ((0, xF86XK_AudioMute),                                                   spawn "pamixer -t" ) -- spawn $ "pactl -- set-sink-mute 1 toggle"
     , ((0, xF86XK_AudioMicMute),                                                spawn $ "pactl -- set-source-mute 1 toggle" )
 
     -- XF86MonBrightnessUp
@@ -1066,6 +1075,79 @@ myXmobarPP xmprocs = xmobarPP
 --    loop totalBeepTime
 
 
+-- 1. Define the data structure
+data TrayerConfig = TrayerConfig {
+  monitor :: Int --,
+  -- align   :: String,
+  -- width   :: Int
+}
+
+
+{-
+-- Define your host-specific trayer command
+getTrayerCmd :: String -> String
+getTrayerCmd host = case host of
+    -- "manggis"   -> "trayer --edge top --align right --width 16 --transparent true --tint 0x333333 --height 16 --alpha 200 --monitor 0"
+    -- "khawlah"   -> "trayer --edge top --align right --width 16 --transparent true --tint 0x333333 --height 16 --alpha 200 --monitor 0"
+    -- _           -> "trayer --edge top --align right --width 10 --transparent true --tint 0x000000 --height 16"
+    "khadijah"  -> "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+    "nyxora"    -> "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 1 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+    _           -> "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
+-}
+
+
+getTrayerCfg :: String -> TrayerConfig
+getTrayerCfg host = case host of
+    "khadijah"  -> TrayerConfig 1 -- "right" 16
+    "khawlah"   -> TrayerConfig 0 -- "right" 16
+    "nyxora"    -> TrayerConfig 0 -- "right" 16
+    _           -> TrayerConfig 0 -- "right" 10
+
+
+startTrayer :: String -> X ()
+startTrayer host = do
+    let c = getTrayerCfg host
+    --
+    -- "trayer
+    -- --edge top
+    -- --align right
+    -- --SetDockType true
+    -- --SetPartialStrut true
+    -- --expand false
+    -- --width 16
+    -- --transparent true
+    -- --alpha 0
+    -- --tint 0xffffff
+    -- --height 16
+    -- --monitor 0
+    -- --padding 5
+    -- --margin 1
+    -- --distance 1
+    -- --iconspacing 4"
+    --
+    let cmd = "trayer" ++
+              " --edge top" ++
+              -- " --align " ++ align c ++
+              --" --width " ++ show (width c) ++
+              " --align right" ++
+              " --SetDockType true" ++
+              " --SetPartialStrut true" ++
+              " --expand false" ++
+              " --width 16" ++
+              " --transparent true" ++
+              " --alpha 0" ++
+              " --tint 0xffffff" ++
+              " --height 16" ++
+              " --monitor " ++ show (monitor c) ++
+              " --padding 5" ++
+              " --margin 1" ++
+              " --distance 1" ++
+              " --iconspacing 4" ++
+              ""
+    spawn "killall trayer"
+    -- spawn cmd
+
+
 -- Perform an arbitrary action each time xmonad starts or is restarted
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.
@@ -1086,6 +1168,26 @@ myStartupHook = do
       -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
       -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
       -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
+
+    -- 1. Reset Logs (using safe shell expansion)
+    spawn "sh -c 'cat /dev/null > /tmp/${USER}-wsp.log'"
+    spawn "sh -c 'cat /dev/null > /tmp/${USER}-prayer_reminder_log'"
+
+    -- 2. Clean up old trayers
+    spawn "killall trayer"
+
+    -- 3. Dynamic Trayer Launch
+    -- io $ do
+    --     host <- getHostName
+    --     spawn (getTrayerCmd host)
+    -- spawn $ "trayer " ++ trayerArgs cfg
+    --io getHostName >>= startTrayer
+    io (init <$> readProcess "hostname" [] "") >>= startTrayer
+
+    -- 4. Start other tools
+    -- spawnOnce "$HOME/.xmonad/bin/zikir"
+    -- spawnOnce "$HOME/.xmonad/bin/waktusolat-hbar SGR01"
+
     spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
 
     -- spawn "polkit-gnome-authentication-agent-1 &"
@@ -1128,7 +1230,7 @@ data XmobarHostConfig = XmobarHostConfig
     , solatBarCmd :: String  -- The Xmobar config file path for the waktu solat bar
     , solatBarPos :: String  -- e.g., "top" or "Bottom"
     , solatBarScr :: Int     -- Screen index for the waktu solat bar
-    , trayerArgs  :: String  -- Custom command-line arguments for trayer
+    --, trayerArgs  :: String  -- Custom command-line arguments for trayer
     }
 
 -- Start xmobar instances dynamically based on hostname
@@ -1145,12 +1247,6 @@ startXmobars hostname = do
          ++ " --position=" ++ solatBarPos cfg
          ++ " " ++ solatBarCmd cfg ++ " -d"
 
-    -- 3. Kill any existing trayer process first to avoid stacking up processes
-    spawn "pkill trayer"
-
-    -- 4. Spawn the host-specific trayer configuration
-    spawn $ "trayer " ++ trayerArgs cfg
-
     return [mainHandle]
   where
     -- Lookup the layout details depending on which machine is booting up
@@ -1164,7 +1260,6 @@ startXmobars hostname = do
             , solatBarPos = "top"
             -- You can easily shift this bar over to screen 1 on "khadijah"
             , solatBarScr = 0
-            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
             }
 
         "nyxora" -> XmobarHostConfig
@@ -1176,7 +1271,6 @@ startXmobars hostname = do
             , solatBarPos = "top"
             -- Example: Send the secondary bar to your second monitor!
             , solatBarScr = 0
-            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 1 --padding 5 --margin 1 --distance 1 --iconspacing 4"
             }
 
         -- Fallback default layout if the hostname isn't matched above
@@ -1187,7 +1281,6 @@ startXmobars hostname = do
             , solatBarCmd = "~/.xmonad/xmobarrc-waktuSolat.hs"
             , solatBarPos = "top"
             , solatBarScr = 0
-            , trayerArgs  = "--edge top --align right --SetDockType true --SetPartialStrut true --expand false --width 16 --transparent true --alpha 0 --tint 0xffffff --height 16 --monitor 0 --padding 5 --margin 1 --distance 1 --iconspacing 4"
             }
 
 -- NOTE: !!! must use 'top', and not 'Top' !!!
