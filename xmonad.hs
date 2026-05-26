@@ -12,7 +12,6 @@
 import XMonad
 -- import Data.Monoid -- mapped
 import System.Exit
---import System.HostName (getHostName)
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map as M -- fromList
@@ -37,7 +36,13 @@ import XMonad.Util.EZConfig(additionalKeys, removeKeys) --mkKeymap
 import qualified XMonad.Util.Hacks as Hacks
 import System.IO (Handle) -- , hPutStrLn)
 import System.Process (readProcess)
-import System.Posix.Unistd (getSystemID, nodeName)
+
+--import System.HostName (getHostName)
+--import System.Environment -- to get $HOME
+
+--import System.Posix.Unistd (getSystemID, nodeName) -- to get hostname
+import Network.HostName (getHostName) -- from pkgs.haskellPackages.hostname
+
 --import XMonad.Util.ExtensibleState as XS
 
 import XMonad.Hooks.ManageHelpers
@@ -1148,7 +1153,7 @@ startTrayer host = do
     -- spawn cmd
 
 
--- Perform an arbitrary action each time xmonad starts or is restarted
+-- Perform an arbitrary action each time xmonad is 'starts' or is 'restart'
 -- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
 -- per-workspace layout choices.
 --
@@ -1283,6 +1288,7 @@ startXmobars hostname = do
             , solatBarScr = 0
             }
 
+{-
 -- NOTE: !!! must use 'top', and not 'Top' !!!
 startXmobars3 :: String -> IO [Handle]
 startXmobars3 hostname = case hostname of
@@ -1308,9 +1314,26 @@ startXmobars3 hostname = case hostname of
         -- threadDelay 5000000 -- in miliseconds;
         -- return [xmprocBottom, xmprocTop]
         return [xmprocBottom]
+-}
 
 -- -----------------------------------------------------------------------------------
 -- -----------------------------------------------------------------------------------
+
+
+-- Bulletproof short hostname with zero extra Nix packages
+{-
+getMyShortPosicHostname :: IO String
+getMyShortPosicHostname = do
+    sysId <- getSystemID
+    return (takeWhile (/= '.') (nodeName sysId))
+-}
+
+-- A small helper function to grab everything before the first dot
+getMyShortCrossplatformHostname :: IO String
+getMyShortCrossplatformHostname = do
+    rawHost <- getHostName
+    return (takeWhile (/= '.') rawHost)
+
 
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
@@ -1325,7 +1348,10 @@ main = do
     spawn "~/.xmonad/bin/start-sidetool.sh"
 
     -- -- Get the current hostname dynamically
-    hostname <- fmap nodeName getSystemID
+    --hostname <- fmap nodeName getSystemID
+    --hostname <- getMyShortPosicHostname
+    --hostname <- getHostName
+    hostname <- getMyShortCrossplatformHostname
 
     --xmproc <- spawnPipe "xmobar --screen=0 --position=Bottom ~/.xmonad/xmobarrc-main-oldCPU.hs" -- Needs xmproc
     --spawnPipe "xmobar --screen=0 --position=top ~/.xmonad/xmobarrc-waktuSolat.hs" -- Do not needs xmproc
