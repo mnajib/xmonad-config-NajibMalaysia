@@ -1346,6 +1346,8 @@ main = do
     spawn "pkill xmobar"
     threadDelay 5000000 -- in miliseconds
     spawn "~/.xmonad/bin/start-sidetool.sh"
+    --spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
+    spawn "~/.xmonad/bin/reset-movie-mode-state.sh"
 
     -- -- Get the current hostname dynamically
     --hostname <- fmap nodeName getSystemID
