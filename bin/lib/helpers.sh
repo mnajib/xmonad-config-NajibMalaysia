@@ -279,16 +279,22 @@ pure_process_prayer_entry() {
       updated_line="${updated_line/${pattern2}//}"
 
       # Calculate proximity and determine new background color
+      # Lagi 15 minit nak masuk waktu
       if [[ $(pure_is_near_time "$prayer_time" "$current_time" 15) = 0 ]]; then
         if [[ $(pure_is_started "$current_time" "$prayer_time") = 0 ]]; then
+          # Color change to background red color
           new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "ffffff" "ff3333") # fg1, bg1, fg2, bg2
         else
+          # Blinking with background red color
           new_colors=$(pure_toggle_colors "$toggle" "ffffff" "ff3333" "000000" "7fffd4") # fg1, bg1, fg2, bg2
         fi
+      # Lagi 30 minit nak masuk waktu
       elif [[ $(pure_is_near_time "$prayer_time" "$current_time" 30) = 0 ]]; then
         if [[ $(pure_is_started "$current_time" "$prayer_time") = 0 ]]; then
+          # Color change to background red color
           new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "ffbf00") # fg1, bg1, fg2, bg2
         else
+          # Blinking with background amber color
           new_colors=$(pure_toggle_colors "$toggle" "000000" "ffbf00" "000000" "7fffd4") # fg1, bg1, fg2, bg2
         fi
       else
@@ -313,8 +319,8 @@ pure_process_prayer_entry() {
     local pattern4="<fc=#[afA-F0-9]{6},#[afA-F0-9]{6}>Ims</fc><fc=#[afA-F0-9]{6},#[a-fA-F0-9]{6}> [0-9]{2}:[0-9]{2} </fc> "
     local final_result_line=$(echo "$result_line" | sed 's/<fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}>Ims<\/fc><fc=#[a-fA-F0-9]\{6\},#[a-fA-F0-9]\{6\}> [0-9]\{2\}:[0-9]\{2\} <\/fc> //')
     echo "$final_result_line"
-    log_debug "\$final_result_line=$final_result_line"
-    log_debug "$final_result_line"
+    #log_debug "\$final_result_line=$final_result_line"
+    #log_debug "$final_result_line"
 }
 
 # Function: Read prayer times from file

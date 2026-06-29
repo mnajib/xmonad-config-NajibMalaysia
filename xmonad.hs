@@ -1181,6 +1181,9 @@ myStartupHook = do
     -- 2. Clean up old trayers
     spawn "killall trayer"
 
+    spawn "pkill -f waktusolat" -- Kills old instances running the script
+    spawn "killall waktusolat" -- Kills old instances running the script
+
     -- 3. Dynamic Trayer Launch
     -- io $ do
     --     host <- getHostName
@@ -1344,8 +1347,9 @@ main = do
     spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
     spawn "killall xmobar"
     spawn "pkill xmobar"
+    --
     threadDelay 5000000 -- in miliseconds
-    spawn "~/.xmonad/bin/start-sidetool.sh"
+    spawn "~/.xmonad/bin/start-sidetool.sh" -- start trayer, setxkbmap dvorak, volumeicon, fbsetroot, nm-applet, run bin/waktusolat, set-display-screen-power-saver.sh
     --spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
     spawn "~/.xmonad/bin/reset-movie-mode-state.sh"
 

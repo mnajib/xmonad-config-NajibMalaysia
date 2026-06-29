@@ -94,6 +94,7 @@ MMONTHFULLNAME=""
 #    fi
 #}
 
+log_debug "Begin bin/waktusolat"
 
 # --- Help Usage Function ---
 show_usage() {
@@ -183,7 +184,7 @@ sleepLengthInSeconds() {
 }
 
 dreamInSleep() {
-    local DIRATION=$1  # Total duration in seconds
+    local DURATION=$1  # Total duration in seconds
     local FIFO=$2
     local TEXT=$3
 
@@ -304,13 +305,20 @@ case "$OUTPUT_MODE" in
         echo "</prayer_times>"
         ;;
     "hbar")
+        # Ensure only one instance of the hbar loop runs at any time
+        exec 9>"/tmp/${USER}-waktusolat.lock"
+        if ! flock -n 9; then
+            echo "waktusolat hbar instance is already running. Exiting."
+            exit 0
+        fi
+
         # Your original continuous loop logic
         log_debug "==============================="
         log_debug "Start waktusolat-putrajaya-hbar"
 
-        timeInterval1=$(echo "60 * 60 * 3" | bc)
-        timeInterval2=$(echo "60 * 1" | bc)
-        timeInterval=${timeInterval1}
+        timeInterval1=$(echo "60 * 60 * 3" | bc)    # 3 hours
+        timeInterval2=$(echo "60 * 1" | bc)         # 1 minute
+        timeInterval=${timeInterval1}               # 3 hours
 
         cleanup-socket "$SOCKET"
 
@@ -341,6 +349,7 @@ case "$OUTPUT_MODE" in
             new_waktu_solat="$(printNewWaktuSolat)"
             log_debug "$new_waktu_solat"
 
+            # if time range is match, do change coloring as reminder for prayer time
             countdown_time=$timeInterval
             toggle=0
             line="$new_waktu_solat"
@@ -355,6 +364,7 @@ case "$OUTPUT_MODE" in
                 sleep 1
                 countdown_time=$((countdown_time - 1))
             done
+
             log_debug "End main loop"
         done
         ;;
@@ -367,4 +377,5 @@ esac
 
 
 #log DEBUG "End waktusolat-putrajaya-hbar"
-log_debug "End waktusolat-putrajaya-hbar"
+#log_debug "End waktusolat-putrajaya-hbar"
+log_debug "End bin/waktusolat"
