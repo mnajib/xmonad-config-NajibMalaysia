@@ -23,17 +23,21 @@ source "${HOME}/.xmonad/bin/lib/helpers.sh"
 
 #---------------------------------------------------------------------
 
-# inputs
-FILE1=/tmp/${USER}-wsp1         # source data file
-FILE2=/tmp/${USER}-wsp2         # one-line result waktu solat formated for xmobar
-FILE3=/tmp/${USER}-wsp1.bak     # backup good source data file
-# outputs
+# On regular storage
+BASE_DIR=/tmp
+# On tmpfs
 OUTPUT_DIR="/run/user/1001/waktusolat"
-PRAYER_TIMES_FILE="/tmp/${USER}-prayer_times_file"
+
+# inputs
+FILE1=${BASE_DIR}/${USER}-wsp1         # source data file
+FILE2=${BASE_DIR}/${USER}-wsp2         # one-line result waktu solat formated for xmobar
+FILE3=${BASE_DIR}/${USER}-wsp1.bak     # backup good source data file
+# outputs
+PRAYER_TIMES_FILE="${BASE_DIR}/${USER}-prayer_times_file"
 #PRAYER_REMINDER_FILE="/tmp/${USER}-prayer_reminder_file"
 PRAYER_REMINDER_FILE="${OUTPUT_DIR}/prayer_reminder.xmobar"
 # log
-LOGFILE="/tmp/${USER}-wsp.log"        # for logging
+LOGFILE="${BASE_DIR}/${USER}-wsp.log"        # for logging
 LOGLEVEL="SILENT" # "SILENT" "ERROR" "WARNING" "INFO" "DEBUG". "INFO" is the default.
 #LOGLEVEL="DEBUG" #"SILENT" # "SILENT" "ERROR" "WARNING" "INFO" "DEBUG". "INFO" is the default.
 
