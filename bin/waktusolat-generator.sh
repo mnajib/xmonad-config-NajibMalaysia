@@ -43,7 +43,8 @@ while true; do
               get_bg($st; ($item.bg // "7fffd4")) as $bg |
               "<fc=#000000,#ffffff>" + lbl + "</fc><fc=#" + $fg + ",#" + $bg + "> " + $t + " </fc>";
 
-            "<fc=#888888>Data " + ($root.server_time // "") + ";</fc> " +
+            "<fc=#888888>Data " + ($root.server_time // "") + ";</fc>" +
+            (if $root.is_stale == true then "<fc=#ff0000,#000000> OLD </fc>" else "     " end) +
             "<fc=#ff66ff>(" + ($root.zone // "") + "</fc> " +
             "<fc=#00ffff>(" + ($root.gregorian.month_abb // "") + " " + ($root.gregorian.date // "") + " " + ($root.gregorian.day_abb // "") + "</fc> " +
             "<fc=#ffff00>(" + ($root.hijri.month_name // "") + " " + ($root.hijri.date // "") + " " + ($root.hijri.day_name // "") + "</fc> " +
