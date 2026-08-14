@@ -1153,62 +1153,6 @@ startTrayer host = do
     -- spawn cmd
 
 
--- Perform an arbitrary action each time xmonad is 'starts' or is 'restart'
--- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
--- per-workspace layout choices.
---
--- By default, do nothing.
--- myStartupHook = return ()
-myStartupHook = do
-    -- Reset custom maximize state
---    XS.put $ MaximizeState
---      { isMaximized = False
---      , lastWindow = Nothing
---      }
-
-    spawnOnce "~/.xmonad/bin/autostart.sh"
-      -- >> spawnOnce "~/.xmonad/bin/kill2restart-xmobar.sh"
-      -- >> spawn "killall xmobar"
-      -- >> spawnOnce "~/.xmonad/bin/kill2restart-sidetool.sh"
-      -- >> spawnOnce "xrandr --setmonitor CombineMonitor 2560/752x1024/301+1920+0 VGA-1-1,DP-1"
-      -- >> spawnOnce "xrandr --setmonitor LaptopMonitor 1920/344x1080/194+0+0 eDP-1-1"
-      -- >> spawnOnce "~/.xmonad/bin/start-sidetool.sh";
-
-    -- 1. Reset Logs (using safe shell expansion)
-    spawn "sh -c 'cat /dev/null > /tmp/${USER}-wsp.log'"
-    spawn "sh -c 'cat /dev/null > /tmp/${USER}-prayer_reminder_log'"
-
-    -- 2. Clean up old trayers
-    spawn "killall trayer"
-
-    spawn "pkill -f waktusolat" -- Kills old instances running the script
-    spawn "killall waktusolat" -- Kills old instances running the script
-
-    -- 3. Dynamic Trayer Launch
-    -- io $ do
-    --     host <- getHostName
-    --     spawn (getTrayerCmd host)
-    -- spawn $ "trayer " ++ trayerArgs cfg
-    --io getHostName >>= startTrayer
-    io (init <$> readProcess "hostname" [] "") >>= startTrayer
-
-    -- 4. Start other tools
-    -- spawnOnce "$HOME/.xmonad/bin/zikir"
-    -- spawnOnce "$HOME/.xmonad/bin/waktusolat-hbar SGR01"
-
-    spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
-
-    -- spawn "polkit-gnome-authentication-agent-1 &"
-    spawn "soteria &"
-    spawn "xsetroot -cursor_name left_ptr"
-    setWMName "LG3D"  -- optional: helps with Java apps
---
--- Checking fo duplicate key bindings.
--- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
---myStartupHook = return () >> checkKeymap myConfig myKeymap
---myStartupHook = return () >> checkKeymap myKeymap
-------------------------------------------------------------------------
--- Now run xmonad with all the defaults we set up.
 
 -- Helper function to remove trailing newlines
 -- trim :: String -> String
@@ -1272,13 +1216,16 @@ startXmobars hostname = do
 
         "nyxora" -> XmobarHostConfig
             -- { mainBarCmd  = "~/.xmonad/xmobarrc-main-workstation.hs"
-            { mainBarCmd  = "~/.xmonad/xmobarrc-main-oldCPU.hs"
+            {
+
+              mainBarCmd  = "~/.xmonad/xmobarrc-main-oldCPU.hs"
             , mainBarPos  = "Bottom"
             , mainBarScr  = 0
+
             , solatBarCmd = "~/.xmonad/xmobarrc-waktuSolat.hs"
             , solatBarPos = "top"
-            -- Example: Send the secondary bar to your second monitor!
             , solatBarScr = 0
+
             }
 
         -- Fallback default layout if the hostname isn't matched above
@@ -1338,20 +1285,92 @@ getMyShortCrossplatformHostname = do
     return (takeWhile (/= '.') rawHost)
 
 
+-- -----------------------------------------------------------------------------------
+-- Perform an arbitrary action each time xmonad is 'starts' or is 'restart'
+-- with mod-q.  Used by, e.g., XMonad.Layout.PerWorkspace to initialize
+-- per-workspace layout choices.
+--
+-- By default, do nothing.
+-- myStartupHook = return ()
+myStartupHook = do
+
+    -- Reset custom maximize state
+    -- XS.put $ MaximizeState
+    --   { isMaximized = False
+    --     , lastWindow = Nothing
+    --   }
+
+    --spawn "killall trayer"
+    -- ONLY kill the generator, NOT the display (xmobar manages display)
+    --spawn "pkill -f waktusolat-generator"
+    --spawn "pkill -f waktusolat"  -- Be careful with this, might kill display too
+
+    spawnOnce "~/.xmonad/bin/on-xmonad-restart.sh" -- set screen layout
+
+    -- Reset Logs (using safe shell expansion)
+    spawn "sh -c 'cat /dev/null > /tmp/${USER}-wsp.log'"
+    spawn "sh -c 'cat /dev/null > /tmp/${USER}-prayer_reminder_log'"
+
+
+    -- Dynamic Trayer Launch
+    --io (init <$> readProcess "hostname" [] "") >>= startTrayer
+
+    -- Use nohup to ensure it survives xmonad restarts
+    --spawn "nohup ~/.xmonad/bin/waktusolat-generator.sh > /dev/null 2>&1 &"
+
+    -- Other startup items
+    spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
+    --spawn "~/.xmonad/bin/start-waktusolat-daemon.sh"
+    spawn "~/.xmonad/bin/start-generator.sh"
+    spawn "soteria &"
+    spawn "xsetroot -cursor_name left_ptr"
+    setWMName "LG3D"
+
+
+--
+-- -----------------------------------------------------------------------------------
+-- Checking fo duplicate key bindings.
+-- XMonad.Util.EZConfig provides a function checkKeymap to check for duplicate key bindings, otherwise the duplicates will be silently ignored.
+--myStartupHook = return () >> checkKeymap myConfig myKeymap
+--myStartupHook = return () >> checkKeymap myKeymap
+------------------------------------------------------------------------
+-- Now run xmonad with all the defaults we set up.
 -- Run xmonad with the settings you specify. No need to modify this.
 -- main = xmonad =<< statusBar myBar myPP toggleGapsKey myConfig
 -- main = xmonad defaults
 main = do
+
+    -- Kill old xmobar instances
     -- spawnOnce "~/.xmonad/bin/autostart.sh"
-    spawn "~/.xmonad/bin/kill2restart-xmobar.sh"
-    spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
-    spawn "killall xmobar"
-    spawn "pkill xmobar"
+    --spawn "~/.xmonad/bin/kill2restart-xmobar.sh"
+    --spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
+    spawn "pkill -f waktusolat-display.sh"
+    spawn "pkill -f trayer"
+    spawn "pkill -f xmobar"
+    spawn "pkill -f volumeicon"
+    spawn "pkill -f nm-applet"
+    --spawn "pkill -f waktusolat-generator"
+    -- Start waktusolat processes with nohup and proper backgrounding
+    -- Using spawn with nohup ensures they survive even if the parent shell dies
+    --spawn "nohup ~/.xmonad/bin/waktusolat-generator.sh > /dev/null 2>&1 &"
+    --spawn "nohup ~/.xmonad/bin/waktusolat-display.sh > /dev/null 2>&1 &"
+
+    ---threadDelay 5000000 -- in miliseconds
     --
-    threadDelay 5000000 -- in miliseconds
-    spawn "~/.xmonad/bin/start-sidetool.sh" -- start trayer, setxkbmap dvorak, volumeicon, fbsetroot, nm-applet, run bin/waktusolat, set-display-screen-power-saver.sh
+    -- Give processes time to terminate
+    threadDelay 1000000  -- 1 second
+
+    spawn "~/.xmonad/bin/on-xmonad-start.sh" -- start trayer, setxkbmap dvorak, volumeicon, fbsetroot, nm-applet, run bin/waktusolat, set-display-screen-power-saver.sh
+
     --spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
-    spawn "~/.xmonad/bin/reset-movie-mode-state.sh"
+    --spawn "~/.xmonad/bin/reset-movie-mode-state.sh"
+
+    -- Ensure the generator runs as a background process
+    --spawnOnce "~/.xmonad/bin/waktusolat-generator.sh &"
+    --spawn "~/.xmonad/bin/waktusolat-generator.sh &"
+
+    -- Start side tools (trayer, etc.)
+    --spawn "~/.xmonad/bin/start-sidetool.sh" -- start trayer, setxkbmap dvorak, volumeicon, fbsetroot, nm-applet, run bin/waktusolat, set-display-screen-power-saver.sh
 
     -- -- Get the current hostname dynamically
     --hostname <- fmap nodeName getSystemID

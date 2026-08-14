@@ -1,4 +1,4 @@
---
+-- xmobarrc-waktuSolat.hs
 
 Config {
     -- bgColor =      "#181715"
@@ -40,7 +40,19 @@ Config {
                     -- Run PipeReader "Getting prayer times ...:/tmp/${USER}-prayer_reminder_fifo" "WaktuSolat",
                     -- Run CommandReader "cat /tmp/${USER}-prayer_times_file" "WaktuSolat"
                     --Run CommandReader "cat /tmp/${USER}-prayer_reminder_file" "WaktuSolat"
-                    Run CommandReader "${HOME}/.xmonad/bin/loop-cat-prayer_reminder_file.sh" "WaktuSolat"
+                    --
+                    --Run CommandReader "${HOME}/.xmonad/bin/loop-cat-prayer_reminder_file.sh" "WaktuSolat"
+                    --Run CommandReader "${HOME}/.xmonad/bin/waktusolat-watcher.sh" [] "waktusolat_display" 10 -- 10 tenths of a second, which equals 1 second
+                    --Run CommandReader "${HOME}/.xmonad/bin/waktusolat-watcher.sh" "WaktuSolat"
+
+                    --
+                    Run CommandReader "${HOME}/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+                    --Run CommandReader "~/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+                    --Run CommandReader "/home/najib/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+
+                    --
+                    -- Xmobar runs the wrapper script as its managed display subprocess
+                    --Run Com "${HOME}/.xmonad/bin/waktusolat-watcher.sh" [] "WaktuSolat" 10 -- 10 tenths of a second, which equals 1 second
 
                     -- Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (30, 3, "   +   ") "mpipe",
                     -- Run MarqueePipeReader "/tmp/${USER}-zikirpipe" (20, 3, "   +   ") "mpipe",
