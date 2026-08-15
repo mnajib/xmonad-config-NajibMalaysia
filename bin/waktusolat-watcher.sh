@@ -19,6 +19,10 @@ mkdir -p "$STATE_DIR"
             toggle=$(( epoch % 2 ))
 
             # Render JSON content using robust fallbacks
+            #   ffbf00 amber
+            #   ff0000 red
+            #   ff3333 red
+            #   7fffd4 aquamarine
             rendered=$(jq -r --argjson toggle "$toggle" '
               try (
                 . as $root |
@@ -43,11 +47,14 @@ mkdir -p "$STATE_DIR"
                   (($root.prayers // {})[key] // {}) as $item |
                   ($item.time // "-") as $t |
                   ($item.stage // "neutral") as $st |
-                  get_fg($st; ($item.fg // "000000")) as $fg |
-                  get_bg($st; ($item.bg // "7fffd4")) as $bg |
+                  #get_fg($st; ($item.fg // "000000")) as $fg |
+                  #get_bg($st; ($item.bg // "7fffd4")) as $bg |
+                  get_fg($st; ("000000")) as $fg | # regardless what is the current color, use "000000" as current color
+                  get_bg($st; ("7fffd4")) as $bg | # regardless what is the current color, use "7fffd4" as current color
                   "<fc=#000000,#ffffff>" + lbl + "</fc><fc=#" + $fg + ",#" + $bg + "> " + $t + " </fc>";
 
-                "<fc=#888888>Data " + ($root.server_time // "") + ";</fc> " +
+                "<fc=#888888>Data " + ($root.server_time // "") + ";</fc>" +
+                (if $root.is_stale == true then "<fc=#ff0000,#000000> OLD </fc>" else "     " end) +
                 "<fc=#ff66ff>(" + ($root.zone // "") + "</fc> " +
                 "<fc=#00ffff>(" + ($root.gregorian.month_abb // "") + " " + ($root.gregorian.date // "") + " " + ($root.gregorian.day_abb // "") + "</fc> " +
                 "<fc=#ffff00>(" + ($root.hijri.month_name // "") + " " + ($root.hijri.date // "") + " " + ($root.hijri.day_name // "") + "</fc> " +
