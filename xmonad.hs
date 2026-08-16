@@ -1320,8 +1320,10 @@ myStartupHook = do
 
     -- Other startup items
     spawnOnce "~/.xmonad/bin/reset-movie-mode-state.sh"
-    --spawn "~/.xmonad/bin/start-waktusolat-daemon.sh"
-    spawn "~/.xmonad/bin/start-generator.sh"
+
+    -- --spawn "~/.xmonad/bin/start-waktusolat-daemon.sh"
+    --spawn "~/.xmonad/bin/start-generator.sh"
+
     spawn "soteria &"
     spawn "xsetroot -cursor_name left_ptr"
     setWMName "LG3D"
@@ -1344,7 +1346,9 @@ main = do
     -- spawnOnce "~/.xmonad/bin/autostart.sh"
     --spawn "~/.xmonad/bin/kill2restart-xmobar.sh"
     --spawn "~/.xmonad/bin/kill2restart-sidetool.sh"
+    spawn "pkill -f waktusolat-generator.sh"
     spawn "pkill -f waktusolat-display.sh"
+    spawn "pkill -f waktusolat-display-raw.sh"
     spawn "pkill -f trayer"
     spawn "pkill -f xmobar"
     spawn "pkill -f volumeicon"

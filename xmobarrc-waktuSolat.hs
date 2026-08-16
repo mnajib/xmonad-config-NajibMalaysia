@@ -46,9 +46,10 @@ Config {
                     --Run CommandReader "${HOME}/.xmonad/bin/waktusolat-watcher.sh" "WaktuSolat"
 
                     --
-                    Run CommandReader "${HOME}/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
-                    --Run CommandReader "~/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
-                    --Run CommandReader "/home/najib/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+                    -- Run CommandReader "${HOME}/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+                    Run CommandReader "${HOME}/.xmonad/bin/waktusolat-display-raw.sh" "WaktuSolat"
+                    -- --Run CommandReader "~/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
+                    -- --Run CommandReader "/home/najib/.xmonad/bin/waktusolat-display.sh" "WaktuSolat"
 
                     --
                     -- Xmobar runs the wrapper script as its managed display subprocess

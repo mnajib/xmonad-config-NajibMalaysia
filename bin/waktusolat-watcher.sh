@@ -6,7 +6,7 @@ BASE_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
 STATE_DIR="${BASE_DIR}/waktusolat"
 
 REMINDER_JSON="/run/waktusolat/reminder.json"
-REMINDER_XMOBAR="${STATE_DIR}/reminder.xmobar"
+REMINDER_XMOBAR="${STATE_DIR}/reminder.xmobar" # /run/user/<uid>/waktusolat/reminder.xmobar
 
 # Ensure runtime directory exists
 mkdir -p "$STATE_DIR"
@@ -87,6 +87,9 @@ trap "kill $GEN_PID 2>/dev/null; exit 0" EXIT INT TERM
 
 # --- SUB-JOB 2: Reader & Output Stream (Foreground Loop for Xmobar) ---
 # stdbuf -oL forces line-buffered stdout so xmobar gets updates every second
+#
+# write result into /run/user/<uid>/waktusolat/reminder.xmobar
+#
 stdbuf -oL bash -c '
     REMINDER_XMOBAR="'"$REMINDER_XMOBAR"'"
     while true; do
