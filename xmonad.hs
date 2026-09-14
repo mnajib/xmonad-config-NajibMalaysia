@@ -895,6 +895,11 @@ myManageHook = composeAll [
     resource  =? "desktop_window"       --> doIgnore
     ,
     resource  =? "kdesktop"             --> doIgnore
+    ,
+    className =? "TelegramDesktop" <&&> title =? "Media viewer" --> doFullFloat
+    -- Alternatively, catch any Telegram popup dialogs/viewers:
+    ,
+    className =? "TelegramDesktop" <&&> isFullscreen              --> doFullFloat
     ]
 
 ------------------------------------------------------------------------
@@ -1400,7 +1405,8 @@ main = do
     -- xmonad . configureMRU $ ewmh defaultConfig {
     -- xmonad . configureMRU $ ewmh def {
     -- xmonad $ ewmh def {
-    xmonad $ ewmh . docks $ def {
+    -- xmonad $ ewmh . docks $ def {
+    xmonad . ewmhFullscreen . ewmh . docks $ def {
 -- {-
         -- simple stuff
         terminal           = myTerminal,
@@ -1442,6 +1448,8 @@ main = do
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> docksEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> docks <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
         handleEventHook    = handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+        -- handleEventHook    = XMonad.Hooks.EwmhDesktops.fullscreenEventHook <+> handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+        --handleEventHook    = ewmhFullscreen <+> handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
         --handleEventHook    = handleEventHook def <+> docksEventHook <+> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         -- handleEventHook    = handleEventHook def <+> myEventHook <+> zoomEventHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
         --handleEventHook    = handleEventHook def <+> myEventHook <+> maximizeRestoreHook <+> docksEventHook <> Hacks.trayerPaddingXmobarEventHook,  -- <-- currently testing this
@@ -1463,7 +1471,8 @@ main = do
             manageDocks,
             -- isFullscreen --> doFullFloat,
             -- className =? "Vlc" --> doFloat,
-            myManageHook--,
+            --myManageHook--,
+            myManageHook <+> manageHook def
             --manageHook defaultConfig
             ],
         -- NOTE: You can float your windows before fullscreening them. This is
@@ -1502,10 +1511,32 @@ main = do
 -- fields in the default config. Any you don't override, will
 -- use the defaults defined in xmonad/XMonad/Config.hs
 -- No need to modify this.
--- myConfig = def {
---defaults = def {
-{-defaults = defaultConfig {
-  -- simple stuff
+--myConfig = def {
+----defaults = def {
+----defaults = defaultConfig {
+--  -- simple stuff
+--  terminal           = myTerminal,
+--  focusFollowsMouse  = myFocusFollowsMouse,
+--  clickJustFocuses   = myClickJustFocuses,
+--  borderWidth        = myBorderWidth,
+--  modMask            = myModMask,
+--  workspaces         = myWorkspaces,
+--  normalBorderColor  = myNormalBorderColor,
+--  focusedBorderColor = myFocusedBorderColor,
+--
+--  -- key bindings
+--  keys               = myKeys,
+--  mouseBindings      = myMouseBindings,
+--
+--  -- hooks, layouts
+--  layoutHook         = myLayout,
+--  --layoutHook         = smartBorders $ myLayout,
+--  manageHook         = myManageHook,
+--  handleEventHook    = myEventHook,
+--  logHook            = myLogHook,
+--  startupHook        = myStartupHook
+--}
+myConfig = ewmhFullscreen . ewmh . docks $ def {
   terminal           = myTerminal,
   focusFollowsMouse  = myFocusFollowsMouse,
   clickJustFocuses   = myClickJustFocuses,
@@ -1514,19 +1545,17 @@ main = do
   workspaces         = myWorkspaces,
   normalBorderColor  = myNormalBorderColor,
   focusedBorderColor = myFocusedBorderColor,
-
-  -- key bindings
   keys               = myKeys,
   mouseBindings      = myMouseBindings,
-
-  -- hooks, layouts
   layoutHook         = myLayout,
-  --layoutHook         = smartBorders $ myLayout,
-  manageHook         = myManageHook,
-  handleEventHook    = myEventHook,
-  logHook            = myLogHook,
-  startupHook        = myStartupHook
-}-}
+  manageHook         = composeAll [
+                         manageDocks,
+                         myManageHook <+> manageHook def
+                       ],
+  handleEventHook    = handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
+  startupHook        = myStartupHook <+> setWMName "LG3D",
+  logHook            = myLogHook <+> dynamicLogWithPP (myXmobarPP [])
+}
 -------------------------------------------------------------------------------
 
 -- | Finally, a copy of the default bindings in simple textual tabular format.
