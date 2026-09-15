@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# ~/.xmonad/bin/on-xmonad-start.sh
 
 # Copyright (c) 2024 xmonad-config-NajibMalaysia
 # Licensed under the BSD 3-Clause License. See LICENSE file for details.
@@ -51,12 +52,12 @@ case $HOSTNAME in
   keira)
     echo "keira"
     setxkbmap us # Not sure if I really need this, but just a safe bet tu make sure user not freakout if somehow the keyboard layout not US right after login.
-    startTrayer 0
+    startTrayer --monitor 0
     ;;
   #zahrahDISABLEXXX)
   zahrah)
     echo "zahrah"
-    startTrayer 1
+    startTrayer --monitor 1
     setxkbmap dvorak
     #$HOME/bin/kill-program barrier
     #sleep 2
@@ -64,30 +65,28 @@ case $HOSTNAME in
     ;;
   raudah)
     echo "raudah"
-    startTrayer 0
+    startTrayer --monitor 0
     setxkbmap dvorak
     ;;
   sakinah)
     echo "sakinah"
     setxkbmap dvorak
-    startTrayer 1
+    startTrayer --monitor 1 --width 12
     ;;
   asmak|naqib)
     echo "asmak"
     setxkbmap dvorak
-    startTrayer 1
+    startTrayer --monitor 1
     ;;
   delldesktop)
     echo "delldesktop"
     setxkbmap dvorak
-    startTrayer 1
+    startTrayer --monitor 1
     ;;
   khadijah)
     echo "khadijah"
     #trayer --edge top --align right --SetDockType true --SetPartialStrut false --expand true --width 12 --transparent true --tint 0xffffff --height 14 --alpha 0 & # laptop as 1'sf monitor positioned from left-to-right
-    #startTrayer 0
-    startTrayer 1
-    #startTrayer 2
+    startTrayer --monitor 1
     #$HOME/bin/kill-program barrier
     #sleep 2
     #$HOME/bin/barrier-launcher.sh start client --client khadijah --server zahrah &
@@ -95,7 +94,7 @@ case $HOSTNAME in
   taufiq)
     echo "taufiq"
     setxkbmap dvorak
-    startTrayer 0
+    startTrayer --monitor 0
     #$HOME/bin/kill-program barrier
     #sleep 2
     #$HOME/bin/barrier-launcher.sh start client --client taufiq --server zahrah &
@@ -106,7 +105,7 @@ case $HOSTNAME in
     sudo $HOME/.xmonad/bin/decrease-trackpoint-sensitivity-x220.sh
     #setxkbmap us
     setxkbmap dvorak
-    startTrayer 0
+    startTrayer --monitor 0
     ;;
   khawlah)
     echo "khawlah"
@@ -116,18 +115,18 @@ case $HOSTNAME in
     #$HOME/.xmonad/bin/khawlah-dualMonitor-Thinkpadx230_1366x768_and_LenovoThinkVision1280x1024.sh externalonly
     $HOME/.xmonad/bin/khawlah-dualMonitor-Thinkpadx230_1366x768_and_LenovoThinkVision1280x1024.sh
 
-    startTrayer 0
+    startTrayer --monitor 0
     setxkbmap dvorak
     ;;
   nyxora)
     echo "nyxora"
     setxkbmap dvorak
-    startTrayer 0 #1
+    startTrayer --monitor 0
     ;;
   *)
     echo "lain"
     setxkbmap dvorak
-    startTrayer 0
+    startTrayer --monitor 0
     ;;
 esac
 
