@@ -73,6 +73,16 @@ case $HOSTNAME in
     setxkbmap dvorak
     startTrayer --monitor 1 --width 12
     ;;
+  sumayah)
+    echo "sumayah"
+    setxkbmap dvorak
+    startTrayer --monitor 1 --width 12
+    ;;
+  huda)
+    echo "huda"
+    setxkbmap dvorak
+    startTrayer --monitor 1 --width 12
+    ;;
   asmak|naqib)
     echo "asmak"
     setxkbmap dvorak
