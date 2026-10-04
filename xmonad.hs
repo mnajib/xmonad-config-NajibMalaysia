@@ -1035,19 +1035,64 @@ myBasicXmobarPP xmproc = xmobarPP {
   , ppSep     = " "
 }
 
+-- | How many screens (monitors) xmonad manages right now.
+--   Re-evaluated on every logHook run, so hotplugging a monitor is picked up
+--   without restarting xmonad.
+--   Types / where from:
+--     X, withWindowSet     (XMonad / XMonad.Core, from xmonad)
+--     W.screens            (XMonad.StackSet imported as W, from xmonad)
+--     length, (.), return  (Prelude, from base)
+io_screenCount :: X Int
+io_screenCount = withWindowSet (return . length . W.screens)
+
+-- | THE rule (single source of truth): workspace labels are clickable only when
+--   there is exactly one screen, because then a click has one obvious meaning.
+pure_isClickable :: Int -> Bool
+pure_isClickable screenCount = screenCount == 1
+
+-- | Make a workspace label mouse-clickable in xmobar (left-click = button 1).
+--   First argument False => label is returned unchanged (not clickable).
+--
+--   * Index N = position of the tag inside 'myWorkspaces' (single source of truth).
+--   * Action  = `wmctrl -s N`, i.e. EWMH _NET_CURRENT_DESKTOP. xmonad answers it
+--     because `ewmh` is applied in main. Semantics: W.view on the FOCUSED screen.
+--   * Needs: pkgs.wmctrl in PATH, and `%StdinReader%` in the xmobar template.
+--
+--   Types / where from:
+--     WorkspaceId  = type alias of String           (XMonad, from xmonad)
+--     xmobarAction :: String -> String -> String -> String
+--                    (command, button, text)        (XMonad.Hooks.DynamicLog, from xmonad-contrib)
+--     lookup, zip, show                             (Prelude, from base)
+pure_clickableWs :: Bool -> (WorkspaceId -> String) -> WorkspaceId -> String
+pure_clickableWs False fmt ws = fmt ws
+pure_clickableWs True  fmt ws = case lookup ws (zip myWorkspaces [0 :: Int ..]) of
+    Just n  -> xmobarAction ("wmctrl -s " ++ show n) "1" (fmt ws)
+    Nothing -> fmt ws   -- unknown tag: show it, but not clickable
+
 -- Custom xmobarPP for multiple Handles
-myXmobarPP :: [Handle] -> PP
-myXmobarPP xmprocs = xmobarPP
+-- First argument: clickable? (decided at runtime by 'pure_isClickable')
+myXmobarPP :: Bool -> [Handle] -> PP
+myXmobarPP clickable xmprocs = xmobarPP
   {
   --  ppOutput  = \x -> mapM_ (\h -> when (h /= undefined) (hPutStrLn h x)) xmprocs
     ppOutput  = \x -> mapM_ (`hPutStrLn` x) xmprocs
-  , ppTitle   = xmobarColor "#14FF08" "" . shorten 30
-  , ppCurrent = xmobarColor "#181715" "#58C5F1" . wrap "[" "]"
-  , ppVisible = xmobarColor "#58C5F1" "#181715" . wrap "(" ")"
-  , ppUrgent  = xmobarColor "#181715" "#D81816"
-  , ppHidden  = xmobarColor "#58C5F1" "#181715"
+  -- xmobarStrip: remove xmobar tags from the window title BEFORE shortening.
+  -- Needed because UnsafeStdinReader (required for clickable labels) does not
+  -- strip <action> tags itself; a page title must never be able to run a command.
+  , ppTitle   = xmobarColor "#14FF08" "" . shorten 30 . xmobarStrip
+  , ppCurrent = click (xmobarColor "#181715" "#58C5F1" . wrap "[" "]")
+  , ppVisible = click (xmobarColor "#58C5F1" "#181715" . wrap "(" ")")
+  , ppUrgent  = click (xmobarColor "#181715" "#D81816")
+  , ppHidden  = click (xmobarColor "#58C5F1" "#181715")
+  -- Empty workspaces are hidden by xmonad (const ""), so they cannot be clicked.
+  -- Only when clickable: draw them (dim) so they can be clicked too.
+  , ppHiddenNoWindows = if clickable
+                          then click (xmobarColor "#555555" "#181715")
+                          else const ""
   , ppSep     = " "
   }
+  where
+    click = pure_clickableWs clickable
 
 -- Function to create screen-specific PP
 --myXmobarPP :: ScreenId -> [Handle] -> PP
@@ -1487,7 +1532,11 @@ main = do
         --
         -- -- Multiple xmobar with xmprocs: working config
         -- -- logHook = updateBorderColors >> dynamicLog -- Update border colors after each layout change
-        logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP xmprocs)
+        -- Auto: clickable only while exactly one screen is connected (see pure_isClickable)
+        logHook = myLogHook <+> (io_screenCount >>= \n -> dynamicLogWithPP (myXmobarPP (pure_isClickable n) xmprocs))
+        -- Override (comment the line above, uncomment ONE below): force on / off
+        --logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP True  xmprocs)
+        --logHook = myLogHook <+> dynamicLogWithPP (myXmobarPP False xmprocs)
         --
         -- screen-base workspaces: not working
         --logHook = myLogHook <+> mconcat
@@ -1554,7 +1603,7 @@ myConfig = ewmhFullscreen . ewmh . docks $ def {
                        ],
   handleEventHook    = handleEventHook def <+> myEventHook <+> Hacks.trayerAboveXmobarEventHook <+> Hacks.trayerPaddingXmobarEventHook,
   startupHook        = myStartupHook <+> setWMName "LG3D",
-  logHook            = myLogHook <+> dynamicLogWithPP (myXmobarPP [])
+  logHook            = myLogHook <+> dynamicLogWithPP (myXmobarPP False [])
 }
 -------------------------------------------------------------------------------
 
