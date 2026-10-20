@@ -784,7 +784,8 @@ myLayout =
       windowNavigation $
       maximizeWithPadding myMaxWithPad $
       addTabs shrinkText myTabTheme $
-      subLayout [0,1] Simplest $
+      -- subLayout [0,1] Simplest $
+      subLayout [] Simplest $
       ResizableTall 1 (3/100) (1/2) []
     )
 
@@ -900,6 +901,8 @@ myManageHook = composeAll [
     -- Alternatively, catch any Telegram popup dialogs/viewers:
     ,
     className =? "TelegramDesktop" <&&> isFullscreen              --> doFullFloat
+    ,
+    className =? "Firefox" --> doSink -- Forces Firefox to stay in tiling layouts even on fullscreen requests
     ]
 
 ------------------------------------------------------------------------
@@ -1451,7 +1454,8 @@ main = do
     -- xmonad . configureMRU $ ewmh def {
     -- xmonad $ ewmh def {
     -- xmonad $ ewmh . docks $ def {
-    xmonad . ewmhFullscreen . ewmh . docks $ def {
+    -- xmonad . ewmhFullscreen . ewmh . docks $ def {
+    xmonad . ewmh . docks $ def {
 -- {-
         -- simple stuff
         terminal           = myTerminal,
@@ -1585,7 +1589,8 @@ main = do
 --  logHook            = myLogHook,
 --  startupHook        = myStartupHook
 --}
-myConfig = ewmhFullscreen . ewmh . docks $ def {
+-- myConfig = ewmhFullscreen . ewmh . docks $ def {
+myConfig = ewmh . docks $ def {
   terminal           = myTerminal,
   focusFollowsMouse  = myFocusFollowsMouse,
   clickJustFocuses   = myClickJustFocuses,

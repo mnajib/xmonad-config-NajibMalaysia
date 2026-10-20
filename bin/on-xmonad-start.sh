@@ -77,6 +77,7 @@ case $HOSTNAME in
     echo "sumayah"
     setxkbmap dvorak
     startTrayer --monitor 1 --width 12
+    #startTrayer --monitor 2 --width 12
     ;;
   huda)
     echo "huda"
